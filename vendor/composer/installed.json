@@ -311,18 +311,24 @@
     },
     {
         "name": "amzn/amazon-pay-sdk-php",
-        "version": "3.6.0",
-        "version_normalized": "3.6.0.0",
+        "version": "3.7.1",
+        "version_normalized": "3.7.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/amzn/amazon-pay-sdk-php.git",
-            "reference": "9b59f3a5b258df8a35f5f4b912a4596b3f118d7c"
+            "reference": "37882f2df12e7789d6d4d7d3df6c0cd7e62779f2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/amzn/amazon-pay-sdk-php/zipball/9b59f3a5b258df8a35f5f4b912a4596b3f118d7c",
-            "reference": "9b59f3a5b258df8a35f5f4b912a4596b3f118d7c",
-            "shasum": ""
+            "url": "https://api.github.com/repos/amzn/amazon-pay-sdk-php/zipball/37882f2df12e7789d6d4d7d3df6c0cd7e62779f2",
+            "reference": "37882f2df12e7789d6d4d7d3df6c0cd7e62779f2",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "ext-curl": "*",
@@ -331,7 +337,7 @@
         "require-dev": {
             "phpunit/phpunit": "^4"
         },
-        "time": "2019-11-21T21:15:11+00:00",
+        "time": "2021-03-23T06:46:08+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -339,7 +345,7 @@
                 "AmazonPay\\": "AmazonPay/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "Apache-2.0"
         ],
@@ -438,27 +444,33 @@
     },
     {
         "name": "aws/aws-sdk-php",
-        "version": "3.171.20",
-        "version_normalized": "3.171.20.0",
+        "version": "3.176.2",
+        "version_normalized": "3.176.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aws/aws-sdk-php.git",
-            "reference": "02aaf7007c5678a6358ea924cd85531300aa1747"
+            "reference": "cfd62d9d159df12e8e1fc3c486e0a010a4c39f80"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/02aaf7007c5678a6358ea924cd85531300aa1747",
-            "reference": "02aaf7007c5678a6358ea924cd85531300aa1747",
-            "shasum": ""
+            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/cfd62d9d159df12e8e1fc3c486e0a010a4c39f80",
+            "reference": "cfd62d9d159df12e8e1fc3c486e0a010a4c39f80",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "ext-json": "*",
             "ext-pcre": "*",
             "ext-simplexml": "*",
             "guzzlehttp/guzzle": "^5.3.3|^6.2.1|^7.0",
-            "guzzlehttp/promises": "^1.0",
-            "guzzlehttp/psr7": "^1.4.1",
-            "mtdowling/jmespath.php": "^2.5",
+            "guzzlehttp/promises": "^1.4.0",
+            "guzzlehttp/psr7": "^1.7.0",
+            "mtdowling/jmespath.php": "^2.6",
             "php": ">=5.5"
         },
         "require-dev": {
@@ -484,7 +496,7 @@
             "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
             "ext-sockets": "To use client-side monitoring"
         },
-        "time": "2021-01-19T19:13:08+00:00",
+        "time": "2021-03-26T18:16:22+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -500,7 +512,7 @@
                 "src/functions.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "Apache-2.0"
         ],
@@ -639,31 +651,38 @@
     },
     {
         "name": "behat/gherkin",
-        "version": "v4.6.2",
-        "version_normalized": "4.6.2.0",
+        "version": "v4.8.0",
+        "version_normalized": "4.8.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Behat/Gherkin.git",
-            "reference": "51ac4500c4dc30cbaaabcd2f25694299df666a31"
+            "reference": "2391482cd003dfdc36b679b27e9f5326bd656acd"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Behat/Gherkin/zipball/51ac4500c4dc30cbaaabcd2f25694299df666a31",
-            "reference": "51ac4500c4dc30cbaaabcd2f25694299df666a31",
-            "shasum": ""
+            "url": "https://api.github.com/repos/Behat/Gherkin/zipball/2391482cd003dfdc36b679b27e9f5326bd656acd",
+            "reference": "2391482cd003dfdc36b679b27e9f5326bd656acd",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
-            "php": ">=5.3.1"
+            "php": "~7.2|~8.0"
         },
         "require-dev": {
-            "phpunit/phpunit": "~4.5|~5",
-            "symfony/phpunit-bridge": "~2.7|~3|~4",
-            "symfony/yaml": "~2.3|~3|~4"
+            "cucumber/cucumber": "dev-gherkin-16.0.0",
+            "phpunit/phpunit": "~8|~9",
+            "symfony/phpunit-bridge": "~3|~4|~5",
+            "symfony/yaml": "~3|~4|~5"
         },
         "suggest": {
             "symfony/yaml": "If you want to parse features, represented in YAML files"
         },
-        "time": "2020-03-17T14:03:26+00:00",
+        "time": "2021-02-04T12:44:21+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -676,7 +695,7 @@
                 "Behat\\Gherkin": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -687,7 +706,7 @@
                 "homepage": "http://everzet.com"
             }
         ],
-        "description": "Gherkin DSL parser for PHP 5.3",
+        "description": "Gherkin DSL parser for PHP",
         "homepage": "http://behat.org/",
         "keywords": [
             "BDD",
@@ -745,114 +764,25 @@
         "description": "Braintree PHP Client Library"
     },
     {
-        "name": "cache/cache",
-        "version": "0.4.0",
-        "version_normalized": "0.4.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/php-cache/cache.git",
-            "reference": "902b2e5b54ea57e3a801437748652228c4c58604"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/php-cache/cache/zipball/902b2e5b54ea57e3a801437748652228c4c58604",
-            "reference": "902b2e5b54ea57e3a801437748652228c4c58604",
-            "shasum": ""
-        },
-        "require": {
-            "doctrine/cache": "^1.3",
-            "league/flysystem": "^1.0",
-            "php": "^5.6 || ^7.0",
-            "psr/cache": "^1.0",
-            "psr/log": "^1.0",
-            "psr/simple-cache": "^1.0"
-        },
-        "conflict": {
-            "cache/adapter-common": "*",
-            "cache/apc-adapter": "*",
-            "cache/apcu-adapter": "*",
-            "cache/array-adapter": "*",
-            "cache/chain-adapter": "*",
-            "cache/doctrine-adapter": "*",
-            "cache/filesystem-adapter": "*",
-            "cache/hierarchical-cache": "*",
-            "cache/illuminate-adapter": "*",
-            "cache/memcache-adapter": "*",
-            "cache/memcached-adapter": "*",
-            "cache/mongodb-adapter": "*",
-            "cache/predis-adapter": "*",
-            "cache/psr-6-doctrine-bridge": "*",
-            "cache/redis-adapter": "*",
-            "cache/session-handler": "*",
-            "cache/taggable-cache": "*",
-            "cache/void-adapter": "*"
-        },
-        "require-dev": {
-            "cache/integration-tests": "^0.16",
-            "defuse/php-encryption": "^2.0",
-            "illuminate/cache": "^5.4",
-            "mockery/mockery": "^0.9",
-            "phpunit/phpunit": "^4.0 || ^5.1",
-            "predis/predis": "^1.0",
-            "symfony/cache": "dev-master"
-        },
-        "suggest": {
-            "ext-apc": "APC extension is required to use the APC Adapter",
-            "ext-apcu": "APCu extension is required to use the APCu Adapter",
-            "ext-memcache": "Memcache extension is required to use the Memcache Adapter",
-            "ext-memcached": "Memcached extension is required to use the Memcached Adapter",
-            "ext-mongodb": "Mongodb extension required to use the Mongodb adapter",
-            "ext-redis": "Redis extension is required to use the Redis adapter",
-            "mongodb/mongodb": "Mongodb lib required to use the Mongodb adapter"
-        },
-        "time": "2017-03-28T16:08:48+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Cache\\": "src/"
-            },
-            "exclude-from-classmap": [
-                "**/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Aaron Scherer",
-                "email": "aequasi@gmail.com",
-                "homepage": "https://github.com/aequasi"
-            },
-            {
-                "name": "Tobias Nyholm",
-                "email": "tobias.nyholm@gmail.com",
-                "homepage": "https://github.com/Nyholm"
-            }
-        ],
-        "description": "Library of all the php-cache adapters",
-        "homepage": "http://www.php-cache.com/en/latest/",
-        "keywords": [
-            "cache",
-            "psr6"
-        ]
-    },
-    {
         "name": "christian-riesen/base32",
-        "version": "1.5.2",
-        "version_normalized": "1.5.2.0",
+        "version": "1.6.0",
+        "version_normalized": "1.6.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/ChristianRiesen/base32.git",
-            "reference": "a1cac38d50adb5ce9337a62019a0697cc5da3ca1"
+            "reference": "2e82dab3baa008e24a505649b0d583c31d31e894"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ChristianRiesen/base32/zipball/a1cac38d50adb5ce9337a62019a0697cc5da3ca1",
-            "reference": "a1cac38d50adb5ce9337a62019a0697cc5da3ca1",
-            "shasum": ""
+            "url": "https://api.github.com/repos/ChristianRiesen/base32/zipball/2e82dab3baa008e24a505649b0d583c31d31e894",
+            "reference": "2e82dab3baa008e24a505649b0d583c31d31e894",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": "^7.2 || ^8.0"
@@ -862,7 +792,7 @@
             "phpstan/phpstan": "^0.12",
             "phpunit/phpunit": "^8.5.13 || ^9.5"
         },
-        "time": "2021-01-11T22:44:02+00:00",
+        "time": "2021-02-26T10:19:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -875,7 +805,7 @@
                 "Base32\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -898,18 +828,24 @@
     },
     {
         "name": "codeception/codeception",
-        "version": "4.1.15",
-        "version_normalized": "4.1.15.0",
+        "version": "4.1.18",
+        "version_normalized": "4.1.18.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Codeception/Codeception.git",
-            "reference": "9b174d18ba58bb2e8cc4cecce619d6124df1d83a"
+            "reference": "f47547bac347dfb5ea5351ff91148cbcc08e6818"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Codeception/Codeception/zipball/9b174d18ba58bb2e8cc4cecce619d6124df1d83a",
-            "reference": "9b174d18ba58bb2e8cc4cecce619d6124df1d83a",
-            "shasum": ""
+            "url": "https://api.github.com/repos/Codeception/Codeception/zipball/f47547bac347dfb5ea5351ff91148cbcc08e6818",
+            "reference": "f47547bac347dfb5ea5351ff91148cbcc08e6818",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "behat/gherkin": "^4.4.0",
@@ -947,7 +883,7 @@
             "stecman/symfony-console-completion": "For BASH autocompletion",
             "symfony/phpunit-bridge": "For phpunit-bridge support"
         },
-        "time": "2021-01-17T19:19:40+00:00",
+        "time": "2021-02-23T17:11:42+00:00",
         "bin": [
             "codecept"
         ],
@@ -962,7 +898,7 @@
                 "Codeception\\Extension\\": "ext"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -1749,27 +1685,34 @@
     },
     {
         "name": "composer/xdebug-handler",
-        "version": "1.4.5",
-        "version_normalized": "1.4.5.0",
+        "version": "1.4.6",
+        "version_normalized": "1.4.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/composer/xdebug-handler.git",
-            "reference": "f28d44c286812c714741478d968104c5e604a1d4"
+            "reference": "f27e06cd9675801df441b3656569b328e04aa37c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/composer/xdebug-handler/zipball/f28d44c286812c714741478d968104c5e604a1d4",
-            "reference": "f28d44c286812c714741478d968104c5e604a1d4",
-            "shasum": ""
+            "url": "https://api.github.com/repos/composer/xdebug-handler/zipball/f27e06cd9675801df441b3656569b328e04aa37c",
+            "reference": "f27e06cd9675801df441b3656569b328e04aa37c",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": "^5.3.2 || ^7.0 || ^8.0",
             "psr/log": "^1.0"
         },
         "require-dev": {
-            "phpunit/phpunit": "^4.8.35 || ^5.7 || 6.5 - 8"
+            "phpstan/phpstan": "^0.12.55",
+            "symfony/phpunit-bridge": "^4.2 || ^5"
         },
-        "time": "2020-11-13T08:04:11+00:00",
+        "time": "2021-03-25T17:01:18+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1777,7 +1720,7 @@
                 "Composer\\XdebugHandler\\": "src"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -1843,35 +1786,45 @@
     },
     {
         "name": "csharpru/vault-php",
-        "version": "3.5.3",
-        "version_normalized": "3.5.3.0",
+        "version": "4.2.0",
+        "version_normalized": "4.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/CSharpRU/vault-php.git",
-            "reference": "04be9776310fe7d1afb97795645f95c21e6b4fcf"
+            "reference": "de812a9667a1111c4f4d4080b2c9166692ee9efe"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/CSharpRU/vault-php/zipball/04be9776310fe7d1afb97795645f95c21e6b4fcf",
-            "reference": "04be9776310fe7d1afb97795645f95c21e6b4fcf",
-            "shasum": ""
+            "url": "https://api.github.com/repos/CSharpRU/vault-php/zipball/de812a9667a1111c4f4d4080b2c9166692ee9efe",
+            "reference": "de812a9667a1111c4f4d4080b2c9166692ee9efe",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
-            "cache/cache": "^0.4.0",
-            "doctrine/inflector": "~1.1.0",
-            "guzzlehttp/promises": "^1.3",
-            "guzzlehttp/psr7": "^1.4",
+            "ext-json": "*",
+            "php": "^7.2",
             "psr/cache": "^1.0",
+            "psr/http-client": "^1.0",
+            "psr/http-factory": "^1.0",
             "psr/log": "^1.0",
             "weew/helpers-array": "^1.3"
         },
         "require-dev": {
-            "codacy/coverage": "^1.1",
+            "alextartan/guzzle-psr18-adapter": "^1.2",
+            "cache/array-adapter": "^1.0",
             "codeception/codeception": "^2.2",
-            "csharpru/vault-php-guzzle6-transport": "~2.0",
-            "php-vcr/php-vcr": "^1.3"
+            "laminas/laminas-diactoros": "^2.3",
+            "php-vcr/php-vcr": "dev-issues/289 as 1.4.5"
         },
-        "time": "2018-04-28T04:52:17+00:00",
+        "suggest": {
+            "cache/array-adapter": "For usage with CachedClient class"
+        },
+        "time": "2020-11-27T09:07:28+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1879,7 +1832,7 @@
                 "Vault\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -2046,18 +1999,24 @@
     },
     {
         "name": "doctrine/annotations",
-        "version": "1.11.1",
-        "version_normalized": "1.11.1.0",
+        "version": "1.12.1",
+        "version_normalized": "1.12.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/annotations.git",
-            "reference": "ce77a7ba1770462cd705a91a151b6c3746f9c6ad"
+            "reference": "b17c5014ef81d212ac539f07a1001832df1b6d3b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/annotations/zipball/ce77a7ba1770462cd705a91a151b6c3746f9c6ad",
-            "reference": "ce77a7ba1770462cd705a91a151b6c3746f9c6ad",
-            "shasum": ""
+            "url": "https://api.github.com/repos/doctrine/annotations/zipball/b17c5014ef81d212ac539f07a1001832df1b6d3b",
+            "reference": "b17c5014ef81d212ac539f07a1001832df1b6d3b",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "doctrine/lexer": "1.*",
@@ -2070,20 +2029,15 @@
             "phpstan/phpstan": "^0.12.20",
             "phpunit/phpunit": "^7.5 || ^9.1.5"
         },
-        "time": "2020-10-26T10:28:16+00:00",
+        "time": "2021-02-21T21:00:45+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.11.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Doctrine\\Common\\Annotations\\": "lib/Doctrine/Common/Annotations"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -2115,173 +2069,6 @@
             "annotations",
             "docblock",
             "parser"
-        ]
-    },
-    {
-        "name": "doctrine/cache",
-        "version": "1.10.2",
-        "version_normalized": "1.10.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/doctrine/cache.git",
-            "reference": "13e3381b25847283a91948d04640543941309727"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/cache/zipball/13e3381b25847283a91948d04640543941309727",
-            "reference": "13e3381b25847283a91948d04640543941309727",
-            "shasum": ""
-        },
-        "require": {
-            "php": "~7.1 || ^8.0"
-        },
-        "conflict": {
-            "doctrine/common": ">2.2,<2.4"
-        },
-        "require-dev": {
-            "alcaeus/mongo-php-adapter": "^1.1",
-            "doctrine/coding-standard": "^6.0",
-            "mongodb/mongodb": "^1.1",
-            "phpunit/phpunit": "^7.0",
-            "predis/predis": "~1.0"
-        },
-        "suggest": {
-            "alcaeus/mongo-php-adapter": "Required to use legacy MongoDB driver"
-        },
-        "time": "2020-07-07T18:54:01+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.9.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Guilherme Blanco",
-                "email": "guilhermeblanco@gmail.com"
-            },
-            {
-                "name": "Roman Borschel",
-                "email": "roman@code-factory.org"
-            },
-            {
-                "name": "Benjamin Eberlei",
-                "email": "kontakt@beberlei.de"
-            },
-            {
-                "name": "Jonathan Wage",
-                "email": "jonwage@gmail.com"
-            },
-            {
-                "name": "Johannes Schmitt",
-                "email": "schmittjoh@gmail.com"
-            }
-        ],
-        "description": "PHP Doctrine Cache library is a popular cache implementation that supports many different drivers such as redis, memcache, apc, mongodb and others.",
-        "homepage": "https://www.doctrine-project.org/projects/cache.html",
-        "keywords": [
-            "abstraction",
-            "apcu",
-            "cache",
-            "caching",
-            "couchdb",
-            "memcached",
-            "php",
-            "redis",
-            "xcache"
-        ],
-        "funding": [
-            {
-                "url": "https://www.doctrine-project.org/sponsorship.html",
-                "type": "custom"
-            },
-            {
-                "url": "https://www.patreon.com/phpdoctrine",
-                "type": "patreon"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/doctrine%2Fcache",
-                "type": "tidelift"
-            }
-        ]
-    },
-    {
-        "name": "doctrine/inflector",
-        "version": "v1.1.0",
-        "version_normalized": "1.1.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/doctrine/inflector.git",
-            "reference": "90b2128806bfde671b6952ab8bea493942c1fdae"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/inflector/zipball/90b2128806bfde671b6952ab8bea493942c1fdae",
-            "reference": "90b2128806bfde671b6952ab8bea493942c1fdae",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.2"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "4.*"
-        },
-        "time": "2015-11-06T14:35:42+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.1.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Doctrine\\Common\\Inflector\\": "lib/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Roman Borschel",
-                "email": "roman@code-factory.org"
-            },
-            {
-                "name": "Benjamin Eberlei",
-                "email": "kontakt@beberlei.de"
-            },
-            {
-                "name": "Guilherme Blanco",
-                "email": "guilhermeblanco@gmail.com"
-            },
-            {
-                "name": "Jonathan Wage",
-                "email": "jonwage@gmail.com"
-            },
-            {
-                "name": "Johannes Schmitt",
-                "email": "schmittjoh@gmail.com"
-            }
-        ],
-        "description": "Common String Manipulations with regard to casing and singular/plural rules.",
-        "homepage": "http://www.doctrine-project.org",
-        "keywords": [
-            "inflection",
-            "pluralize",
-            "singularize",
-            "string"
         ]
     },
     {
@@ -2431,39 +2218,42 @@
     },
     {
         "name": "donatj/phpuseragentparser",
-        "version": "v0.18.0",
-        "version_normalized": "0.18.0.0",
+        "version": "v0.20.0",
+        "version_normalized": "0.20.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/donatj/PhpUserAgent.git",
-            "reference": "978e66786bc392a09b24b152a8a695dadd230e60"
+            "reference": "5992d7836868b408e73d0d490c779dda7a39135e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/978e66786bc392a09b24b152a8a695dadd230e60",
-            "reference": "978e66786bc392a09b24b152a8a695dadd230e60",
-            "shasum": ""
+            "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/5992d7836868b408e73d0d490c779dda7a39135e",
+            "reference": "5992d7836868b408e73d0d490c779dda7a39135e",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=5.3.0"
         },
         "require-dev": {
-            "camspiers/json-pretty": "~1.0",
+            "camspiers/json-pretty": "0.1.*",
             "donatj/drop": "*",
             "phpunit/phpunit": "~4.8|~9"
         },
-        "time": "2020-12-29T05:36:08+00:00",
+        "time": "2021-03-16T16:42:25+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
             "files": [
                 "src/UserAgentParser.php"
-            ],
-            "psr-4": {
-                "donatj\\UserAgent\\": "src/UserAgent"
-            }
+            ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -2486,7 +2276,7 @@
         ],
         "funding": [
             {
-                "url": "https://www.paypal.me/donatj/15",
+                "url": "https://www.paypal.me/donatj/5",
                 "type": "custom"
             },
             {
@@ -3076,18 +2866,24 @@
     },
     {
         "name": "guzzlehttp/promises",
-        "version": "1.4.0",
-        "version_normalized": "1.4.0.0",
+        "version": "1.4.1",
+        "version_normalized": "1.4.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/promises.git",
-            "reference": "60d379c243457e073cff02bc323a2a86cb355631"
+            "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/promises/zipball/60d379c243457e073cff02bc323a2a86cb355631",
-            "reference": "60d379c243457e073cff02bc323a2a86cb355631",
-            "shasum": ""
+            "url": "https://api.github.com/repos/guzzle/promises/zipball/8e7d04f1f6450fef59366c399cfad4b9383aa30d",
+            "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=5.5"
@@ -3095,7 +2891,7 @@
         "require-dev": {
             "symfony/phpunit-bridge": "^4.4 || ^5.1"
         },
-        "time": "2020-09-30T07:37:28+00:00",
+        "time": "2021-03-07T09:25:29+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3111,7 +2907,7 @@
                 "src/functions_include.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -3129,18 +2925,24 @@
     },
     {
         "name": "guzzlehttp/psr7",
-        "version": "1.7.0",
-        "version_normalized": "1.7.0.0",
+        "version": "1.8.1",
+        "version_normalized": "1.8.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/psr7.git",
-            "reference": "53330f47520498c0ae1f61f7e2c90f55690c06a3"
+            "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/psr7/zipball/53330f47520498c0ae1f61f7e2c90f55690c06a3",
-            "reference": "53330f47520498c0ae1f61f7e2c90f55690c06a3",
-            "shasum": ""
+            "url": "https://api.github.com/repos/guzzle/psr7/zipball/35ea11d335fd638b5882ff1725228b3d35496ab1",
+            "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=5.4.0",
@@ -3157,7 +2959,7 @@
         "suggest": {
             "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
         },
-        "time": "2020-09-30T07:37:11+00:00",
+        "time": "2021-03-21T16:25:00+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3173,7 +2975,7 @@
                 "src/functions_include.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -4300,35 +4102,43 @@
     },
     {
         "name": "laminas/laminas-captcha",
-        "version": "2.9.0",
-        "version_normalized": "2.9.0.0",
+        "version": "2.10.0",
+        "version_normalized": "2.10.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-captcha.git",
-            "reference": "b88f650f3adf2d902ef56f6377cceb5cd87b9876"
+            "reference": "9a0134e434cd792934ecca42cb66f316be7bba50"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-captcha/zipball/b88f650f3adf2d902ef56f6377cceb5cd87b9876",
-            "reference": "b88f650f3adf2d902ef56f6377cceb5cd87b9876",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-captcha/zipball/9a0134e434cd792934ecca42cb66f316be7bba50",
+            "reference": "9a0134e434cd792934ecca42cb66f316be7bba50",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "laminas/laminas-math": "^2.7 || ^3.0",
-            "laminas/laminas-stdlib": "^3.2.1",
-            "laminas/laminas-zendframework-bridge": "^1.0",
-            "php": "^5.6 || ^7.0"
+            "laminas/laminas-stdlib": "^3.3",
+            "laminas/laminas-zendframework-bridge": "^1.1",
+            "php": "^7.3 || ~8.0.0"
         },
         "replace": {
-            "zendframework/zend-captcha": "self.version"
+            "zendframework/zend-captcha": "^2.9.0"
         },
         "require-dev": {
-            "laminas/laminas-coding-standard": "~1.0.0",
+            "laminas/laminas-coding-standard": "~2.1.4",
             "laminas/laminas-recaptcha": "^3.0",
-            "laminas/laminas-session": "^2.8",
-            "laminas/laminas-text": "^2.6",
-            "laminas/laminas-validator": "^2.10.1",
-            "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.2"
+            "laminas/laminas-session": "^2.10",
+            "laminas/laminas-text": "^2.8",
+            "laminas/laminas-validator": "^2.14",
+            "phpunit/phpunit": "^9.4.3",
+            "psalm/plugin-phpunit": "^0.15.1",
+            "vimeo/psalm": "^4.6"
         },
         "suggest": {
             "laminas/laminas-i18n-resources": "Translations of captcha messages",
@@ -4337,21 +4147,15 @@
             "laminas/laminas-text": "Laminas\\Text component",
             "laminas/laminas-validator": "Laminas\\Validator component"
         },
-        "time": "2019-12-31T16:24:14+00:00",
+        "time": "2021-03-17T16:42:11+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.9.x-dev",
-                "dev-develop": "2.10.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Laminas\\Captcha\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -4360,6 +4164,12 @@
         "keywords": [
             "captcha",
             "laminas"
+        ],
+        "funding": [
+            {
+                "url": "https://funding.communitybridge.org/projects/laminas-project",
+                "type": "community_bridge"
+            }
         ]
     },
     {
@@ -4544,7 +4354,8 @@
         "keywords": [
             "console",
             "laminas"
-        ]
+        ],
+        "abandoned": "laminas/laminas-cli"
     },
     {
         "name": "laminas/laminas-crypt",
@@ -4604,46 +4415,49 @@
     },
     {
         "name": "laminas/laminas-db",
-        "version": "2.11.3",
-        "version_normalized": "2.11.3.0",
+        "version": "2.12.0",
+        "version_normalized": "2.12.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-db.git",
-            "reference": "6c4238918b9204db1eb8cafae2c1940d40f4c007"
+            "reference": "80cbba4e749f9eb7d8036172acb9ad41e8b6923f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-db/zipball/6c4238918b9204db1eb8cafae2c1940d40f4c007",
-            "reference": "6c4238918b9204db1eb8cafae2c1940d40f4c007",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-db/zipball/80cbba4e749f9eb7d8036172acb9ad41e8b6923f",
+            "reference": "80cbba4e749f9eb7d8036172acb9ad41e8b6923f",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
-            "laminas/laminas-stdlib": "^2.7 || ^3.0",
+            "laminas/laminas-stdlib": "^3.3",
             "laminas/laminas-zendframework-bridge": "^1.0",
-            "php": "^5.6 || ^7.0"
+            "php": "^7.3 || ~8.0.0"
         },
         "replace": {
             "zendframework/zend-db": "^2.11.0"
         },
         "require-dev": {
             "laminas/laminas-coding-standard": "~1.0.0",
-            "laminas/laminas-eventmanager": "^2.6.2 || ^3.0",
-            "laminas/laminas-hydrator": "^1.1 || ^2.1 || ^3.0",
-            "laminas/laminas-servicemanager": "^2.7.5 || ^3.0.3",
-            "phpunit/phpunit": "^5.7.27 || ^6.5.14"
+            "laminas/laminas-eventmanager": "^3.3",
+            "laminas/laminas-hydrator": "^3.2 || ^4.0",
+            "laminas/laminas-servicemanager": "^3.3",
+            "phpspec/prophecy-phpunit": "^2.0",
+            "phpunit/phpunit": "^9.3"
         },
         "suggest": {
             "laminas/laminas-eventmanager": "Laminas\\EventManager component",
-            "laminas/laminas-hydrator": "Laminas\\Hydrator component for using HydratingResultSets",
+            "laminas/laminas-hydrator": "(^3.2 || ^4.0) Laminas\\Hydrator component for using HydratingResultSets",
             "laminas/laminas-servicemanager": "Laminas\\ServiceManager component"
         },
-        "time": "2020-03-29T12:08:51+00:00",
+        "time": "2021-02-22T22:27:56+00:00",
         "type": "library",
         "extra": {
-            "branch-alias": {
-                "dev-master": "2.11.x-dev",
-                "dev-develop": "2.12.x-dev"
-            },
             "laminas": {
                 "component": "Laminas\\Db",
                 "config-provider": "Laminas\\Db\\ConfigProvider"
@@ -4655,7 +4469,7 @@
                 "Laminas\\Db\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -4664,6 +4478,12 @@
         "keywords": [
             "db",
             "laminas"
+        ],
+        "funding": [
+            {
+                "url": "https://funding.communitybridge.org/projects/laminas-project",
+                "type": "community_bridge"
+            }
         ]
     },
     {
@@ -4909,18 +4729,24 @@
     },
     {
         "name": "laminas/laminas-eventmanager",
-        "version": "3.3.0",
-        "version_normalized": "3.3.0.0",
+        "version": "3.3.1",
+        "version_normalized": "3.3.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-eventmanager.git",
-            "reference": "1940ccf30e058b2fd66f5a9d696f1b5e0027b082"
+            "reference": "966c859b67867b179fde1eff0cd38df51472ce4a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-eventmanager/zipball/1940ccf30e058b2fd66f5a9d696f1b5e0027b082",
-            "reference": "1940ccf30e058b2fd66f5a9d696f1b5e0027b082",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-eventmanager/zipball/966c859b67867b179fde1eff0cd38df51472ce4a",
+            "reference": "966c859b67867b179fde1eff0cd38df51472ce4a",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "laminas/laminas-zendframework-bridge": "^1.0",
@@ -4940,21 +4766,15 @@
             "container-interop/container-interop": "^1.1, to use the lazy listeners feature",
             "laminas/laminas-stdlib": "^2.7.3 || ^3.0, to use the FilterChain feature"
         },
-        "time": "2020-08-25T11:10:44+00:00",
+        "time": "2021-03-08T15:24:29+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.3.x-dev",
-                "dev-develop": "3.4.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Laminas\\EventManager\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5050,18 +4870,24 @@
     },
     {
         "name": "laminas/laminas-filter",
-        "version": "2.10.0",
-        "version_normalized": "2.10.0.0",
+        "version": "2.11.0",
+        "version_normalized": "2.11.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-filter.git",
-            "reference": "cfb40b104e92a0b52bee696b74f958798ad8faa4"
+            "reference": "dd295a15f5c13d0c13d69ca0107190b1f2083d91"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-filter/zipball/cfb40b104e92a0b52bee696b74f958798ad8faa4",
-            "reference": "cfb40b104e92a0b52bee696b74f958798ad8faa4",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-filter/zipball/dd295a15f5c13d0c13d69ca0107190b1f2083d91",
+            "reference": "dd295a15f5c13d0c13d69ca0107190b1f2083d91",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "laminas/laminas-stdlib": "^3.3",
@@ -5082,7 +4908,9 @@
             "pear/archive_tar": "^1.4.3",
             "phpspec/prophecy-phpunit": "^2.0",
             "phpunit/phpunit": "^9.3",
-            "psr/http-factory": "^1.0"
+            "psalm/plugin-phpunit": "^0.15.1",
+            "psr/http-factory": "^1.0",
+            "vimeo/psalm": "^4.6"
         },
         "suggest": {
             "laminas/laminas-crypt": "Laminas\\Crypt component, for encryption filters",
@@ -5091,7 +4919,7 @@
             "laminas/laminas-uri": "Laminas\\Uri component, for the UriNormalize filter",
             "psr/http-factory-implementation": "psr/http-factory-implementation, for creating file upload instances when consuming PSR-7 in file upload filters"
         },
-        "time": "2021-01-01T14:37:45+00:00",
+        "time": "2021-03-16T14:37:02+00:00",
         "type": "library",
         "extra": {
             "laminas": {
@@ -5105,7 +4933,7 @@
                 "Laminas\\Filter\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5124,18 +4952,24 @@
     },
     {
         "name": "laminas/laminas-form",
-        "version": "2.15.0",
-        "version_normalized": "2.15.0.0",
+        "version": "2.15.1",
+        "version_normalized": "2.15.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-form.git",
-            "reference": "359cd372c565e18a17f32ccfeacdf21bba091ce2"
+            "reference": "37c5f5ac9240159f5d93f52367d0e57fa96f9b22"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-form/zipball/359cd372c565e18a17f32ccfeacdf21bba091ce2",
-            "reference": "359cd372c565e18a17f32ccfeacdf21bba091ce2",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-form/zipball/37c5f5ac9240159f5d93f52367d0e57fa96f9b22",
+            "reference": "37c5f5ac9240159f5d93f52367d0e57fa96f9b22",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "laminas/laminas-hydrator": "^1.1 || ^2.1 || ^3.0",
@@ -5174,13 +5008,9 @@
             "laminas/laminas-servicemanager": "^2.7.5 || ^3.0.3, required to use the form factories or provide services",
             "laminas/laminas-view": "^2.6.2, required for using the laminas-form view helpers"
         },
-        "time": "2020-07-14T13:53:27+00:00",
+        "time": "2021-03-17T13:07:46+00:00",
         "type": "library",
         "extra": {
-            "branch-alias": {
-                "dev-master": "2.15.x-dev",
-                "dev-develop": "2.16.x-dev"
-            },
             "laminas": {
                 "component": "Laminas\\Form",
                 "config-provider": "Laminas\\Form\\ConfigProvider"
@@ -5195,7 +5025,7 @@
                 "autoload/formElementManagerPolyfill.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5214,18 +5044,24 @@
     },
     {
         "name": "laminas/laminas-http",
-        "version": "2.14.2",
-        "version_normalized": "2.14.2.0",
+        "version": "2.14.3",
+        "version_normalized": "2.14.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-http.git",
-            "reference": "298f732e1acb031db70ea4fd2133a283b2a4a65e"
+            "reference": "bfaab8093e382274efed7fdc3ceb15f09ba352bb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-http/zipball/298f732e1acb031db70ea4fd2133a283b2a4a65e",
-            "reference": "298f732e1acb031db70ea4fd2133a283b2a4a65e",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-http/zipball/bfaab8093e382274efed7fdc3ceb15f09ba352bb",
+            "reference": "bfaab8093e382274efed7fdc3ceb15f09ba352bb",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "laminas/laminas-loader": "^2.5.1",
@@ -5246,7 +5082,7 @@
         "suggest": {
             "paragonie/certainty": "For automated management of cacert.pem"
         },
-        "time": "2021-01-05T16:10:52+00:00",
+        "time": "2021-02-18T21:58:11+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -5254,7 +5090,7 @@
                 "Laminas\\Http\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5543,45 +5379,45 @@
     },
     {
         "name": "laminas/laminas-loader",
-        "version": "2.6.1",
-        "version_normalized": "2.6.1.0",
+        "version": "2.7.0",
+        "version_normalized": "2.7.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-loader.git",
-            "reference": "5d01c2c237ae9e68bec262f339947e2ea18979bc"
+            "reference": "bcf8a566cb9925a2e7cc41a16db09235ec9fb616"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-loader/zipball/5d01c2c237ae9e68bec262f339947e2ea18979bc",
-            "reference": "5d01c2c237ae9e68bec262f339947e2ea18979bc",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-loader/zipball/bcf8a566cb9925a2e7cc41a16db09235ec9fb616",
+            "reference": "bcf8a566cb9925a2e7cc41a16db09235ec9fb616",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "laminas/laminas-zendframework-bridge": "^1.0",
-            "php": "^5.6 || ^7.0"
+            "php": "^7.3 || ~8.0.0"
         },
         "replace": {
-            "zendframework/zend-loader": "self.version"
+            "zendframework/zend-loader": "^2.6.1"
         },
         "require-dev": {
             "laminas/laminas-coding-standard": "~1.0.0",
-            "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.4"
+            "phpunit/phpunit": "^9.3"
         },
-        "time": "2019-12-31T17:18:27+00:00",
+        "time": "2021-02-12T16:08:18+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.6.x-dev",
-                "dev-develop": "2.7.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Laminas\\Loader\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5590,6 +5426,12 @@
         "keywords": [
             "laminas",
             "loader"
+        ],
+        "funding": [
+            {
+                "url": "https://funding.communitybridge.org/projects/laminas-project",
+                "type": "community_bridge"
+            }
         ]
     },
     {
@@ -5670,18 +5512,24 @@
     },
     {
         "name": "laminas/laminas-mail",
-        "version": "2.12.5",
-        "version_normalized": "2.12.5.0",
+        "version": "2.14.0",
+        "version_normalized": "2.14.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-mail.git",
-            "reference": "ed5b36a0deef4ffafe6138c2ae9cafcffafab856"
+            "reference": "542686aebf480c6902ad7f08b52498e94818bc0a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-mail/zipball/ed5b36a0deef4ffafe6138c2ae9cafcffafab856",
-            "reference": "ed5b36a0deef4ffafe6138c2ae9cafcffafab856",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-mail/zipball/542686aebf480c6902ad7f08b52498e94818bc0a",
+            "reference": "542686aebf480c6902ad7f08b52498e94818bc0a",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "ext-iconv": "*",
@@ -5690,7 +5538,8 @@
             "laminas/laminas-stdlib": "^2.7 || ^3.0",
             "laminas/laminas-validator": "^2.10.2",
             "laminas/laminas-zendframework-bridge": "^1.0",
-            "php": "^7.1",
+            "php": "^7.3 || ~8.0.0",
+            "symfony/polyfill-mbstring": "^1.12.0",
             "true/punycode": "^2.1"
         },
         "replace": {
@@ -5698,16 +5547,16 @@
         },
         "require-dev": {
             "laminas/laminas-coding-standard": "~1.0.0",
-            "laminas/laminas-config": "^2.6",
+            "laminas/laminas-config": "^3.4",
             "laminas/laminas-crypt": "^2.6 || ^3.0",
             "laminas/laminas-servicemanager": "^3.2.1",
-            "phpunit/phpunit": "^7.5.20"
+            "phpunit/phpunit": "^9.3"
         },
         "suggest": {
             "laminas/laminas-crypt": "Crammd5 support in SMTP Auth",
             "laminas/laminas-servicemanager": "^2.7.10 || ^3.3.1 when using SMTP to deliver messages"
         },
-        "time": "2020-12-31T11:41:57+00:00",
+        "time": "2021-03-17T12:41:50+00:00",
         "type": "library",
         "extra": {
             "laminas": {
@@ -5721,7 +5570,7 @@
                 "Laminas\\Mail\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5796,23 +5645,29 @@
     },
     {
         "name": "laminas/laminas-mime",
-        "version": "2.7.4",
-        "version_normalized": "2.7.4.0",
+        "version": "2.8.0",
+        "version_normalized": "2.8.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-mime.git",
-            "reference": "e45a7d856bf7b4a7b5bd00d6371f9961dc233add"
+            "reference": "9a59704f33106427a384d0ae421f96043174093a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-mime/zipball/e45a7d856bf7b4a7b5bd00d6371f9961dc233add",
-            "reference": "e45a7d856bf7b4a7b5bd00d6371f9961dc233add",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-mime/zipball/9a59704f33106427a384d0ae421f96043174093a",
+            "reference": "9a59704f33106427a384d0ae421f96043174093a",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "laminas/laminas-stdlib": "^2.7 || ^3.0",
             "laminas/laminas-zendframework-bridge": "^1.0",
-            "php": "^5.6 || ^7.0"
+            "php": "^7.3 || ~8.0.0"
         },
         "replace": {
             "zendframework/zend-mime": "^2.7.2"
@@ -5820,26 +5675,20 @@
         "require-dev": {
             "laminas/laminas-coding-standard": "~1.0.0",
             "laminas/laminas-mail": "^2.6",
-            "phpunit/phpunit": "^5.7.27 || ^6.5.14 || ^7.5.20"
+            "phpunit/phpunit": "^9.3"
         },
         "suggest": {
             "laminas/laminas-mail": "Laminas\\Mail component"
         },
-        "time": "2020-03-29T13:12:07+00:00",
+        "time": "2021-02-16T17:40:06+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.7.x-dev",
-                "dev-develop": "2.8.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Laminas\\Mime\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5848,6 +5697,12 @@
         "keywords": [
             "laminas",
             "mime"
+        ],
+        "funding": [
+            {
+                "url": "https://funding.communitybridge.org/projects/laminas-project",
+                "type": "community_bridge"
+            }
         ]
     },
     {
@@ -6078,18 +5933,24 @@
     },
     {
         "name": "laminas/laminas-serializer",
-        "version": "2.9.1",
-        "version_normalized": "2.9.1.0",
+        "version": "2.10.0",
+        "version_normalized": "2.10.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-serializer.git",
-            "reference": "c1c9361f114271b0736db74e0083a919081af5e0"
+            "reference": "1c57f1bdf05da078493b774c9e8d77ee8b46b4bb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-serializer/zipball/c1c9361f114271b0736db74e0083a919081af5e0",
-            "reference": "c1c9361f114271b0736db74e0083a919081af5e0",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-serializer/zipball/1c57f1bdf05da078493b774c9e8d77ee8b46b4bb",
+            "reference": "1c57f1bdf05da078493b774c9e8d77ee8b46b4bb",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "laminas/laminas-json": "^2.5 || ^3.0",
@@ -6098,7 +5959,7 @@
             "php": "^5.6 || ^7.0"
         },
         "replace": {
-            "zendframework/zend-serializer": "self.version"
+            "zendframework/zend-serializer": "^2.9.1"
         },
         "require-dev": {
             "laminas/laminas-coding-standard": "~1.0.0",
@@ -6110,13 +5971,9 @@
             "laminas/laminas-math": "(^2.6 || ^3.0) To support Python Pickle serialization",
             "laminas/laminas-servicemanager": "(^2.7.5 || ^3.0.3) To support plugin manager support"
         },
-        "time": "2019-12-31T17:42:11+00:00",
+        "time": "2021-02-17T17:05:24+00:00",
         "type": "library",
         "extra": {
-            "branch-alias": {
-                "dev-master": "2.9.x-dev",
-                "dev-develop": "2.10.x-dev"
-            },
             "laminas": {
                 "component": "Laminas\\Serializer",
                 "config-provider": "Laminas\\Serializer\\ConfigProvider"
@@ -6128,7 +5985,7 @@
                 "Laminas\\Serializer\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6137,6 +5994,12 @@
         "keywords": [
             "laminas",
             "serializer"
+        ],
+        "funding": [
+            {
+                "url": "https://funding.communitybridge.org/projects/laminas-project",
+                "type": "community_bridge"
+            }
         ]
     },
     {
@@ -6330,54 +6193,57 @@
     },
     {
         "name": "laminas/laminas-soap",
-        "version": "2.8.0",
-        "version_normalized": "2.8.0.0",
+        "version": "2.9.0",
+        "version_normalized": "2.9.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-soap.git",
-            "reference": "34f91d5c4c0a78bc5689cca2d1eaf829b27edd72"
+            "reference": "11672a79e9074fd8e4e7aedd75849902e7b45e23"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-soap/zipball/34f91d5c4c0a78bc5689cca2d1eaf829b27edd72",
-            "reference": "34f91d5c4c0a78bc5689cca2d1eaf829b27edd72",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-soap/zipball/11672a79e9074fd8e4e7aedd75849902e7b45e23",
+            "reference": "11672a79e9074fd8e4e7aedd75849902e7b45e23",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
+            "ext-dom": "*",
             "ext-soap": "*",
-            "laminas/laminas-server": "^2.6.1",
-            "laminas/laminas-stdlib": "^2.7 || ^3.0",
-            "laminas/laminas-uri": "^2.5.2",
-            "laminas/laminas-zendframework-bridge": "^1.0",
-            "php": "^5.6 || ^7.0"
+            "laminas/laminas-server": "^2.9",
+            "laminas/laminas-stdlib": "^3.3",
+            "laminas/laminas-uri": "^2.8",
+            "laminas/laminas-zendframework-bridge": "^1.1.0",
+            "php": "^7.3 || ~8.0.0"
         },
         "replace": {
-            "zendframework/zend-soap": "self.version"
+            "zendframework/zend-soap": "^2.8.0"
         },
         "require-dev": {
             "laminas/laminas-coding-standard": "~1.0.0",
-            "laminas/laminas-config": "^2.6",
-            "laminas/laminas-http": "^2.5.4",
-            "phpunit/phpunit": "^5.7.21 || ^6.3"
+            "laminas/laminas-config": "^3.4",
+            "laminas/laminas-http": "^2.14",
+            "phpspec/prophecy-phpunit": "^2.0.1",
+            "phpunit/phpunit": "^9.4.3"
         },
         "suggest": {
+            "ext-curl": "Curl is required when .NET compatibility is required",
             "laminas/laminas-http": "Laminas\\Http component"
         },
-        "time": "2019-12-31T17:48:49+00:00",
+        "time": "2021-02-17T18:59:03+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.7.x-dev",
-                "dev-develop": "2.8.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Laminas\\Soap\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6385,6 +6251,12 @@
         "keywords": [
             "laminas",
             "soap"
+        ],
+        "funding": [
+            {
+                "url": "https://funding.communitybridge.org/projects/laminas-project",
+                "type": "community_bridge"
+            }
         ]
     },
     {
@@ -6495,18 +6367,24 @@
     },
     {
         "name": "laminas/laminas-uri",
-        "version": "2.8.0",
-        "version_normalized": "2.8.0.0",
+        "version": "2.8.1",
+        "version_normalized": "2.8.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-uri.git",
-            "reference": "8651611b6285529f25a4cb9a466c686d9b31468e"
+            "reference": "79bd4c614c8cf9a6ba715a49fca8061e84933d87"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-uri/zipball/8651611b6285529f25a4cb9a466c686d9b31468e",
-            "reference": "8651611b6285529f25a4cb9a466c686d9b31468e",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-uri/zipball/79bd4c614c8cf9a6ba715a49fca8061e84933d87",
+            "reference": "79bd4c614c8cf9a6ba715a49fca8061e84933d87",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "laminas/laminas-escaper": "^2.5",
@@ -6521,7 +6399,7 @@
             "laminas/laminas-coding-standard": "^2.1",
             "phpunit/phpunit": "^9.3"
         },
-        "time": "2020-10-31T20:20:07+00:00",
+        "time": "2021-02-17T21:53:05+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -6529,7 +6407,7 @@
                 "Laminas\\Uri\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6548,18 +6426,24 @@
     },
     {
         "name": "laminas/laminas-validator",
-        "version": "2.14.0",
-        "version_normalized": "2.14.0.0",
+        "version": "2.14.4",
+        "version_normalized": "2.14.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-validator.git",
-            "reference": "8da5e20ed7b2b8101c1de68ca8dc0180210ed23e"
+            "reference": "e370c4695db1c81e6dfad38d8c4dbdb37b23d776"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/8da5e20ed7b2b8101c1de68ca8dc0180210ed23e",
-            "reference": "8da5e20ed7b2b8101c1de68ca8dc0180210ed23e",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/e370c4695db1c81e6dfad38d8c4dbdb37b23d776",
+            "reference": "e370c4695db1c81e6dfad38d8c4dbdb37b23d776",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "container-interop/container-interop": "^1.1",
@@ -6601,7 +6485,7 @@
             "laminas/laminas-uri": "Laminas\\Uri component, required by the Uri and Sitemap\\Loc validators",
             "psr/http-message": "psr/http-message, required when validating PSR-7 UploadedFileInterface instances via the Upload and UploadFile validators"
         },
-        "time": "2021-01-07T16:07:31+00:00",
+        "time": "2021-01-24T20:45:49+00:00",
         "type": "library",
         "extra": {
             "laminas": {
@@ -6615,7 +6499,7 @@
                 "Laminas\\Validator\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6727,27 +6611,35 @@
     },
     {
         "name": "laminas/laminas-zendframework-bridge",
-        "version": "1.1.1",
-        "version_normalized": "1.1.1.0",
+        "version": "1.2.0",
+        "version_normalized": "1.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-zendframework-bridge.git",
-            "reference": "6ede70583e101030bcace4dcddd648f760ddf642"
+            "reference": "6cccbddfcfc742eb02158d6137ca5687d92cee32"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/6ede70583e101030bcace4dcddd648f760ddf642",
-            "reference": "6ede70583e101030bcace4dcddd648f760ddf642",
-            "shasum": ""
+            "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/6cccbddfcfc742eb02158d6137ca5687d92cee32",
+            "reference": "6cccbddfcfc742eb02158d6137ca5687d92cee32",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
-            "php": "^5.6 || ^7.0 || ^8.0"
+            "php": "^7.3 || ^8.0"
         },
         "require-dev": {
             "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.1 || ^9.3",
-            "squizlabs/php_codesniffer": "^3.5"
+            "psalm/plugin-phpunit": "^0.15.1",
+            "squizlabs/php_codesniffer": "^3.5",
+            "vimeo/psalm": "^4.6"
         },
-        "time": "2020-09-14T14:23:00+00:00",
+        "time": "2021-02-25T21:54:58+00:00",
         "type": "library",
         "extra": {
             "laminas": {
@@ -6763,7 +6655,7 @@
                 "Laminas\\ZendFrameworkBridge\\": "src//"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6778,99 +6670,6 @@
             {
                 "url": "https://funding.communitybridge.org/projects/laminas-project",
                 "type": "community_bridge"
-            }
-        ]
-    },
-    {
-        "name": "league/flysystem",
-        "version": "1.1.3",
-        "version_normalized": "1.1.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "9be3b16c877d477357c015cec057548cf9b2a14a"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/9be3b16c877d477357c015cec057548cf9b2a14a",
-            "reference": "9be3b16c877d477357c015cec057548cf9b2a14a",
-            "shasum": ""
-        },
-        "require": {
-            "ext-fileinfo": "*",
-            "league/mime-type-detection": "^1.3",
-            "php": "^7.2.5 || ^8.0"
-        },
-        "conflict": {
-            "league/flysystem-sftp": "<1.0.6"
-        },
-        "require-dev": {
-            "phpspec/prophecy": "^1.11.1",
-            "phpunit/phpunit": "^8.5.8"
-        },
-        "suggest": {
-            "ext-fileinfo": "Required for MimeType",
-            "ext-ftp": "Allows you to use FTP server storage",
-            "ext-openssl": "Allows you to use FTPS server storage",
-            "league/flysystem-aws-s3-v2": "Allows you to use S3 storage with AWS SDK v2",
-            "league/flysystem-aws-s3-v3": "Allows you to use S3 storage with AWS SDK v3",
-            "league/flysystem-azure": "Allows you to use Windows Azure Blob storage",
-            "league/flysystem-cached-adapter": "Flysystem adapter decorator for metadata caching",
-            "league/flysystem-eventable-filesystem": "Allows you to use EventableFilesystem",
-            "league/flysystem-rackspace": "Allows you to use Rackspace Cloud Files",
-            "league/flysystem-sftp": "Allows you to use SFTP server storage via phpseclib",
-            "league/flysystem-webdav": "Allows you to use WebDAV storage",
-            "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter",
-            "spatie/flysystem-dropbox": "Allows you to use Dropbox storage",
-            "srmklive/flysystem-dropbox-v2": "Allows you to use Dropbox storage for PHP 5 applications"
-        },
-        "time": "2020-08-23T07:39:11+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "League\\Flysystem\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Frank de Jonge",
-                "email": "info@frenky.net"
-            }
-        ],
-        "description": "Filesystem abstraction: Many filesystems, one API.",
-        "keywords": [
-            "Cloud Files",
-            "WebDAV",
-            "abstraction",
-            "aws",
-            "cloud",
-            "copy.com",
-            "dropbox",
-            "file systems",
-            "files",
-            "filesystem",
-            "filesystems",
-            "ftp",
-            "rackspace",
-            "remote",
-            "s3",
-            "sftp",
-            "storage"
-        ],
-        "funding": [
-            {
-                "url": "https://offset.earth/frankdejonge",
-                "type": "other"
             }
         ]
     },
@@ -6928,60 +6727,6 @@
             "countries",
             "iso",
             "library"
-        ]
-    },
-    {
-        "name": "league/mime-type-detection",
-        "version": "1.7.0",
-        "version_normalized": "1.7.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/thephpleague/mime-type-detection.git",
-            "reference": "3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3",
-            "reference": "3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3",
-            "shasum": ""
-        },
-        "require": {
-            "ext-fileinfo": "*",
-            "php": "^7.2 || ^8.0"
-        },
-        "require-dev": {
-            "friendsofphp/php-cs-fixer": "^2.18",
-            "phpstan/phpstan": "^0.12.68",
-            "phpunit/phpunit": "^8.5.8 || ^9.3"
-        },
-        "time": "2021-01-18T20:58:21+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "League\\MimeTypeDetection\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Frank de Jonge",
-                "email": "info@frankdejonge.nl"
-            }
-        ],
-        "description": "Mime-type detection for Flysystem",
-        "funding": [
-            {
-                "url": "https://github.com/frankdejonge",
-                "type": "github"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/league/flysystem",
-                "type": "tidelift"
-            }
         ]
     },
     {
@@ -8295,18 +8040,24 @@
     },
     {
         "name": "magento/magento2-functional-testing-framework",
-        "version": "3.2.1",
-        "version_normalized": "3.2.1.0",
+        "version": "3.4.0",
+        "version_normalized": "3.4.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/magento/magento2-functional-testing-framework.git",
-            "reference": "2503527cf3ee20e199489d7dcd0e3b242e62d426"
+            "reference": "edd12c0dfef32fb9fc969c18a1d468b655d73bd6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/magento/magento2-functional-testing-framework/zipball/2503527cf3ee20e199489d7dcd0e3b242e62d426",
-            "reference": "2503527cf3ee20e199489d7dcd0e3b242e62d426",
-            "shasum": ""
+            "url": "https://api.github.com/repos/magento/magento2-functional-testing-framework/zipball/edd12c0dfef32fb9fc969c18a1d468b655d73bd6",
+            "reference": "edd12c0dfef32fb9fc969c18a1d468b655d73bd6",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "allure-framework/allure-codeception": "~1.4.0",
@@ -8315,8 +8066,8 @@
             "codeception/module-asserts": "^1.1",
             "codeception/module-sequence": "^1.0",
             "codeception/module-webdriver": "^1.0",
-            "composer/composer": "^1.9",
-            "csharpru/vault-php": "~3.5.3",
+            "composer/composer": "^1.9||^2.0",
+            "csharpru/vault-php": "^4.1.0",
             "csharpru/vault-php-guzzle6-transport": "^2.0",
             "ext-curl": "*",
             "ext-dom": "*",
@@ -8326,6 +8077,7 @@
             "hoa/console": "~3.0",
             "monolog/monolog": "^1.17",
             "mustache/mustache": "~2.5",
+            "nikic/php-parser": "~4.4.0",
             "php": "^7.3",
             "php-webdriver/webdriver": "^1.8.0",
             "spomky-labs/otphp": "^10.0",
@@ -8350,11 +8102,11 @@
             "phpmd/phpmd": "^2.8.0",
             "phpunit/phpunit": "^9.0",
             "rregeer/phpunit-coverage-check": "^0.1.4",
-            "sebastian/phpcpd": "~5.0.0",
+            "sebastian/phpcpd": "~6.0.0",
             "squizlabs/php_codesniffer": "~3.5.4",
             "symfony/stopwatch": "~3.4.6"
         },
-        "time": "2020-12-14T18:10:31+00:00",
+        "time": "2021-03-10T21:07:00+00:00",
         "bin": [
             "bin/mftf"
         ],
@@ -8374,7 +8126,7 @@
                 "MFTF\\": "dev/tests/functional/tests/MFTF"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "AGPL-3.0"
         ],
@@ -20129,29 +19881,35 @@
     },
     {
         "name": "myclabs/php-enum",
-        "version": "1.7.7",
-        "version_normalized": "1.7.7.0",
+        "version": "1.8.0",
+        "version_normalized": "1.8.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/myclabs/php-enum.git",
-            "reference": "d178027d1e679832db9f38248fcc7200647dc2b7"
+            "reference": "46cf3d8498b095bd33727b13fd5707263af99421"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/myclabs/php-enum/zipball/d178027d1e679832db9f38248fcc7200647dc2b7",
-            "reference": "d178027d1e679832db9f38248fcc7200647dc2b7",
-            "shasum": ""
+            "url": "https://api.github.com/repos/myclabs/php-enum/zipball/46cf3d8498b095bd33727b13fd5707263af99421",
+            "reference": "46cf3d8498b095bd33727b13fd5707263af99421",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "ext-json": "*",
-            "php": ">=7.1"
+            "php": "^7.3 || ^8.0"
         },
         "require-dev": {
-            "phpunit/phpunit": "^7",
+            "phpunit/phpunit": "^9.5",
             "squizlabs/php_codesniffer": "1.*",
-            "vimeo/psalm": "^3.8"
+            "vimeo/psalm": "^4.5.1"
         },
-        "time": "2020-11-14T18:14:52+00:00",
+        "time": "2021-02-15T16:11:48+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -20159,7 +19917,7 @@
                 "MyCLabs\\Enum\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -20183,6 +19941,66 @@
                 "url": "https://tidelift.com/funding/github/packagist/myclabs/php-enum",
                 "type": "tidelift"
             }
+        ]
+    },
+    {
+        "name": "nikic/php-parser",
+        "version": "v4.4.0",
+        "version_normalized": "4.4.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/nikic/PHP-Parser.git",
+            "reference": "bd43ec7152eaaab3bd8c6d0aa95ceeb1df8ee120"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/bd43ec7152eaaab3bd8c6d0aa95ceeb1df8ee120",
+            "reference": "bd43ec7152eaaab3bd8c6d0aa95ceeb1df8ee120",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
+        },
+        "require": {
+            "ext-tokenizer": "*",
+            "php": ">=7.0"
+        },
+        "require-dev": {
+            "ircmaxell/php-yacc": "0.0.5",
+            "phpunit/phpunit": "^6.5 || ^7.0 || ^8.0"
+        },
+        "time": "2020-04-10T16:34:50+00:00",
+        "bin": [
+            "bin/php-parse"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "PhpParser\\": "lib/PhpParser"
+            }
+        },
+        "notification-url": "https://repo.repman.io/downloads",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Nikita Popov"
+            }
+        ],
+        "description": "A PHP parser written in PHP",
+        "keywords": [
+            "parser",
+            "php"
         ]
     },
     {
@@ -21477,18 +21295,24 @@
     },
     {
         "name": "phpspec/prophecy",
-        "version": "1.12.2",
-        "version_normalized": "1.12.2.0",
+        "version": "1.13.0",
+        "version_normalized": "1.13.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phpspec/prophecy.git",
-            "reference": "245710e971a030f42e08f4912863805570f23d39"
+            "reference": "be1996ed8adc35c3fd795488a653f4b518be70ea"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpspec/prophecy/zipball/245710e971a030f42e08f4912863805570f23d39",
-            "reference": "245710e971a030f42e08f4912863805570f23d39",
-            "shasum": ""
+            "url": "https://api.github.com/repos/phpspec/prophecy/zipball/be1996ed8adc35c3fd795488a653f4b518be70ea",
+            "reference": "be1996ed8adc35c3fd795488a653f4b518be70ea",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "doctrine/instantiator": "^1.2",
@@ -21501,7 +21325,7 @@
             "phpspec/phpspec": "^6.0",
             "phpunit/phpunit": "^8.0 || ^9.0"
         },
-        "time": "2020-12-19T10:15:11+00:00",
+        "time": "2021-03-17T13:42:18+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -21514,7 +21338,7 @@
                 "Prophecy\\": "src/Prophecy"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -22111,43 +21935,44 @@
     },
     {
         "name": "psr/container",
-        "version": "1.0.0",
-        "version_normalized": "1.0.0.0",
+        "version": "1.1.1",
+        "version_normalized": "1.1.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/php-fig/container.git",
-            "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
+            "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-fig/container/zipball/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
-            "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
-            "shasum": ""
+            "url": "https://api.github.com/repos/php-fig/container/zipball/8622567409010282b7aeebe4bb841fe98b58dcaf",
+            "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
-            "php": ">=5.3.0"
+            "php": ">=7.2.0"
         },
-        "time": "2017-02-14T16:28:37+00:00",
+        "time": "2021-03-05T17:36:06+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Psr\\Container\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
         "authors": [
             {
                 "name": "PHP-FIG",
-                "homepage": "http://www.php-fig.org/"
+                "homepage": "https://www.php-fig.org/"
             }
         ],
         "description": "Common Container Interface (PHP FIG PSR-11)",
@@ -22158,6 +21983,123 @@
             "container-interface",
             "container-interop",
             "psr"
+        ]
+    },
+    {
+        "name": "psr/http-client",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/http-client.git",
+            "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/http-client/zipball/2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
+            "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
+        },
+        "require": {
+            "php": "^7.0 || ^8.0",
+            "psr/http-message": "^1.0"
+        },
+        "time": "2020-06-29T06:28:15+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Http\\Client\\": "src/"
+            }
+        },
+        "notification-url": "https://repo.repman.io/downloads",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for HTTP clients",
+        "homepage": "https://github.com/php-fig/http-client",
+        "keywords": [
+            "http",
+            "http-client",
+            "psr",
+            "psr-18"
+        ]
+    },
+    {
+        "name": "psr/http-factory",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/http-factory.git",
+            "reference": "12ac7fcd07e5b077433f5f2bee95b3a771bf61be"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/http-factory/zipball/12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
+            "reference": "12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
+        },
+        "require": {
+            "php": ">=7.0.0",
+            "psr/http-message": "^1.0"
+        },
+        "time": "2019-04-30T12:38:16+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Http\\Message\\": "src/"
+            }
+        },
+        "notification-url": "https://repo.repman.io/downloads",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interfaces for PSR-7 HTTP message factories",
+        "keywords": [
+            "factory",
+            "http",
+            "message",
+            "psr",
+            "psr-17",
+            "psr-7",
+            "request",
+            "response"
         ]
     },
     {
@@ -22259,56 +22201,6 @@
             "log",
             "psr",
             "psr-3"
-        ]
-    },
-    {
-        "name": "psr/simple-cache",
-        "version": "1.0.1",
-        "version_normalized": "1.0.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/php-fig/simple-cache.git",
-            "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
-            "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.0"
-        },
-        "time": "2017-10-23T01:57:42+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Psr\\SimpleCache\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "PHP-FIG",
-                "homepage": "http://www.php-fig.org/"
-            }
-        ],
-        "description": "Common interfaces for simple caching",
-        "keywords": [
-            "cache",
-            "caching",
-            "psr",
-            "psr-16",
-            "simple-cache"
         ]
     },
     {
@@ -23584,18 +23476,24 @@
     },
     {
         "name": "symfony/config",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/config.git",
-            "reference": "d0a82d965296083fe463d655a3644cbe49cbaa80"
+            "reference": "212d54675bf203ff8aef7d8cee8eecfb72f4a263"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/config/zipball/d0a82d965296083fe463d655a3644cbe49cbaa80",
-            "reference": "d0a82d965296083fe463d655a3644cbe49cbaa80",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/config/zipball/212d54675bf203ff8aef7d8cee8eecfb72f4a263",
+            "reference": "212d54675bf203ff8aef7d8cee8eecfb72f4a263",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
@@ -23617,7 +23515,7 @@
         "suggest": {
             "symfony/yaml": "To use the yaml reference dumper"
         },
-        "time": "2020-12-09T18:54:12+00:00",
+        "time": "2021-02-23T23:58:19+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -23628,7 +23526,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -23642,7 +23540,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Config Component",
+        "description": "Helps you find, load, combine, autofill and validate configuration values of any kind",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -23661,18 +23559,24 @@
     },
     {
         "name": "symfony/console",
-        "version": "v4.4.18",
-        "version_normalized": "4.4.18.0",
+        "version": "v4.4.20",
+        "version_normalized": "4.4.20.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "12e071278e396cc3e1c149857337e9e192deca0b"
+            "reference": "c98349bda966c70d6c08b4cd8658377c94166492"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/12e071278e396cc3e1c149857337e9e192deca0b",
-            "reference": "12e071278e396cc3e1c149857337e9e192deca0b",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/console/zipball/c98349bda966c70d6c08b4cd8658377c94166492",
+            "reference": "c98349bda966c70d6c08b4cd8658377c94166492",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1.3",
@@ -23705,7 +23609,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2020-12-18T07:41:31+00:00",
+        "time": "2021-02-22T18:44:15+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -23716,7 +23620,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -23730,7 +23634,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Console Component",
+        "description": "Eases the creation of beautiful and testable command line interfaces",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -23749,23 +23653,29 @@
     },
     {
         "name": "symfony/css-selector",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/css-selector.git",
-            "reference": "f789e7ead4c79e04ca9a6d6162fc629c89bd8054"
+            "reference": "f65f217b3314504a1ec99c2d6ef69016bb13490f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/css-selector/zipball/f789e7ead4c79e04ca9a6d6162fc629c89bd8054",
-            "reference": "f789e7ead4c79e04ca9a6d6162fc629c89bd8054",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/css-selector/zipball/f65f217b3314504a1ec99c2d6ef69016bb13490f",
+            "reference": "f65f217b3314504a1ec99c2d6ef69016bb13490f",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5"
         },
-        "time": "2020-12-08T17:02:38+00:00",
+        "time": "2021-01-27T10:01:46+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -23776,7 +23686,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -23794,7 +23704,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony CssSelector Component",
+        "description": "Converts CSS selectors to XPath expressions",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -23813,18 +23723,24 @@
     },
     {
         "name": "symfony/dependency-injection",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.5",
+        "version_normalized": "5.2.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/dependency-injection.git",
-            "reference": "7f8a9e9eff0581a33e20f6c5d41096fe22832d25"
+            "reference": "be0c7926f5729b15e4e79fd2bf917cac584b1970"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/7f8a9e9eff0581a33e20f6c5d41096fe22832d25",
-            "reference": "7f8a9e9eff0581a33e20f6c5d41096fe22832d25",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/be0c7926f5729b15e4e79fd2bf917cac584b1970",
+            "reference": "be0c7926f5729b15e4e79fd2bf917cac584b1970",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
@@ -23841,7 +23757,7 @@
         },
         "provide": {
             "psr/container-implementation": "1.0",
-            "symfony/service-implementation": "1.0"
+            "symfony/service-implementation": "1.0|2.0"
         },
         "require-dev": {
             "symfony/config": "^5.1",
@@ -23855,7 +23771,7 @@
             "symfony/proxy-manager-bridge": "Generate service proxies to lazy load them",
             "symfony/yaml": ""
         },
-        "time": "2020-12-18T08:03:05+00:00",
+        "time": "2021-03-05T20:13:41+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -23866,7 +23782,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -23880,7 +23796,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony DependencyInjection Component",
+        "description": "Allows you to standardize and centralize the way objects are constructed in your application",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -23965,18 +23881,24 @@
     },
     {
         "name": "symfony/event-dispatcher",
-        "version": "v4.4.18",
-        "version_normalized": "4.4.18.0",
+        "version": "v4.4.20",
+        "version_normalized": "4.4.20.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/event-dispatcher.git",
-            "reference": "5d4c874b0eb1c32d40328a09dbc37307a5a910b0"
+            "reference": "c352647244bd376bf7d31efbd5401f13f50dad0c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/5d4c874b0eb1c32d40328a09dbc37307a5a910b0",
-            "reference": "5d4c874b0eb1c32d40328a09dbc37307a5a910b0",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/c352647244bd376bf7d31efbd5401f13f50dad0c",
+            "reference": "c352647244bd376bf7d31efbd5401f13f50dad0c",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1.3",
@@ -24003,7 +23925,7 @@
             "symfony/dependency-injection": "",
             "symfony/http-kernel": ""
         },
-        "time": "2020-12-18T07:41:31+00:00",
+        "time": "2021-01-27T09:09:26+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -24014,7 +23936,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24028,7 +23950,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony EventDispatcher Component",
+        "description": "Provides tools that allow your application components to communicate with each other by dispatching events and listening to them",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -24125,24 +24047,30 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
-            "reference": "fa8f8cab6b65e2d99a118e082935344c5ba8c60d"
+            "reference": "710d364200997a5afde34d9fe57bd52f3cc1e108"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/filesystem/zipball/fa8f8cab6b65e2d99a118e082935344c5ba8c60d",
-            "reference": "fa8f8cab6b65e2d99a118e082935344c5ba8c60d",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/filesystem/zipball/710d364200997a5afde34d9fe57bd52f3cc1e108",
+            "reference": "710d364200997a5afde34d9fe57bd52f3cc1e108",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
             "symfony/polyfill-ctype": "~1.8"
         },
-        "time": "2020-11-30T17:05:38+00:00",
+        "time": "2021-02-12T10:38:38+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -24153,7 +24081,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24167,7 +24095,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Filesystem Component",
+        "description": "Provides basic utilities for the filesystem",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -24186,23 +24114,29 @@
     },
     {
         "name": "symfony/finder",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/finder.git",
-            "reference": "0b9231a5922fd7287ba5b411893c0ecd2733e5ba"
+            "reference": "0d639a0943822626290d169965804f79400e6a04"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/finder/zipball/0b9231a5922fd7287ba5b411893c0ecd2733e5ba",
-            "reference": "0b9231a5922fd7287ba5b411893c0ecd2733e5ba",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/finder/zipball/0d639a0943822626290d169965804f79400e6a04",
+            "reference": "0d639a0943822626290d169965804f79400e6a04",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5"
         },
-        "time": "2020-12-08T17:02:38+00:00",
+        "time": "2021-02-15T18:55:04+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -24213,7 +24147,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24227,7 +24161,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Finder Component",
+        "description": "Finds files and directories via an intuitive fluent interface",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -24246,18 +24180,24 @@
     },
     {
         "name": "symfony/http-foundation",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/http-foundation.git",
-            "reference": "a1f6218b29897ab52acba58cfa905b83625bef8d"
+            "reference": "54499baea7f7418bce7b5ec92770fd0799e8e9bf"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/http-foundation/zipball/a1f6218b29897ab52acba58cfa905b83625bef8d",
-            "reference": "a1f6218b29897ab52acba58cfa905b83625bef8d",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/http-foundation/zipball/54499baea7f7418bce7b5ec92770fd0799e8e9bf",
+            "reference": "54499baea7f7418bce7b5ec92770fd0799e8e9bf",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
@@ -24274,7 +24214,7 @@
         "suggest": {
             "symfony/mime": "To use the file extension guesser"
         },
-        "time": "2020-12-18T10:00:10+00:00",
+        "time": "2021-02-25T17:16:57+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -24285,7 +24225,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24299,7 +24239,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony HttpFoundation Component",
+        "description": "Defines an object-oriented layer for the HTTP specification",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -24318,18 +24258,24 @@
     },
     {
         "name": "symfony/mime",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.5",
+        "version_normalized": "5.2.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/mime.git",
-            "reference": "de97005aef7426ba008c46ba840fc301df577ada"
+            "reference": "554ba128f1955038b45db5e1fa7e93bfc683b139"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/mime/zipball/de97005aef7426ba008c46ba840fc301df577ada",
-            "reference": "de97005aef7426ba008c46ba840fc301df577ada",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/mime/zipball/554ba128f1955038b45db5e1fa7e93bfc683b139",
+            "reference": "554ba128f1955038b45db5e1fa7e93bfc683b139",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
@@ -24339,17 +24285,20 @@
             "symfony/polyfill-php80": "^1.15"
         },
         "conflict": {
+            "egulias/email-validator": "~3.0.0",
+            "phpdocumentor/reflection-docblock": "<3.2.2",
+            "phpdocumentor/type-resolver": "<1.4.0",
             "symfony/mailer": "<4.4"
         },
         "require-dev": {
-            "egulias/email-validator": "^2.1.10",
+            "egulias/email-validator": "^2.1.10|^3.1",
             "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
             "symfony/dependency-injection": "^4.4|^5.0",
             "symfony/property-access": "^4.4|^5.1",
             "symfony/property-info": "^4.4|^5.1",
             "symfony/serializer": "^5.2"
         },
-        "time": "2020-12-09T18:54:12+00:00",
+        "time": "2021-03-07T16:08:20+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -24360,7 +24309,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24374,7 +24323,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "A library to manipulate MIME messages",
+        "description": "Allows manipulating MIME messages",
         "homepage": "https://symfony.com",
         "keywords": [
             "mime",
@@ -24397,18 +24346,24 @@
     },
     {
         "name": "symfony/options-resolver",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/options-resolver.git",
-            "reference": "87a2a4a766244e796dd9cb9d6f58c123358cd986"
+            "reference": "5d0f633f9bbfcf7ec642a2b5037268e61b0a62ce"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/options-resolver/zipball/87a2a4a766244e796dd9cb9d6f58c123358cd986",
-            "reference": "87a2a4a766244e796dd9cb9d6f58c123358cd986",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/options-resolver/zipball/5d0f633f9bbfcf7ec642a2b5037268e61b0a62ce",
+            "reference": "5d0f633f9bbfcf7ec642a2b5037268e61b0a62ce",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
@@ -24416,7 +24371,7 @@
             "symfony/polyfill-php73": "~1.0",
             "symfony/polyfill-php80": "^1.15"
         },
-        "time": "2020-10-24T12:08:07+00:00",
+        "time": "2021-01-27T12:56:27+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -24427,7 +24382,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24441,7 +24396,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony OptionsResolver Component",
+        "description": "Provides an improved replacement for the array_replace PHP function",
         "homepage": "https://symfony.com",
         "keywords": [
             "config",
@@ -24465,8 +24420,8 @@
     },
     {
         "name": "symfony/polyfill-ctype",
-        "version": "v1.22.0",
-        "version_normalized": "1.22.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -24476,7 +24431,13 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/c6c942b1ac76c82448322025e084cadc56048b4e",
             "reference": "c6c942b1ac76c82448322025e084cadc56048b4e",
-            "shasum": ""
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1"
@@ -24504,7 +24465,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24543,18 +24504,24 @@
     },
     {
         "name": "symfony/polyfill-intl-grapheme",
-        "version": "v1.22.0",
-        "version_normalized": "1.22.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-            "reference": "267a9adeb8ecb8071040a740930e077cdfb987af"
+            "reference": "5601e09b69f26c1828b13b6bb87cb07cddba3170"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/267a9adeb8ecb8071040a740930e077cdfb987af",
-            "reference": "267a9adeb8ecb8071040a740930e077cdfb987af",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/5601e09b69f26c1828b13b6bb87cb07cddba3170",
+            "reference": "5601e09b69f26c1828b13b6bb87cb07cddba3170",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1"
@@ -24562,7 +24529,7 @@
         "suggest": {
             "ext-intl": "For best performance"
         },
-        "time": "2021-01-07T16:49:33+00:00",
+        "time": "2021-01-22T09:19:47+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -24582,7 +24549,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24623,18 +24590,24 @@
     },
     {
         "name": "symfony/polyfill-intl-idn",
-        "version": "v1.22.0",
-        "version_normalized": "1.22.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-intl-idn.git",
-            "reference": "0eb8293dbbcd6ef6bf81404c9ce7d95bcdf34f44"
+            "reference": "2d63434d922daf7da8dd863e7907e67ee3031483"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/0eb8293dbbcd6ef6bf81404c9ce7d95bcdf34f44",
-            "reference": "0eb8293dbbcd6ef6bf81404c9ce7d95bcdf34f44",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/2d63434d922daf7da8dd863e7907e67ee3031483",
+            "reference": "2d63434d922daf7da8dd863e7907e67ee3031483",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1",
@@ -24644,7 +24617,7 @@
         "suggest": {
             "ext-intl": "For best performance"
         },
-        "time": "2021-01-07T16:49:33+00:00",
+        "time": "2021-01-22T09:19:47+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -24664,7 +24637,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24709,18 +24682,24 @@
     },
     {
         "name": "symfony/polyfill-intl-normalizer",
-        "version": "v1.22.0",
-        "version_normalized": "1.22.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
-            "reference": "6e971c891537eb617a00bb07a43d182a6915faba"
+            "reference": "43a0283138253ed1d48d352ab6d0bdb3f809f248"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/6e971c891537eb617a00bb07a43d182a6915faba",
-            "reference": "6e971c891537eb617a00bb07a43d182a6915faba",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/43a0283138253ed1d48d352ab6d0bdb3f809f248",
+            "reference": "43a0283138253ed1d48d352ab6d0bdb3f809f248",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1"
@@ -24728,7 +24707,7 @@
         "suggest": {
             "ext-intl": "For best performance"
         },
-        "time": "2021-01-07T17:09:11+00:00",
+        "time": "2021-01-22T09:19:47+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -24751,7 +24730,7 @@
                 "Resources/stubs"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24792,18 +24771,24 @@
     },
     {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.22.0",
-        "version_normalized": "1.22.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13"
+            "reference": "5232de97ee3b75b0360528dae24e73db49566ab1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
-            "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/5232de97ee3b75b0360528dae24e73db49566ab1",
+            "reference": "5232de97ee3b75b0360528dae24e73db49566ab1",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1"
@@ -24811,7 +24796,7 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2021-01-07T16:49:33+00:00",
+        "time": "2021-01-22T09:19:47+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -24831,7 +24816,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -24937,8 +24922,8 @@
     },
     {
         "name": "symfony/polyfill-php72",
-        "version": "v1.22.0",
-        "version_normalized": "1.22.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php72.git",
@@ -24948,7 +24933,13 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9",
             "reference": "cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9",
-            "shasum": ""
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1"
@@ -24973,7 +24964,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -25012,8 +25003,8 @@
     },
     {
         "name": "symfony/polyfill-php73",
-        "version": "v1.22.0",
-        "version_normalized": "1.22.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php73.git",
@@ -25023,7 +25014,13 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
             "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
-            "shasum": ""
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1"
@@ -25051,7 +25048,7 @@
                 "Resources/stubs"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -25090,8 +25087,8 @@
     },
     {
         "name": "symfony/polyfill-php80",
-        "version": "v1.22.0",
-        "version_normalized": "1.22.0.0",
+        "version": "v1.22.1",
+        "version_normalized": "1.22.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php80.git",
@@ -25101,7 +25098,13 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/dc3063ba22c2a1fd2f45ed856374d79114998f91",
             "reference": "dc3063ba22c2a1fd2f45ed856374d79114998f91",
-            "shasum": ""
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1"
@@ -25129,7 +25132,7 @@
                 "Resources/stubs"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -25172,23 +25175,29 @@
     },
     {
         "name": "symfony/process",
-        "version": "v4.4.18",
-        "version_normalized": "4.4.18.0",
+        "version": "v4.4.20",
+        "version_normalized": "4.4.20.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/process.git",
-            "reference": "075316ff72233ce3d04a9743414292e834f2cb4a"
+            "reference": "7e950b6366d4da90292c2e7fa820b3c1842b965a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/process/zipball/075316ff72233ce3d04a9743414292e834f2cb4a",
-            "reference": "075316ff72233ce3d04a9743414292e834f2cb4a",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/process/zipball/7e950b6366d4da90292c2e7fa820b3c1842b965a",
+            "reference": "7e950b6366d4da90292c2e7fa820b3c1842b965a",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.1.3"
         },
-        "time": "2020-12-08T16:59:59+00:00",
+        "time": "2021-01-27T09:09:26+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -25199,7 +25208,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -25213,7 +25222,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Process Component",
+        "description": "Executes commands in sub-processes",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -25232,18 +25241,24 @@
     },
     {
         "name": "symfony/property-access",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/property-access.git",
-            "reference": "243dcdda2f276cb31efa31a015d0fdb5076931ce"
+            "reference": "3af8ed262bd3217512a13b023981fe68f36ad5f3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/property-access/zipball/243dcdda2f276cb31efa31a015d0fdb5076931ce",
-            "reference": "243dcdda2f276cb31efa31a015d0fdb5076931ce",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/property-access/zipball/3af8ed262bd3217512a13b023981fe68f36ad5f3",
+            "reference": "3af8ed262bd3217512a13b023981fe68f36ad5f3",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
@@ -25257,7 +25272,7 @@
         "suggest": {
             "psr/cache-implementation": "To cache access methods."
         },
-        "time": "2020-12-10T19:16:15+00:00",
+        "time": "2021-01-27T10:15:41+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -25268,7 +25283,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -25282,7 +25297,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony PropertyAccess Component",
+        "description": "Provides functions to read and write from/to an object or array using a simple string notation",
         "homepage": "https://symfony.com",
         "keywords": [
             "access",
@@ -25312,18 +25327,24 @@
     },
     {
         "name": "symfony/property-info",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/property-info.git",
-            "reference": "f65694a05eb7742c5f2951f20676de367ffaaaea"
+            "reference": "7185bbc74e6f49c3f1b5936b4d9e4ca133921189"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/property-info/zipball/f65694a05eb7742c5f2951f20676de367ffaaaea",
-            "reference": "f65694a05eb7742c5f2951f20676de367ffaaaea",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/property-info/zipball/7185bbc74e6f49c3f1b5936b4d9e4ca133921189",
+            "reference": "7185bbc74e6f49c3f1b5936b4d9e4ca133921189",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
@@ -25333,11 +25354,11 @@
         },
         "conflict": {
             "phpdocumentor/reflection-docblock": "<3.2.2",
-            "phpdocumentor/type-resolver": "<0.3.0",
+            "phpdocumentor/type-resolver": "<1.4.0",
             "symfony/dependency-injection": "<4.4"
         },
         "require-dev": {
-            "doctrine/annotations": "~1.7",
+            "doctrine/annotations": "^1.10.4",
             "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
             "symfony/cache": "^4.4|^5.0",
             "symfony/dependency-injection": "^4.4|^5.0",
@@ -25349,7 +25370,7 @@
             "symfony/doctrine-bridge": "To use Doctrine metadata",
             "symfony/serializer": "To use Serializer metadata"
         },
-        "time": "2020-12-11T23:40:07+00:00",
+        "time": "2021-02-17T15:24:54+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -25360,7 +25381,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -25374,7 +25395,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Property Info Component",
+        "description": "Extracts information about PHP class' properties using metadata of popular sources",
         "homepage": "https://symfony.com",
         "keywords": [
             "doctrine",
@@ -25479,24 +25500,30 @@
     },
     {
         "name": "symfony/stopwatch",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/stopwatch.git",
-            "reference": "2b105c0354f39a63038a1d8bf776ee92852813af"
+            "reference": "b12274acfab9d9850c52583d136a24398cdf1a0c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/stopwatch/zipball/2b105c0354f39a63038a1d8bf776ee92852813af",
-            "reference": "2b105c0354f39a63038a1d8bf776ee92852813af",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/stopwatch/zipball/b12274acfab9d9850c52583d136a24398cdf1a0c",
+            "reference": "b12274acfab9d9850c52583d136a24398cdf1a0c",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
             "symfony/service-contracts": "^1.0|^2"
         },
-        "time": "2020-11-01T16:14:45+00:00",
+        "time": "2021-01-27T10:15:41+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -25507,7 +25534,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -25521,7 +25548,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Stopwatch Component",
+        "description": "Provides a way to profile code",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -25540,18 +25567,24 @@
     },
     {
         "name": "symfony/string",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.4",
+        "version_normalized": "5.2.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/string.git",
-            "reference": "5bd67751d2e3f7d6f770c9154b8fbcb2aa05f7ed"
+            "reference": "4e78d7d47061fa183639927ec40d607973699609"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/string/zipball/5bd67751d2e3f7d6f770c9154b8fbcb2aa05f7ed",
-            "reference": "5bd67751d2e3f7d6f770c9154b8fbcb2aa05f7ed",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/string/zipball/4e78d7d47061fa183639927ec40d607973699609",
+            "reference": "4e78d7d47061fa183639927ec40d607973699609",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
@@ -25567,7 +25600,7 @@
             "symfony/translation-contracts": "^1.1|^2",
             "symfony/var-exporter": "^4.4|^5.0"
         },
-        "time": "2020-12-05T07:33:16+00:00",
+        "time": "2021-02-16T10:20:28+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -25581,7 +25614,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -25595,7 +25628,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony String component",
+        "description": "Provides an object-oriented API to strings and deals with bytes, UTF-8 code points and grapheme clusters in a unified way",
         "homepage": "https://symfony.com",
         "keywords": [
             "grapheme",
@@ -25622,18 +25655,24 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v5.2.1",
-        "version_normalized": "5.2.1.0",
+        "version": "v5.2.5",
+        "version_normalized": "5.2.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
-            "reference": "290ea5e03b8cf9b42c783163123f54441fb06939"
+            "reference": "298a08ddda623485208506fcee08817807a251dd"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/290ea5e03b8cf9b42c783163123f54441fb06939",
-            "reference": "290ea5e03b8cf9b42c783163123f54441fb06939",
-            "shasum": ""
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/298a08ddda623485208506fcee08817807a251dd",
+            "reference": "298a08ddda623485208506fcee08817807a251dd",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
             "php": ">=7.2.5",
@@ -25649,7 +25688,7 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2020-12-08T17:02:38+00:00",
+        "time": "2021-03-06T07:59:01+00:00",
         "bin": [
             "Resources/bin/yaml-lint"
         ],
@@ -25663,7 +25702,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
@@ -25677,7 +25716,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Yaml Component",
+        "description": "Loads and dumps YAML files",
         "homepage": "https://symfony.com",
         "funding": [
             {
@@ -26463,39 +26502,50 @@
     },
     {
         "name": "webmozart/assert",
-        "version": "1.9.1",
-        "version_normalized": "1.9.1.0",
+        "version": "1.10.0",
+        "version_normalized": "1.10.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/webmozart/assert.git",
-            "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
+            "url": "https://github.com/webmozarts/assert.git",
+            "reference": "6964c76c7804814a842473e0c8fd15bab0f18e25"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
-            "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
-            "shasum": ""
+            "url": "https://api.github.com/repos/webmozarts/assert/zipball/6964c76c7804814a842473e0c8fd15bab0f18e25",
+            "reference": "6964c76c7804814a842473e0c8fd15bab0f18e25",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
         },
         "require": {
-            "php": "^5.3.3 || ^7.0 || ^8.0",
+            "php": "^7.2 || ^8.0",
             "symfony/polyfill-ctype": "^1.8"
         },
         "conflict": {
             "phpstan/phpstan": "<0.12.20",
-            "vimeo/psalm": "<3.9.1"
+            "vimeo/psalm": "<4.6.1 || 4.6.2"
         },
         "require-dev": {
-            "phpunit/phpunit": "^4.8.36 || ^7.5.13"
+            "phpunit/phpunit": "^8.5.13"
         },
-        "time": "2020-07-08T17:02:28+00:00",
+        "time": "2021-03-09T10:59:23+00:00",
         "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.10-dev"
+            }
+        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Webmozart\\Assert\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "https://repo.repman.io/downloads",
         "license": [
             "MIT"
         ],
