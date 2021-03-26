@@ -11,14 +11,6 @@ namespace Laminas\Captcha;
 use Laminas\Math\Rand;
 use Laminas\Session\Container;
 
-use function class_exists;
-use function count;
-use function is_array;
-use function md5;
-use function strlen;
-use function strtolower;
-use function substr;
-
 /**
  * AbstractWord-based captcha adapter
  *
@@ -63,7 +55,7 @@ abstract class AbstractWord extends AbstractAdapter
      *
      * @var string
      */
-    protected $sessionClass = Container::class;
+    protected $sessionClass = 'Laminas\Session\Container';
 
     /**
      * Should the numbers be used or only letters
@@ -96,14 +88,13 @@ abstract class AbstractWord extends AbstractAdapter
     /**#@+
      * Error codes
      */
-    public const MISSING_VALUE = 'missingValue';
-    public const MISSING_ID    = 'missingID';
-    public const BAD_CAPTCHA   = 'badCaptcha';
+    const MISSING_VALUE = 'missingValue';
+    const MISSING_ID    = 'missingID';
+    const BAD_CAPTCHA   = 'badCaptcha';
     /**#@-*/
 
     /**
      * Error messages
-     *
      * @var array
      */
     protected $messageTemplates = [
@@ -267,6 +258,7 @@ abstract class AbstractWord extends AbstractAdapter
     /**
      * Set session namespace object
      *
+     * @param  Container $session
      * @return AbstractWord Provides a fluent interface
      */
     public function setSession(Container $session)
@@ -286,8 +278,8 @@ abstract class AbstractWord extends AbstractAdapter
     public function getWord()
     {
         if (empty($this->word)) {
-            $session    = $this->getSession();
-            $this->word = $session->word;
+            $session     = $this->getSession();
+            $this->word  = $session->word;
         }
         return $this->word;
     }
@@ -320,7 +312,7 @@ abstract class AbstractWord extends AbstractAdapter
 
         $totIndexCon = count($consonants) - 1;
         $totIndexVow = count($vowels) - 1;
-        for ($i = 0; $i < $wordLen; $i += 2) {
+        for ($i = 0; $i < $wordLen; $i = $i + 2) {
             // generate word with mix of vowels and consonants
             $consonant = $consonants[Rand::getInteger(0, $totIndexCon, true)];
             $vowel     = $vowels[Rand::getInteger(0, $totIndexVow, true)];
@@ -365,7 +357,6 @@ abstract class AbstractWord extends AbstractAdapter
      * Validate the word
      *
      * @see    Laminas\Validator\ValidatorInterface::isValid()
-     *
      * @param  mixed $value
      * @param  mixed $context
      * @return bool

@@ -265,16 +265,7 @@ class SuiteGenerator
     private function generateSplitSuiteFromTest($suiteName, $suiteContent)
     {
         foreach ($suiteContent as $suiteSplitName => $tests) {
-            try {
-                $this->generateSuiteFromTest($suiteSplitName, $tests, $suiteName);
-            } catch (FastFailException $e) {
-                    throw $e;
-            } catch (\Exception $e) {
-                // There are suites that include tests that reference tests from other Magento editions
-                // To keep backward compatibility, we will catch such exceptions with no error.
-                // This might inevitably hide some suite errors that are resulted by tests with broken references
-                //TODO MQE-2484
-            }
+            $this->generateSuiteFromTest($suiteSplitName, $tests, $suiteName);
         }
     }
 

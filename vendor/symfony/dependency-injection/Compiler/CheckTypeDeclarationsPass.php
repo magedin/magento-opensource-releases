@@ -84,7 +84,7 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
             return $value;
         }
 
-        if (!$value instanceof Definition || $value->hasErrors() || $value->isDeprecated()) {
+        if (!$value instanceof Definition || $value->hasErrors()) {
             return parent::processValue($value, $isRoot);
         }
 
@@ -280,26 +280,15 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
             return;
         }
 
-        if ('mixed' === $type) {
-            return;
-        }
-
         if (is_a($class, $type, true)) {
             return;
         }
 
-        if ('false' === $type) {
-            if (false === $value) {
-                return;
-            }
-        } elseif ($reflectionType->isBuiltin()) {
-            $checkFunction = sprintf('is_%s', $type);
-            if ($checkFunction($value)) {
-                return;
-            }
-        }
+        $checkFunction = sprintf('is_%s', $type);
 
-        throw new InvalidParameterTypeException($this->currentId, \is_object($value) ? $class : get_debug_type($value), $parameter);
+        if (!$reflectionType->isBuiltin() || !$checkFunction($value)) {
+            throw new InvalidParameterTypeException($this->currentId, \is_object($value) ? $class : get_debug_type($value), $parameter);
+        }
     }
 
     private function getExpressionLanguage(): ExpressionLanguage

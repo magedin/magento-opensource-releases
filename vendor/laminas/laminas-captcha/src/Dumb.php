@@ -15,21 +15,18 @@ namespace Laminas\Captcha;
  *
  * @todo This likely needs its own validation since it expects the word
  *     entered to be the strrev of the word stored.
- */
+*/
 class Dumb extends AbstractWord
 {
     /**
      * CAPTCHA label
-     *
-     * @var string
+     * @type string
      */
     protected $label = 'Please type this word backwards';
 
     /**
      * Set the label for the CAPTCHA
-     *
      * @param string $label
-     * @return void
      */
     public function setLabel($label)
     {
@@ -38,7 +35,6 @@ class Dumb extends AbstractWord
 
     /**
      * Retrieve the label for the CAPTCHA
-     *
      * @return string
      */
     public function getLabel()

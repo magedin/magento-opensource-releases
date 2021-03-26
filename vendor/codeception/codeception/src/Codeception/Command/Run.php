@@ -117,6 +117,7 @@ class Run extends Command
      */
     protected $output;
 
+
     /**
      * Sets Run arguments
      * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
@@ -385,10 +386,10 @@ class Run extends Command
         }
 
         if ($test) {
-            $userOptions['filter'] = $this->matchFilteredTestName($test);
-        } elseif ($suite) {
-            $userOptions['filter'] = $this->matchFilteredTestName($suite);
+            $filter = $this->matchFilteredTestName($test);
+            $userOptions['filter'] = $filter;
         }
+
         if (!$this->options['silent'] && $config['settings']['shuffle']) {
             $this->output->writeln(
                 "[Seed] <info>" . $userOptions['seed'] . "</info>"
@@ -455,29 +456,9 @@ class Run extends Command
             }
         }
 
-        if (! Configuration::isEmpty()) {
-            // Run single test without included tests
-            if (strpos($suite, $config['paths']['tests']) === 0) {
-                return $this->matchTestFromFilename($suite, $config['paths']['tests']);
-            }
-
-            // Run single test from working directory
-            $realTestDir = realpath(Configuration::testsDir());
-            $cwd = getcwd();
-            if (strpos($realTestDir, $cwd) === 0) {
-                $file = $suite;
-                if (strpos($file, ':') !== false) {
-                    list($file) = explode(':', $suite, -1);
-                }
-                $realPath = $cwd . DIRECTORY_SEPARATOR . $file;
-                if (file_exists($realPath) && strpos($realPath, $realTestDir) === 0) {
-                    //only match test if file is in tests directory
-                    return $this->matchTestFromFilename(
-                        $cwd . DIRECTORY_SEPARATOR . $suite,
-                        $realTestDir
-                    );
-                }
-            }
+        // Run single test without included tests
+        if (! Configuration::isEmpty() && strpos($suite, $config['paths']['tests']) === 0) {
+            return $this->matchTestFromFilename($suite, $config['paths']['tests']);
         }
     }
 
@@ -505,6 +486,7 @@ class Run extends Command
             }
         }
     }
+
 
     protected function currentNamespace()
     {
@@ -538,38 +520,15 @@ class Run extends Command
 
     protected function matchTestFromFilename($filename, $testsPath)
     {
-        $filter = '';
-        if (strpos($filename, ':') !== false) {
-            if ((PHP_OS === 'Windows' || PHP_OS === 'WINNT') && $filename[1] === ':') {
-                // match C:\...
-                list($drive, $path, $filter) = explode(':', $filename, 3);
-                $filename = $drive . ':' . $path;
-            } else {
-                list($filename, $filter) = explode(':', $filename, 2);
-            }
-
-            if ($filter) {
-                $filter = ':' . $filter;
-            }
-        }
-
         $testsPath = str_replace(['//', '\/', '\\'], '/', $testsPath);
         $filename = str_replace(['//', '\/', '\\'], '/', $filename);
-
-        if (rtrim($filename, '/') === $testsPath) {
-            //codecept run tests
-            return ['', '', $filter];
-        }
         $res = preg_match("~^$testsPath/(.*?)(?>/(.*))?$~", $filename, $matches);
 
         if (!$res) {
             throw new \InvalidArgumentException("Test file can't be matched");
         }
         if (!isset($matches[2])) {
-            $matches[2] = '';
-        }
-        if ($filter) {
-            $matches[2] .= $filter;
+            $matches[2] = null;
         }
 
         return $matches;

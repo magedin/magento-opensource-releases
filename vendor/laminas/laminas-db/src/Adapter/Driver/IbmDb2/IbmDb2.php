@@ -180,14 +180,6 @@ class IbmDb2 implements DriverInterface, Profiler\ProfilerAwareInterface
     }
 
     /**
-     * @return Result
-     */
-    public function getResultPrototype()
-    {
-        return $this->resultPrototype;
-    }
-
-    /**
      * Get prepare type
      *
      * @return string

@@ -1,51 +1,43 @@
 <?php
 
+use Cache\Adapter\Common\CacheItem;
 use Cache\Adapter\PHPArray\ArrayCachePool;
-use Codeception\Test\Unit;
 use Codeception\Util\Stub;
-use Psr\Http\Client\ClientExceptionInterface;
-use Psr\Http\Client\ClientInterface;
+use GuzzleHttp\Exception\TransferException;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Log\NullLogger;
 use Vault\AuthenticationStrategies\UserPassAuthenticationStrategy;
 use Vault\Client;
-use Vault\Exceptions\AuthenticationException;
+use Vault\Exceptions\ClientException;
 use Vault\Exceptions\DependencyException;
-use Vault\Exceptions\RequestException;
-use Vault\Exceptions\RuntimeException;
+use Vault\Exceptions\ServerException;
 use Vault\Models\Token;
 use Vault\ResponseModels\Auth;
-use VCR\VCR;
-use Zend\Diactoros\RequestFactory;
-use Zend\Diactoros\StreamFactory;
-use Zend\Diactoros\Uri;
+use Vault\Transports\Transport;
+use VaultTransports\Guzzle6Transport;
 
-class ClientTest extends Unit
+class ClientTest extends \Codeception\Test\Unit
 {
     /**
-     * @var UnitTester
+     * @var \UnitTester
      */
     protected $tester;
 
-    /**
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     * @throws RuntimeException
-     */
-    public function testAuthenticationUserPass(): void
+    public function testAuthenticationUserPass()
     {
         $this->getAuthenticatedClient();
     }
 
     /**
      * @return Client
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     * @throws RuntimeException
      */
-    private function getAuthenticatedClient(): Client
+    private function getAuthenticatedClient()
     {
-        $client = $this->getClient()
-            ->setAuthenticationStrategy(new UserPassAuthenticationStrategy('test', 'test'));
+        $client = (new Client(new Guzzle6Transport()))
+            ->setAuthenticationStrategy(new UserPassAuthenticationStrategy('test', 'test'))
+            ->setLogger(new NullLogger());
 
         $this->assertEquals($client->getAuthenticationStrategy()->getClient(), $client);
         $this->assertTrue($client->authenticate());
@@ -56,27 +48,7 @@ class ClientTest extends Unit
         return $client;
     }
 
-    /**
-     * @param ClientInterface|null $client
-     *
-     * @return Client
-     */
-    private function getClient(ClientInterface $client = null): Client
-    {
-        return new Client(
-            new Uri('http://127.0.0.1:8200'),
-            $client ?: new \AlexTartan\GuzzlePsr18Adapter\Client(),
-            new RequestFactory(),
-            new StreamFactory()
-        );
-    }
-
-    /**
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     * @throws RuntimeException
-     */
-    public function testWriteReadRevokeSecret(): void
+    public function testWriteReadRevokeSecret()
     {
         $client = $this->getAuthenticatedClient();
 
@@ -89,14 +61,9 @@ class ClientTest extends Unit
         $this->assertNotEmpty($client->revoke('/secret/test'));
     }
 
-    /**
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     * @throws RuntimeException
-     */
-    public function testWritePermissionDeniedSecret(): void
+    public function testWritePermissionDeniedSecret()
     {
-        $this->expectException(RequestException::class);
+        $this->expectException(ClientException::class);
         $this->expectExceptionCode(403);
 
         $client = $this->getAuthenticatedClient();
@@ -104,16 +71,11 @@ class ClientTest extends Unit
         $client->write('/secret/test_prohibited', ['value' => 'test']);
     }
 
-    /**
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     * @throws RuntimeException
-     */
-    public function testTokenCache(): void
+    public function testTokenCache()
     {
         $cache = new ArrayCachePool();
 
-        $client = $this->getClient()
+        $client = (new Client(new Guzzle6Transport()))
             ->setAuthenticationStrategy(new UserPassAuthenticationStrategy('test', 'test'))
             ->setCache($cache);
 
@@ -124,7 +86,7 @@ class ClientTest extends Unit
         $this->assertNotEmpty($realToken);
 
         // create new client with cache
-        $client = $this->getClient()->setCache($cache);
+        $client = (new Client(new Guzzle6Transport()))->setCache($cache);
 
         $this->assertTrue($client->authenticate());
 
@@ -134,104 +96,70 @@ class ClientTest extends Unit
         $this->assertEquals($realToken, $tokenFromCache);
     }
 
-    /**
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     * @throws RuntimeException
-     */
-    public function testTryToAuthenticateWithoutStrategy(): void
+    public function testTryToAuthenticateWithoutStrategy()
     {
         $this->expectException(DependencyException::class);
 
-        $this->getClient()->authenticate();
+        (new Client(new Guzzle6Transport()))->authenticate();
     }
 
-    /**
-     * @throws ClientExceptionInterface
-     */
-    public function testServerProblems(): void
+    public function testTransportProblems()
     {
-        try {
-            $client = Stub::makeEmpty(ClientInterface::class, [
-                'sendRequest' => function () {
-                    throw new RequestException('', 500);
-                },
-            ]);
+        $this->expectException(ServerException::class);
 
-            $this->getClient($client)->get('');
-        } catch (Exception $e) {
-            $this->assertInstanceOf(RequestException::class, $e);
-        }
-    }
-
-    /**
-     * @throws ClientExceptionInterface
-     * @throws RuntimeException
-     * @throws Exception
-     */
-    public function testReAuthentication(): void
-    {
-        $httpClient = Stub::makeEmpty(ClientInterface::class, [
-            'sendRequest' => function (RequestInterface $request) {
-                static $requestCounter = 0;
-
-                if ($requestCounter === 0) {
-                    $requestCounter++;
-
-                    throw new RequestException('', 403);
-                }
-
-                return (new \AlexTartan\GuzzlePsr18Adapter\Client())->sendRequest($request);
+        $transport = Stub::makeEmpty(Transport::class, [
+            'createRequest' => function () {
+                return Stub::makeEmpty(RequestInterface::class, []);
+            },
+            'send' => function () {
+                throw new TransferException();
             },
         ]);
 
-        $client = $this->getClient($httpClient)
-            ->setAuthenticationStrategy(new UserPassAuthenticationStrategy('test', 'test'))
-            ->setToken(new Token([
-                'auth' => new Auth(['clientToken' => 123]),
-                'creationTtl' => (new DateTime())->getTimestamp() - 1,
-                'ttl' => 1,
-            ]));
-
-        $this->assertNotEmpty($client->write('/secret/test', ['value' => 'test']));
+        (new Client($transport))->get('');
     }
 
-    /**
-     * @throws ClientExceptionInterface
-     */
-    public function testReAuthenticationFailure(): void
+    public function testServerProblems()
     {
         try {
-            $httpClient = Stub::makeEmpty(ClientInterface::class, [
-                'sendRequest' => function () {
-                    throw new RequestException('', 403);
+            $transport = Stub::makeEmpty(Transport::class, [
+                'createRequest' => function () {
+                    return Stub::makeEmpty(RequestInterface::class, []);
+                },
+                'send' => function () {
+                    return Stub::makeEmpty(ResponseInterface::class, [
+                        'getStatusCode' => function () {
+                            return 500;
+                        },
+                        'getReasonPhrase' => function () {
+                            return '';
+                        },
+                        'getHeaders' => function () {
+                            return [];
+                        },
+                        'getBody' => function () {
+                            return Stub::makeEmpty(StreamInterface::class, [
+                                'getContents' => function () {
+                                    return '';
+                                },
+                            ]);
+                        },
+                    ]);
                 },
             ]);
 
-            $client = $this->getClient($httpClient)
-                ->setAuthenticationStrategy(new UserPassAuthenticationStrategy('test', 'test'))
-                ->setToken(new Token([
-                    'auth' => new Auth(['clientToken' => 123]),
-                    'creationTtl' => (new DateTime())->getTimestamp() - 1,
-                    'ttl' => 1,
-                ]));
-
-            $client->get('');
+            (new Client($transport))->get('');
         } catch (Exception $e) {
-            $this->assertInstanceOf(AuthenticationException::class, $e);
+            $this->assertInstanceOf(ServerException::class, $e);
+            $this->assertInstanceOf(ResponseInterface::class, $e->getResponse());
         }
     }
 
-    /**
-     * @throws RuntimeException
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     */
-    public function testTokenCacheInvalidate(): void
+    public function testTokenCacheInvalidate()
     {
         $cache = new ArrayCachePool();
 
-        $client = $this->getClient()
+        $client = (new Client(new Guzzle6Transport()))
             ->setAuthenticationStrategy(new UserPassAuthenticationStrategy('test', 'test'))
             ->setCache($cache)
             ->setToken(new Token([
@@ -245,12 +173,12 @@ class ClientTest extends Unit
         $this->assertNotEmpty($realToken);
 
         // create new client with cache
-        $client = $this->getClient()->setCache($cache);
+        $client = (new Client(new Guzzle6Transport()))->setCache($cache);
 
+        /** @var CacheItem $token */
         $tokenCacheItem = $cache->getItem(Client::TOKEN_CACHE_KEY);
 
         $tokenAsArray = $tokenCacheItem->get()->toArray();
-
         $tokenAsArray['auth'] = new Auth($tokenAsArray['auth']);
 
         $tokenCacheItem->set(new Token(array_merge($tokenAsArray, ['creationTtl' => 0])));
@@ -267,9 +195,9 @@ class ClientTest extends Unit
 
     protected function setUp()
     {
-        VCR::turnOn();
+        \VCR\VCR::turnOn();
 
-        VCR::insertCassette('unit-client');
+        \VCR\VCR::insertCassette('unit-client');
 
         return parent::setUp();
     }
@@ -277,10 +205,10 @@ class ClientTest extends Unit
     protected function tearDown()
     {
         // To stop recording requests, eject the cassette
-        VCR::eject();
+        \VCR\VCR::eject();
 
         // Turn off VCR to stop intercepting requests
-        VCR::turnOff();
+        \VCR\VCR::turnOff();
 
         parent::tearDown();
     }

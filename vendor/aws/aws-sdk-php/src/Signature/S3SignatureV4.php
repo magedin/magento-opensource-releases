@@ -9,10 +9,13 @@ use Psr\Http\Message\RequestInterface;
  */
 class S3SignatureV4 extends SignatureV4
 {
+
     /**
      * S3-specific signing logic
      *
-     * {@inheritdoc}
+     * @param RequestInterface $request
+     * @param CredentialsInterface $credentials
+     * @return \GuzzleHttp\Psr7\Request|RequestInterface
      */
     public function signRequest(
         RequestInterface $request,
@@ -31,8 +34,6 @@ class S3SignatureV4 extends SignatureV4
 
     /**
      * Always add a x-amz-content-sha-256 for data integrity.
-     *
-     * {@inheritdoc}
      */
     public function presign(
         RequestInterface $request,

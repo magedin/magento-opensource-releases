@@ -75,9 +75,6 @@ class SignatureV4 implements SignatureInterface
         $this->unsigned = isset($options['unsigned-body']) ? $options['unsigned-body'] : false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function signRequest(
         RequestInterface $request,
         CredentialsInterface $credentials
@@ -137,9 +134,6 @@ class SignatureV4 implements SignatureInterface
         return $presignHeaders;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function presign(
         RequestInterface $request,
         CredentialsInterface $credentials,

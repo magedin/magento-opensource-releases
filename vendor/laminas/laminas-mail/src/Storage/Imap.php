@@ -8,7 +8,6 @@
 
 namespace Laminas\Mail\Storage;
 
-use Laminas\Config\Config;
 use Laminas\Mail;
 use Laminas\Mail\Protocol;
 
@@ -122,7 +121,7 @@ class Imap extends AbstractStorage implements Folder\FolderInterface, Writable\W
 
         $flags = [];
         foreach ($data['FLAGS'] as $flag) {
-            $flags[] = static::$knownFlags[$flag] ?? $flag;
+            $flags[] = isset(static::$knownFlags[$flag]) ? static::$knownFlags[$flag] : $flag;
         }
 
         return new $this->messageClass(['handler' => $this, 'id' => $id, 'headers' => $header, 'flags' => $flags]);
@@ -169,7 +168,6 @@ class Imap extends AbstractStorage implements Folder\FolderInterface, Writable\W
         return $this->protocol->fetch('RFC822.TEXT', $id);
     }
 
-    // @codingStandardsIgnoreStart
     /**
      * create instance with parameters
      *
@@ -182,12 +180,11 @@ class Imap extends AbstractStorage implements Folder\FolderInterface, Writable\W
      * - ssl 'SSL' or 'TLS' for secure sockets
      * - folder select this folder [optional, default = 'INBOX']
      *
-     * @param  array|object|Config|Protocol\Imap $params mail reader specific parameters or configured Imap protocol object
+     * @param  array|Protocol\Imap $params mail reader specific parameters or configured Imap protocol object
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      * @throws Protocol\Exception\RuntimeException
      */
-    // @codingStandardsIgnoreEnd
     public function __construct($params)
     {
         if (is_array($params)) {

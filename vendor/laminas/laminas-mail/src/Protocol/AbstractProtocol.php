@@ -21,12 +21,12 @@ abstract class AbstractProtocol
     /**
      * Mail default EOL string
      */
-    public const EOL = "\r\n";
+    const EOL = "\r\n";
 
     /**
      * Default timeout in seconds for initiating session
      */
-    public const TIMEOUT_CONNECTION = 30;
+    const TIMEOUT_CONNECTION = 30;
 
     /**
      * Maximum of the transaction log

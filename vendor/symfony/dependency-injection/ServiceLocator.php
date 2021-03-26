@@ -33,11 +33,6 @@ class ServiceLocator implements ServiceProviderInterface
     private $externalId;
     private $container;
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return mixed
-     */
     public function get($id)
     {
         if (!$this->externalId) {

@@ -107,7 +107,7 @@ class GroupManager
                 return sprintf('%s:%s', realpath($fullPath), $pathParts[2]);
             }
 
-            $this->checkIfFileExists($file, $group);
+            $this->checkIfFileExists($file);
             return realpath($file);
         } elseif (strpos($file, ':') === false) {
             $dirtyPath = Configuration::projectDir() . $file;

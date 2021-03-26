@@ -10,40 +10,40 @@ namespace Vault\ResponseModels\Traits;
 trait LeaseTrait
 {
     /**
-     * @var int|null
+     * @var int
      */
     protected $leaseId;
 
     /**
-     * @var int|null
+     * @var int
      */
     protected $leaseDuration;
 
     /**
-     * @var bool|null
+     * @var bool
      */
     protected $renewable;
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getLeaseId(): ?int
+    public function getLeaseId()
     {
         return $this->leaseId;
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getLeaseDuration(): ?int
+    public function getLeaseDuration()
     {
         return $this->leaseDuration;
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function isRenewable(): ?bool
+    public function isRenewable()
     {
         return $this->renewable;
     }

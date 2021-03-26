@@ -2,7 +2,6 @@
 
 namespace Vault;
 
-use RuntimeException;
 use Vault\Helpers\ArrayHelper;
 
 /**
@@ -32,13 +31,13 @@ class BaseObject
 
     /**
      * @param string $name
-     * @param bool $checkVars
+     * @param bool   $checkVars
      *
      * @return bool
      */
-    public function canSetProperty($name, $checkVars = true): bool
+    public function canSetProperty($name, $checkVars = true)
     {
-        return method_exists($this, 'set' . $name) || ($checkVars && property_exists($this, $name));
+        return method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name);
     }
 
     /**
@@ -46,7 +45,7 @@ class BaseObject
      *
      * @return mixed
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function __get($name)
     {
@@ -57,17 +56,17 @@ class BaseObject
         }
 
         if (method_exists($this, 'set' . $name)) {
-            throw new RuntimeException('Getting write-only property: ' . get_class($this) . '::' . $name);
+            throw new \RuntimeException('Getting write-only property: ' . get_class($this) . '::' . $name);
         }
 
-        throw new RuntimeException('Getting unknown property: ' . get_class($this) . '::' . $name);
+        throw new \RuntimeException('Getting unknown property: ' . get_class($this) . '::' . $name);
     }
 
     /**
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function __set($name, $value)
     {
@@ -76,9 +75,9 @@ class BaseObject
         if (method_exists($this, $setter)) {
             $this->$setter($value);
         } elseif (method_exists($this, 'get' . $name)) {
-            throw new RuntimeException('Setting read-only property: ' . get_class($this) . '::' . $name);
+            throw new \RuntimeException('Setting read-only property: ' . get_class($this) . '::' . $name);
         } else {
-            throw new RuntimeException('Setting unknown property: ' . get_class($this) . '::' . $name);
+            throw new \RuntimeException('Setting unknown property: ' . get_class($this) . '::' . $name);
         }
     }
 
@@ -101,7 +100,7 @@ class BaseObject
     /**
      * @param string $name
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function __unset($name)
     {
@@ -110,41 +109,41 @@ class BaseObject
         if (method_exists($this, $setter)) {
             $this->$setter(null);
         } elseif (method_exists($this, 'get' . $name)) {
-            throw new RuntimeException('Unsetting read-only property: ' . get_class($this) . '::' . $name);
+            throw new \RuntimeException('Unsetting read-only property: ' . get_class($this) . '::' . $name);
         }
     }
 
     /**
      * @param string $name
-     * @param array $params
+     * @param array  $params
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function __call($name, $params)
     {
-        throw new RuntimeException('Unknown method: ' . get_class($this) . "::$name()");
+        throw new \RuntimeException('Unknown method: ' . get_class($this) . "::$name()");
     }
 
     /**
      * @param string $name
-     * @param bool $checkVars
+     * @param bool   $checkVars
      *
      * @return bool
      */
-    public function hasProperty($name, $checkVars = true): bool
+    public function hasProperty($name, $checkVars = true)
     {
         return $this->canGetProperty($name, $checkVars) || $this->canSetProperty($name, false);
     }
 
     /**
      * @param string $name
-     * @param bool $checkVars
+     * @param bool   $checkVars
      *
      * @return bool
      */
-    public function canGetProperty($name, $checkVars = true): bool
+    public function canGetProperty($name, $checkVars = true)
     {
-        return method_exists($this, 'get' . $name) || ($checkVars && property_exists($this, $name));
+        return method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name);
     }
 
     /**
@@ -152,7 +151,7 @@ class BaseObject
      *
      * @return bool
      */
-    public function hasMethod($name): bool
+    public function hasMethod($name)
     {
         return method_exists($this, $name);
     }
@@ -162,7 +161,7 @@ class BaseObject
      *
      * @return array
      */
-    public function toArray($recursive = true): array
+    public function toArray($recursive = true)
     {
         $data = [];
 
@@ -176,7 +175,7 @@ class BaseObject
     /**
      * @return array
      */
-    public function getFields(): array
+    public function getFields()
     {
         $result = [];
 
