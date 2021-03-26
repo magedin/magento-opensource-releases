@@ -202,8 +202,6 @@ use GuzzleHttp\Promise;
  * @method \GuzzleHttp\Promise\Promise uploadPartAsync(array $args = [])
  * @method \Aws\Result uploadPartCopy(array $args = [])
  * @method \GuzzleHttp\Promise\Promise uploadPartCopyAsync(array $args = [])
- * @method \Aws\Result writeGetObjectResponse(array $args = [])
- * @method \GuzzleHttp\Promise\Promise writeGetObjectResponseAsync(array $args = [])
  */
 class S3MultiRegionClient extends BaseClient implements S3ClientInterface
 {

@@ -156,7 +156,6 @@ interface ClientInterface
      * @optional requestParameters['authorization_amount'] - [String]
      * @optional requestParameters['currency_code'] - [String]
      * @optional requestParameters['mws_auth_token'] - [String]
-     * @optional requestParameters['expect_immediate_authorization'] - [Boolean] Default value is false
      */
     public function confirmOrderReference($requestParameters = array());
 

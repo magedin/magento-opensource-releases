@@ -1,4 +1,4 @@
-<?php // phpcs:disable Generic.NamingConventions.ConstructorName.OldStyle,WebimpressCodingStandard.NamingConventions.AbstractClass.Prefix
+<?php
 
 /**
  * @see       https://github.com/laminas/laminas-captcha for the canonical source repository
@@ -8,29 +8,19 @@
 
 namespace Laminas\Captcha;
 
-use Laminas\Captcha\Dumb;
-use Laminas\Captcha\Figlet;
-use Laminas\Captcha\Image;
-use Laminas\Captcha\ReCaptcha;
 use Laminas\Stdlib\ArrayUtils;
 use Traversable;
 
-use function class_exists;
-use function get_class;
-use function gettype;
-use function is_array;
-use function is_object;
-use function sprintf;
-use function strtolower;
-
 abstract class Factory
 {
-    /** @var array Known captcha types */
+    /**
+     * @var array Known captcha types
+     */
     protected static $classMap = [
-        'dumb'      => Dumb::class,
-        'figlet'    => Figlet::class,
-        'image'     => Image::class,
-        'recaptcha' => ReCaptcha::class,
+        'dumb'      => 'Laminas\Captcha\Dumb',
+        'figlet'    => 'Laminas\Captcha\Figlet',
+        'image'     => 'Laminas\Captcha\Image',
+        'recaptcha' => 'Laminas\Captcha\ReCaptcha',
     ];
 
     /**
@@ -38,8 +28,8 @@ abstract class Factory
      *
      * @param  array|Traversable $options
      * @return AdapterInterface
-     * @throws Exception\InvalidArgumentException For a non-array, non-Traversable $options.
-     * @throws Exception\DomainException If class is missing or invalid.
+     * @throws Exception\InvalidArgumentException for a non-array, non-Traversable $options
+     * @throws Exception\DomainException if class is missing or invalid
      */
     public static function factory($options)
     {
@@ -51,7 +41,7 @@ abstract class Factory
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an array or Traversable argument; received "%s"',
                 __METHOD__,
-                is_object($options) ? get_class($options) : gettype($options)
+                (is_object($options) ? get_class($options) : gettype($options))
             ));
         }
 

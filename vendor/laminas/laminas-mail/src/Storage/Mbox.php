@@ -8,7 +8,6 @@
 
 namespace Laminas\Mail\Storage;
 
-use Laminas\Config\Config;
 use Laminas\Stdlib\ErrorHandler;
 
 class Mbox extends AbstractStorage
@@ -116,7 +115,7 @@ class Mbox extends AbstractStorage
             $messageClassParams = [
                 'file' => $this->fh,
                 'startPos' => $messagePos['start'],
-                'endPos' => $messagePos['end'],
+                'endPos' => $messagePos['end']
             ];
 
             if (isset($this->messageEOL)) {
@@ -185,7 +184,7 @@ class Mbox extends AbstractStorage
      * Supported parameters are:
      *   - filename filename of mbox file
      *
-     * @param  $params array|object|Config mail reader specific parameters
+     * @param  $params array mail reader specific parameters
      * @throws Exception\InvalidArgumentException
      */
     public function __construct($params)
@@ -307,11 +306,12 @@ class Mbox extends AbstractStorage
      */
     public function close()
     {
-        if (is_resource($this->fh)) {
-            fclose($this->fh);
-        }
+        ErrorHandler::start(E_WARNING);
+        fclose($this->fh);
+        ErrorHandler::stop();
         $this->positions = [];
     }
+
 
     /**
      * Waste some CPU cycles doing nothing.
@@ -322,6 +322,7 @@ class Mbox extends AbstractStorage
     {
         return true;
     }
+
 
     /**
      * stub for not supported message deletion

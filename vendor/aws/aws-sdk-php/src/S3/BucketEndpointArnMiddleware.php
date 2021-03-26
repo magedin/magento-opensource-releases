@@ -4,7 +4,6 @@ namespace Aws\S3;
 use Aws\Api\Service;
 use Aws\Arn\AccessPointArnInterface;
 use Aws\Arn\ArnParser;
-use Aws\Arn\ObjectLambdaAccessPointArn;
 use Aws\Arn\Exception\InvalidArnException;
 use Aws\Arn\AccessPointArn as BaseAccessPointArn;
 use Aws\Arn\S3\OutpostsAccessPointArn;
@@ -14,7 +13,6 @@ use Aws\Endpoint\PartitionEndpointProvider;
 use Aws\Exception\InvalidRegionException;
 use Aws\Exception\UnresolvedEndpointException;
 use Aws\S3\Exception\S3Exception;
-use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -101,7 +99,7 @@ class BucketEndpointArnMiddleware
                         $path = $req->getUri()->getPath();
                         $encoded = rawurlencode($cmd[$arnableKey]);
                         $len = strlen($encoded) + 1;
-                        if (trim(substr($path, 0, $len), '/') === "{$encoded}") {
+                        if (substr($path, 0, $len) === "/{$encoded}") {
                             $path = substr($path, $len);
                         }
                         if (empty($path)) {
@@ -125,12 +123,11 @@ class BucketEndpointArnMiddleware
                         ]);
                         $cmd['@context']['signing_region'] = $endpointData['signingRegion'];
 
-                        // Update signing service for Outposts and Lambda ARNs
-                        if ($arn instanceof OutpostsArnInterface
-                            || $arn instanceof ObjectLambdaAccessPointArn
-                        ) {
+                        // Update signing service for Outposts ARNs
+                        if ($arn instanceof OutpostsArnInterface) {
                             $cmd['@context']['signing_service'] = $arn->getService();
                         }
+
                     } catch (InvalidArnException $e) {
                         // Add context to ARN exception
                         throw new S3Exception(
@@ -162,12 +159,6 @@ class BucketEndpointArnMiddleware
 
         if ($arn instanceof OutpostsAccessPointArn) {
             $host .= '.' . $arn->getOutpostId() . '.s3-outposts';
-        } else if ($arn instanceof ObjectLambdaAccessPointArn) {
-            if (!empty($this->config['endpoint'])) {
-               return $host . '.' . $this->config['endpoint'];
-            } else {
-                $host .= '.s3-object-lambda';
-            }
         } else {
             $host .= '.s3-accesspoint';
             if (!empty($this->config['dual_stack'])) {
@@ -222,23 +213,11 @@ class BucketEndpointArnMiddleware
             }
 
             // Custom endpoint is not supported with access points
-            if (!is_null($this->config['endpoint'])
-                && !$arn instanceof  ObjectLambdaAccessPointArn
-            ) {
+            if (!is_null($this->config['endpoint'])) {
                 throw new UnresolvedEndpointException(
                     'A custom endpoint has been supplied along with an access'
                     . ' point ARN, and these are not compatible with each other.'
                     . ' Please only use one or the other.');
-            }
-
-            // Dualstack is not supported with object lambda access points
-            if ($arn instanceof ObjectLambdaAccessPointArn
-                && !empty($this->config['dual_stack'])
-            ) {
-                throw new UnresolvedEndpointException(
-                    'Dualstack is currently not supported with Object Lambda access'
-                    . ' points. Please disable dualstack or do not supply an'
-                    . ' access point ARN.');
             }
 
             // Get partitions for ARN and client region

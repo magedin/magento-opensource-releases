@@ -181,8 +181,7 @@ class ContentType implements UnstructuredInterface
         if (isset($this->parameters[$name])) {
             return $this->parameters[$name];
         }
-
-        return null;
+        return;
     }
 
     /**

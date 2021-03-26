@@ -96,8 +96,6 @@ use Aws\AwsClient;
  * @method \GuzzleHttp\Promise\Promise stopNotebookExecutionAsync(array $args = [])
  * @method \Aws\Result terminateJobFlows(array $args = [])
  * @method \GuzzleHttp\Promise\Promise terminateJobFlowsAsync(array $args = [])
- * @method \Aws\Result updateStudio(array $args = [])
- * @method \GuzzleHttp\Promise\Promise updateStudioAsync(array $args = [])
  * @method \Aws\Result updateStudioSessionMapping(array $args = [])
  * @method \GuzzleHttp\Promise\Promise updateStudioSessionMappingAsync(array $args = [])
  */

@@ -37,9 +37,7 @@
         "pear/archive_tar": "^1.4.3",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^9.3",
-        "psalm/plugin-phpunit": "^0.15.1",
-        "psr/http-factory": "^1.0",
-        "vimeo/psalm": "^4.6"
+        "psr/http-factory": "^1.0"
     },
     "conflict": {
         "laminas/laminas-validator": "<2.10.1"
@@ -69,8 +67,7 @@
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
-        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
-        "static-analysis": "psalm --shepherd --stats"
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
     "replace": {
         "zendframework/zend-filter": "^2.9.2"

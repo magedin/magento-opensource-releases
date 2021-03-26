@@ -15,14 +15,14 @@ class Auth extends BaseObject
     use LeaseTrait;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $clientToken;
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getClientToken(): ?string
+    public function getClientToken()
     {
         return $this->clientToken;
     }

@@ -20,7 +20,7 @@ class ResponseBuilder
      *
      * @return Response
      */
-    public function build(ResponseInterface $response): Response
+    public function build(ResponseInterface $response)
     {
         $rawData = json_decode((string)$response->getBody(), true) ?: [];
         $data = ModelHelper::camelize($rawData);

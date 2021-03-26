@@ -11,11 +11,6 @@ namespace Laminas\Captcha;
 use Laminas\ReCaptcha\ReCaptcha as ReCaptchaService;
 use Traversable;
 
-use function array_key_exists;
-use function is_array;
-use function is_int;
-use function is_string;
-
 /**
  * ReCaptcha adapter
  *
@@ -49,14 +44,13 @@ class ReCaptcha extends AbstractAdapter
     /**#@+
      * Error codes
      */
-    public const MISSING_VALUE = 'missingValue';
-    public const ERR_CAPTCHA   = 'errCaptcha';
-    public const BAD_CAPTCHA   = 'badCaptcha';
+    const MISSING_VALUE = 'missingValue';
+    const ERR_CAPTCHA   = 'errCaptcha';
+    const BAD_CAPTCHA   = 'badCaptcha';
     /**#@-*/
 
     /**
      * Error messages
-     *
      * @var array
      */
     protected $messageTemplates = [
@@ -112,9 +106,8 @@ class ReCaptcha extends AbstractAdapter
     /**
      * Retrieve ReCaptcha secret key (BC version)
      *
-     * @deprecated
-     *
      * @return string
+     * @deprecated
      */
     public function getPrivKey()
     {
@@ -124,9 +117,8 @@ class ReCaptcha extends AbstractAdapter
     /**
      * Retrieve ReCaptcha site key (BC version)
      *
-     * @deprecated
-     *
      * @return string
+     * @deprecated
      */
     public function getPubKey()
     {
@@ -136,10 +128,9 @@ class ReCaptcha extends AbstractAdapter
     /**
      * Set ReCaptcha secret key (BC version)
      *
-     * @deprecated
-     *
      * @param  string $key
      * @return ReCaptcha Provides a fluent interface
+     * @deprecated
      */
     public function setPrivKey($key)
     {
@@ -149,10 +140,9 @@ class ReCaptcha extends AbstractAdapter
     /**
      * Set ReCaptcha site key (BC version)
      *
-     * @deprecated
-     *
      * @param  string $key
      * @return ReCaptcha Provides a fluent interface
+     * @deprecated
      */
     public function setPubKey($key)
     {
@@ -195,6 +185,7 @@ class ReCaptcha extends AbstractAdapter
     /**
      * Set service object
      *
+     * @param  ReCaptchaService $service
      * @return ReCaptcha Provides a fluent interface
      */
     public function setService(ReCaptchaService $service)
@@ -241,7 +232,6 @@ class ReCaptcha extends AbstractAdapter
      * Generate captcha
      *
      * @see AbstractAdapter::generate()
-     *
      * @return string
      */
     public function generate()
@@ -257,7 +247,6 @@ class ReCaptcha extends AbstractAdapter
      * for this is "g-recaptcha-response"
      *
      * @see    \Laminas\Validator\ValidatorInterface::isValid()
-     *
      * @param  mixed $value
      * @param  mixed $context
      * @return bool

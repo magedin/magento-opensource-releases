@@ -1,7 +1,7 @@
 {
     "name": "symfony/http-foundation",
     "type": "library",
-    "description": "Defines an object-oriented layer for the HTTP specification",
+    "description": "Symfony HttpFoundation Component",
     "keywords": [],
     "homepage": "https://symfony.com",
     "license": "MIT",

@@ -1,7 +1,7 @@
 {
     "name": "symfony/yaml",
     "type": "library",
-    "description": "Loads and dumps YAML files",
+    "description": "Symfony Yaml Component",
     "keywords": [],
     "homepage": "https://symfony.com",
     "license": "MIT",

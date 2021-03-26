@@ -124,16 +124,13 @@ class Connection extends AbstractConnection
         $connection = $this->getConnectionString();
         set_error_handler(function ($number, $string) {
             throw new Exception\RuntimeException(
-                __CLASS__ . '::connect: Unable to connect to database',
+                __METHOD__ . ': Unable to connect to database',
                 null,
                 new Exception\ErrorException($string, $number)
             );
         });
-        try {
-            $this->resource = pg_connect($connection);
-        } finally {
-            restore_error_handler();
-        }
+        $this->resource = pg_connect($connection);
+        restore_error_handler();
 
         if ($this->resource === false) {
             throw new Exception\RuntimeException(sprintf(

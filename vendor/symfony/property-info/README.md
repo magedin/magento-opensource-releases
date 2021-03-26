@@ -1,8 +1,8 @@
 PropertyInfo Component
 ======================
 
-The PropertyInfo component extracts information about PHP class' properties
-using metadata of popular sources.
+PropertyInfo extracts information about PHP class' properties using metadata
+of popular sources.
 
 Resources
 ---------

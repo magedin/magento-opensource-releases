@@ -2,7 +2,6 @@
 
 namespace Vault\AuthenticationStrategies;
 
-use Psr\Http\Client\ClientExceptionInterface;
 use Vault\ResponseModels\Auth;
 
 /**
@@ -23,34 +22,32 @@ class AppRoleAuthenticationStrategy extends AbstractAuthenticationStrategy
     protected $secretId;
 
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
      * AppRoleAuthenticationStrategy constructor.
      *
      * @param string $roleId
      * @param string $secretId
-     * @param string $name
      */
-    public function __construct($roleId, $secretId, $name = 'approle')
+    public function __construct($roleId, $secretId)
     {
         $this->roleId = $roleId;
         $this->secretId = $secretId;
-        $this->name = $name;
     }
 
     /**
      * Returns auth for further interactions with Vault.
      *
      * @return Auth
-     * @throws ClientExceptionInterface
+     * @throws \Vault\Exceptions\TransportException
+     *
+     * @throws \Vault\Exceptions\ServerException
+     * @throws \Vault\Exceptions\ClientException
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
-    public function authenticate(): Auth
+    public function authenticate()
     {
         $response = $this->client->write(
-            '/auth/' . $this->name . '/login',
+            '/auth/approle/login',
             [
                 'role_id' => $this->roleId,
                 'secret_id' => $this->secretId,

@@ -1,30 +1,21 @@
 <?php
 
-use AlexTartan\GuzzlePsr18Adapter\Client;
+use Cache\Adapter\Common\CacheItem;
 use Cache\Adapter\PHPArray\ArrayCachePool;
-use Codeception\Test\Unit;
-use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Log\NullLogger;
 use Vault\AuthenticationStrategies\UserPassAuthenticationStrategy;
 use Vault\CachedClient;
 use Vault\ResponseModels\Response;
-use VCR\VCR;
-use Zend\Diactoros\RequestFactory;
-use Zend\Diactoros\StreamFactory;
-use Zend\Diactoros\Uri;
+use VaultTransports\Guzzle6Transport;
 
-class CachedClientTest extends Unit
+class CachedClientTest extends \Codeception\Test\Unit
 {
     /**
-     * @var UnitTester
+     * @var \UnitTester
      */
     protected $tester;
 
-    /**
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     * @throws \Vault\Exceptions\RuntimeException
-     */
-    public function testReadCache(): void
+    public function testReadCache()
     {
         $client = $this->getAuthenticatedClient()->enableReadCache()->setCache(new ArrayCachePool());
 
@@ -40,20 +31,12 @@ class CachedClientTest extends Unit
 
     /**
      * @return CachedClient
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     * @throws \Vault\Exceptions\RuntimeException
      */
-    private function getAuthenticatedClient(): CachedClient
+    private function getAuthenticatedClient()
     {
-        $client = new CachedClient(
-            new Uri('http://127.0.0.1:8200'),
-            new Client(),
-            new RequestFactory(),
-            new StreamFactory()
-        );
-
-        $client->setAuthenticationStrategy(new UserPassAuthenticationStrategy('test', 'test'));
+        $client = (new CachedClient(new Guzzle6Transport()))
+            ->setAuthenticationStrategy(new UserPassAuthenticationStrategy('test', 'test'))
+            ->setLogger(new NullLogger());
 
         $this->assertEquals($client->getAuthenticationStrategy()->getClient(), $client);
         $this->assertTrue($client->authenticate());
@@ -64,21 +47,12 @@ class CachedClientTest extends Unit
         return $client;
     }
 
-    /**
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws ClientExceptionInterface
-     * @throws \Vault\Exceptions\RuntimeException
-     */
-    public function testReadCacheKeyAlreadyInCache(): void
+    public function testReadCacheKeyAlreadyInCache()
     {
         $client = $this->getAuthenticatedClient()->enableReadCache()->setCache(new ArrayCachePool());
         $key = CachedClient::READ_CACHE_KEY . '_secret_test_2';
 
-        $cacheItem = $client->getCache()->getItem($key);
-
-        $cacheItem->set(new Response(['data' => ['value' => 'test']]))->expiresAfter(10);
-
-        $client->getCache()->save($cacheItem);
+        $client->getCache()->save((new CacheItem($key))->set(new Response(['data' => ['value' => 'test']]))->expiresAfter(10));
 
         $data = $client->read('/secret/test/2')->getData();
 
@@ -89,9 +63,9 @@ class CachedClientTest extends Unit
 
     protected function setUp()
     {
-        VCR::turnOn();
+        \VCR\VCR::turnOn();
 
-        VCR::insertCassette('unit-client');
+        \VCR\VCR::insertCassette('unit-client');
 
         return parent::setUp();
     }
@@ -99,10 +73,10 @@ class CachedClientTest extends Unit
     protected function tearDown()
     {
         // To stop recording requests, eject the cassette
-        VCR::eject();
+        \VCR\VCR::eject();
 
         // Turn off VCR to stop intercepting requests
-        VCR::turnOff();
+        \VCR\VCR::turnOff();
 
         parent::tearDown();
     }
