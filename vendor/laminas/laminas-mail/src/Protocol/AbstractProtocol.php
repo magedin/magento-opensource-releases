@@ -21,12 +21,12 @@ abstract class AbstractProtocol
     /**
      * Mail default EOL string
      */
-    const EOL = "\r\n";
+    public const EOL = "\r\n";
 
     /**
      * Default timeout in seconds for initiating session
      */
-    const TIMEOUT_CONNECTION = 30;
+    public const TIMEOUT_CONNECTION = 30;
 
     /**
      * Maximum of the transaction log
@@ -54,7 +54,7 @@ abstract class AbstractProtocol
 
     /**
      * Socket connection resource
-     * @var resource
+     * @var null|resource
      */
     protected $socket;
 
@@ -194,13 +194,15 @@ abstract class AbstractProtocol
      *
      * An example $remote string may be 'tcp://mail.example.com:25' or 'ssh://hostname.com:2222'
      *
+     * @deprecated Since 1.12.0. Implementations should use the ProtocolTrait::setupSocket() method instead.
+     * @todo Remove for 3.0.0.
      * @param  string $remote Remote
      * @throws Exception\RuntimeException
      * @return bool
      */
     protected function _connect($remote)
     {
-        // @codingStandardsIgnoreEnd
+		// @codingStandardsIgnoreEnd
         $errorNum = 0;
         $errorStr = '';
 

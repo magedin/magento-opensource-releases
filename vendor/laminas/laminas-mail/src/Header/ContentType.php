@@ -143,7 +143,7 @@ class ContentType implements UnstructuredInterface
      */
     public function addParameter($name, $value)
     {
-        $name  = strtolower($name);
+        $name  = trim(strtolower($name));
         $value = (string) $value;
 
         if (! HeaderValue::isValid($name)) {
@@ -181,7 +181,8 @@ class ContentType implements UnstructuredInterface
         if (isset($this->parameters[$name])) {
             return $this->parameters[$name];
         }
-        return;
+
+        return null;
     }
 
     /**
