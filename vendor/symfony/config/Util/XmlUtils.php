@@ -44,20 +44,24 @@ class XmlUtils
      * @throws InvalidXmlException When parsing of XML with schema or callable produces any errors unrelated to the XML parsing itself
      * @throws \RuntimeException   When DOM extension is missing
      */
-    public static function parse($content, $schemaOrCallable = null)
+    public static function parse(string $content, $schemaOrCallable = null)
     {
         if (!\extension_loaded('dom')) {
             throw new \LogicException('Extension DOM is required.');
         }
 
         $internalErrors = libxml_use_internal_errors(true);
-        $disableEntities = libxml_disable_entity_loader(true);
+        if (\LIBXML_VERSION < 20900) {
+            $disableEntities = libxml_disable_entity_loader(true);
+        }
         libxml_clear_errors();
 
         $dom = new \DOMDocument();
         $dom->validateOnParse = true;
-        if (!$dom->loadXML($content, LIBXML_NONET | (\defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
-            libxml_disable_entity_loader($disableEntities);
+        if (!$dom->loadXML($content, \LIBXML_NONET | (\defined('LIBXML_COMPACT') ? \LIBXML_COMPACT : 0))) {
+            if (\LIBXML_VERSION < 20900) {
+                libxml_disable_entity_loader($disableEntities);
+            }
 
             throw new XmlParsingException(implode("\n", static::getXmlErrors($internalErrors)));
         }
@@ -65,10 +69,12 @@ class XmlUtils
         $dom->normalizeDocument();
 
         libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
+        if (\LIBXML_VERSION < 20900) {
+            libxml_disable_entity_loader($disableEntities);
+        }
 
         foreach ($dom->childNodes as $child) {
-            if (XML_DOCUMENT_TYPE_NODE === $child->nodeType) {
+            if (\XML_DOCUMENT_TYPE_NODE === $child->nodeType) {
                 throw new XmlParsingException('Document types are not allowed.');
             }
         }
@@ -120,7 +126,7 @@ class XmlUtils
      * @throws XmlParsingException       When XML parsing returns any errors
      * @throws \RuntimeException         When DOM extension is missing
      */
-    public static function loadFile($file, $schemaOrCallable = null)
+    public static function loadFile(string $file, $schemaOrCallable = null)
     {
         if (!is_file($file)) {
             throw new \InvalidArgumentException(sprintf('Resource "%s" is not a file.', $file));
@@ -163,7 +169,7 @@ class XmlUtils
      *
      * @return mixed
      */
-    public static function convertDomElementToArray(\DOMElement $element, $checkPrefix = true)
+    public static function convertDomElementToArray(\DOMElement $element, bool $checkPrefix = true)
     {
         $prefix = (string) $element->prefix;
         $empty = true;
@@ -256,12 +262,12 @@ class XmlUtils
         }
     }
 
-    protected static function getXmlErrors($internalErrors)
+    protected static function getXmlErrors(bool $internalErrors)
     {
         $errors = [];
         foreach (libxml_get_errors() as $error) {
             $errors[] = sprintf('[%s %s] %s (in %s - line %d, column %d)',
-                LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
+                \LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
                 $error->code,
                 trim($error->message),
                 $error->file ?: 'n/a',

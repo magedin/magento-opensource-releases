@@ -32,7 +32,7 @@ class LoginPostTest extends AbstractController
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -124,7 +124,7 @@ class LoginPostTest extends AbstractController
         $errorMessage = current($this->getMessages(MessageInterface::TYPE_ERROR));
         $entities = ['&lt;', '&gt;', '&quot;', '&#039;', '&amp;'];
         foreach ($entities as $entity) {
-            $this->assertNotContains($entity, $errorMessage);
+            $this->assertStringNotContainsString($entity, $errorMessage);
         }
         $this->assertRedirect($this->stringContains('customer/account/login'));
     }
@@ -144,6 +144,24 @@ class LoginPostTest extends AbstractController
         $this->dispatch('customer/account/loginPost');
         $this->assertTrue($this->session->isLoggedIn());
         $this->assertRedirect($this->stringContains('test_redirect'));
+    }
+
+    /**
+     * @magentoConfigFixture current_store customer/startup/redirect_dashboard 0
+     * @magentoConfigFixture current_store customer/captcha/enable 0
+     *
+     * @magentoDataFixture Magento/Customer/_files/customer.php
+     *
+     * @return void
+     */
+    public function testLoginToDashboardWithIncorrectReferrer(): void
+    {
+        $redirectUrl = 'https:support.magento.com';
+        $this->prepareRequest('customer@example.com', 'password');
+        $this->getRequest()->setParam(Url::REFERER_QUERY_PARAM_NAME, $this->urlEncoder->encode($redirectUrl));
+        $this->dispatch('customer/account/loginPost');
+        $this->assertTrue($this->session->isLoggedIn());
+        $this->assertRedirect($this->stringContains('customer/account/'));
     }
 
     /**

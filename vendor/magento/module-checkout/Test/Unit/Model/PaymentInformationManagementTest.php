@@ -9,6 +9,7 @@ namespace Magento\Checkout\Test\Unit\Model;
 
 use Magento\Checkout\Api\Exception\PaymentProcessingRateLimitExceededException;
 use Magento\Checkout\Api\PaymentProcessingRateLimiterInterface;
+use Magento\Checkout\Api\PaymentSavingRateLimiterInterface;
 use Magento\Checkout\Model\PaymentInformationManagement;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
@@ -31,17 +32,17 @@ use Psr\Log\LoggerInterface;
 class PaymentInformationManagementTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $billingAddressManagementMock;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $paymentMethodManagementMock;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $cartManagementMock;
 
@@ -51,21 +52,26 @@ class PaymentInformationManagementTest extends TestCase
     protected $model;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $loggerMock;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $cartRepositoryMock;
 
     /**
-     * @var PaymentProcessingRateLimiterInterface|MockObject
+     * @var PaymentProcessingRateLimiterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $rateLimiterMock;
 
-    protected function setUp()
+    /**
+     * @var PaymentSavingRateLimiterInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $saveLimiterMock;
+
+    protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
         $this->billingAddressManagementMock = $this->createMock(
@@ -80,13 +86,15 @@ class PaymentInformationManagementTest extends TestCase
         $this->cartRepositoryMock = $this->getMockBuilder(CartRepositoryInterface::class)
             ->getMock();
         $this->rateLimiterMock = $this->getMockForAbstractClass(PaymentProcessingRateLimiterInterface::class);
+        $this->saveLimiterMock = $this->getMockForAbstractClass(PaymentSavingRateLimiterInterface::class);
         $this->model = $objectManager->getObject(
             PaymentInformationManagement::class,
             [
                 'billingAddressManagement' => $this->billingAddressManagementMock,
                 'paymentMethodManagement' => $this->paymentMethodManagementMock,
                 'cartManagement' => $this->cartManagementMock,
-                'paymentRateLimiter' => $this->rateLimiterMock
+                'paymentRateLimiter' => $this->rateLimiterMock,
+                'saveRateLimiter' => $this->saveLimiterMock
             ]
         );
         $objectManager->setBackwardCompatibleProperty($this->model, 'logger', $this->loggerMock);
@@ -117,10 +125,11 @@ class PaymentInformationManagementTest extends TestCase
     }
 
     /**
-     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
      */
     public function testSavePaymentInformationAndPlaceOrderException()
     {
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
+
         $cartId = 100;
         $paymentMock = $this->getMockForAbstractClass(PaymentInterface::class);
         $billingAddressMock = $this->getMockForAbstractClass(AddressInterface::class);
@@ -165,11 +174,10 @@ class PaymentInformationManagementTest extends TestCase
      */
     public function testSavePaymentInformationLimited(): void
     {
-        $this->rateLimiterMock->method('limit')
+        $this->saveLimiterMock->method('limit')
             ->willThrowException(new PaymentProcessingRateLimitExceededException(__('Error')));
-        $this->expectException(PaymentProcessingRateLimitExceededException::class);
 
-        $this->savePayment();
+        $this->assertFalse($this->savePayment());
     }
 
     public function testSavePaymentInformationWithoutBillingAddress()
@@ -183,11 +191,12 @@ class PaymentInformationManagementTest extends TestCase
     }
 
     /**
-     * @expectedExceptionMessage DB exception
-     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
      */
     public function testSavePaymentInformationAndPlaceOrderWithLocolizedException()
     {
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
+        $this->expectExceptionMessage('DB exception');
+
         $cartId = 100;
         $paymentMock = $this->getMockForAbstractClass(PaymentInterface::class);
         $billingAddressMock = $this->getMockForAbstractClass(AddressInterface::class);
@@ -229,7 +238,7 @@ class PaymentInformationManagementTest extends TestCase
 
     /**
      * @param int $cartId
-     * @param \PHPUnit_Framework_MockObject_MockObject $billingAddressMock
+     * @param \PHPUnit\Framework\MockObject\MockObject $billingAddressMock
      */
     private function getMockForAssignBillingAddress($cartId, $billingAddressMock)
     {

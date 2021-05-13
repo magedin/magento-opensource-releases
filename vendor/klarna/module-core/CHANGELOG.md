@@ -1,4 +1,16 @@
 
+5.4.0 / 2021-03-01
+==================
+
+  * MAGE-2711 Fix issue with product URL and images being sent to API
+  * MAGE-2905 Add support for PHP 7.4
+  * MAGE-2944 Fix Klarna not configurable when PayPal modules are removed
+
+5.3.2 / 2020-12-07
+==================
+
+  * MAGE-2602 Remove dependency on PayPal module
+
 5.3.1 / 2020-07-31
 ==================
 

@@ -1,4 +1,14 @@
 
+6.6.0 / 2021-03-01
+==================
+
+  * MAGE-2905 Add support for PHP 7.4
+
+6.5.3 / 2020-12-07
+==================
+
+  * MAGE-2194 Add MFTF test to verify $0 subtotal virtual product orders
+
 6.5.2 / 2020-07-31
 ==================
 

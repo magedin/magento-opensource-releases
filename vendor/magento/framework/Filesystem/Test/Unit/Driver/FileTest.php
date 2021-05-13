@@ -18,10 +18,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     /** @var bool Result of file_put_contents() function */
     public static $filePutContents;
 
-    /**
-     * @inheritdoc
-     */
-    public function setUp()
+    protected function setUp(): void
     {
         self::$fileGetContents = '';
         self::$filePutContents = true;
@@ -110,11 +107,16 @@ class FileTest extends \PHPUnit\Framework\TestCase
             ['/1/.test', '/1/.test'],
             ['/1/..test', '/1/..test'],
             ['/1/.test/.test', '/1/.test/.test'],
-            ['/1/2/./.', '/1/2/'],
+            ['/1/2/./.', '/1/2'],
+            ['/1/2/./././', '/1/2'],
             ['/1/2/3/../..', '/1'],
-            ['/1/2/3/.', '/1/2/3/'],
+            ['/1/2/3/.', '/1/2/3'],
             ['/1/2/3/./4/5', '/1/2/3/4/5'],
-            ['/1/2/3/../4/5', '/1/2/4/5']
+            ['/1/2/3/../4/5', '/1/2/4/5'],
+            ['1/2/.//.\3/4/..\..\5', '1/2/5'],
+            ['\./.test', '/.test'],
+            ['\\1/\\\.\..test', '/1/..test'],
+            ['/1/2\\3\\\.', '/1/2/3']
         ];
     }
 }

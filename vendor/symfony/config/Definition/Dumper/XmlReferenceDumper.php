@@ -18,7 +18,7 @@ use Symfony\Component\Config\Definition\NodeInterface;
 use Symfony\Component\Config\Definition\PrototypedArrayNode;
 
 /**
- * Dumps a XML reference configuration for the given configuration/node instance.
+ * Dumps an XML reference configuration for the given configuration/node instance.
  *
  * @author Wouter J <waldio.webdesign@gmail.com>
  */
@@ -26,12 +26,12 @@ class XmlReferenceDumper
 {
     private $reference;
 
-    public function dump(ConfigurationInterface $configuration, $namespace = null)
+    public function dump(ConfigurationInterface $configuration, string $namespace = null)
     {
         return $this->dumpNode($configuration->getConfigTreeBuilder()->buildTree(), $namespace);
     }
 
-    public function dumpNode(NodeInterface $node, $namespace = null)
+    public function dumpNode(NodeInterface $node, string $namespace = null)
     {
         $this->reference = '';
         $this->writeNode($node, 0, true, $namespace);
@@ -53,7 +53,7 @@ class XmlReferenceDumper
             });
 
             if (\count($remapping)) {
-                list($singular) = current($remapping);
+                [$singular] = current($remapping);
                 $rootName = $singular;
             }
         }
@@ -148,7 +148,8 @@ class XmlReferenceDumper
                     }
 
                     if ($child->isDeprecated()) {
-                        $comments[] = sprintf('Deprecated (%s)', $child->getDeprecationMessage($child->getName(), $node->getPath()));
+                        $deprecation = $child->getDeprecation($child->getName(), $node->getPath());
+                        $comments[] = sprintf('Deprecated (%s)', ($deprecation['package'] || $deprecation['version'] ? "Since {$deprecation['package']} {$deprecation['version']}: " : '').$deprecation['message']);
                     }
 
                     if ($child instanceof EnumNode) {
@@ -188,7 +189,7 @@ class XmlReferenceDumper
                 $commentDepth = $depth + 4 + \strlen($attrName) + 2;
                 $commentLines = explode("\n", $comment);
                 $multiline = (\count($commentLines) > 1);
-                $comment = implode(PHP_EOL.str_repeat(' ', $commentDepth), $commentLines);
+                $comment = implode(\PHP_EOL.str_repeat(' ', $commentDepth), $commentLines);
 
                 if ($multiline) {
                     $this->writeLine('<!--', $depth);
@@ -259,7 +260,7 @@ class XmlReferenceDumper
         $indent = \strlen($text) + $indent;
         $format = '%'.$indent.'s';
 
-        $this->reference .= sprintf($format, $text).PHP_EOL;
+        $this->reference .= sprintf($format, $text).\PHP_EOL;
     }
 
     /**

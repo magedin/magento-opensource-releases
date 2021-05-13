@@ -20,6 +20,7 @@ use Magento\Framework\Escaper;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
+use Magento\Framework\Stdlib\Cookie\PublicCookieMetadata;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Wishlist\Controller\Index\Cart;
@@ -150,7 +151,7 @@ class CartTest extends TestCase
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->wishlistProviderMock = $this->getMockBuilder(
             WishlistProviderInterface::class
@@ -229,16 +230,16 @@ class CartTest extends TestCase
             ->getMock();
         $this->contextMock->expects($this->any())
             ->method('getRequest')
-            ->will($this->returnValue($this->requestMock));
+            ->willReturn($this->requestMock);
         $this->contextMock->expects($this->any())
             ->method('getRedirect')
-            ->will($this->returnValue($this->redirectMock));
+            ->willReturn($this->redirectMock);
         $this->contextMock->expects($this->any())
             ->method('getObjectManager')
-            ->will($this->returnValue($this->objectManagerMock));
+            ->willReturn($this->objectManagerMock);
         $this->contextMock->expects($this->any())
             ->method('getMessageManager')
-            ->will($this->returnValue($this->messageManagerMock));
+            ->willReturn($this->messageManagerMock);
         $this->contextMock->expects($this->any())
             ->method('getUrl')
             ->willReturn($this->urlMock);
@@ -258,20 +259,30 @@ class CartTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->cookieManagerMock = $this->createMock(CookieManagerInterface::class);
+        $this->cookieManagerMock = $this->getMockForAbstractClass(CookieManagerInterface::class);
+
+        $cookieMetadataMock = $this->getMockBuilder(PublicCookieMetadata::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->cookieMetadataFactoryMock = $this->getMockBuilder(CookieMetadataFactory::class)
             ->disableOriginalConstructor()
-            ->setMethods(['createPublicCookieMetadata', 'setDuration', 'setPath', 'setHttpOnly'])
+            ->setMethods(['createPublicCookieMetadata'])
             ->getMock();
         $this->cookieMetadataFactoryMock->expects($this->any())
             ->method('createPublicCookieMetadata')
-            ->willReturnSelf();
-        $this->cookieMetadataFactoryMock->expects($this->any())
+            ->willReturn($cookieMetadataMock);
+        $cookieMetadataMock->expects($this->any())
             ->method('setDuration')
             ->willReturnSelf();
-        $this->cookieMetadataFactoryMock->expects($this->any())
+        $cookieMetadataMock->expects($this->any())
             ->method('setPath')
+            ->willReturnSelf();
+        $cookieMetadataMock->expects($this->any())
+            ->method('setSameSite')
+            ->willReturnSelf();
+        $cookieMetadataMock->expects($this->any())
+            ->method('setHttpOnly')
             ->willReturnSelf();
 
         $this->model = new Cart(
