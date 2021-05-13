@@ -322,13 +322,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/amzn/amazon-pay-sdk-php/zipball/37882f2df12e7789d6d4d7d3df6c0cd7e62779f2",
             "reference": "37882f2df12e7789d6d4d7d3df6c0cd7e62779f2",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "ext-curl": "*",
@@ -345,7 +339,7 @@
                 "AmazonPay\\": "AmazonPay/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "Apache-2.0"
         ],
@@ -444,24 +438,18 @@
     },
     {
         "name": "aws/aws-sdk-php",
-        "version": "3.176.1",
-        "version_normalized": "3.176.1.0",
+        "version": "3.178.4",
+        "version_normalized": "3.178.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aws/aws-sdk-php.git",
-            "reference": "86bce9d17ade07f9ec6f0cbe36a7917dfecb0f7e"
+            "reference": "fc3667c6054c941ae8cd8b8750f7c5c892d5a87b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/86bce9d17ade07f9ec6f0cbe36a7917dfecb0f7e",
-            "reference": "86bce9d17ade07f9ec6f0cbe36a7917dfecb0f7e",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/fc3667c6054c941ae8cd8b8750f7c5c892d5a87b",
+            "reference": "fc3667c6054c941ae8cd8b8750f7c5c892d5a87b",
+            "shasum": ""
         },
         "require": {
             "ext-json": "*",
@@ -496,7 +484,7 @@
             "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
             "ext-sockets": "To use client-side monitoring"
         },
-        "time": "2021-03-26T03:59:54+00:00",
+        "time": "2021-04-14T18:16:00+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -512,7 +500,7 @@
                 "src/functions.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "Apache-2.0"
         ],
@@ -662,13 +650,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/Behat/Gherkin/zipball/2391482cd003dfdc36b679b27e9f5326bd656acd",
             "reference": "2391482cd003dfdc36b679b27e9f5326bd656acd",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": "~7.2|~8.0"
@@ -695,7 +677,7 @@
                 "Behat\\Gherkin": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -776,13 +758,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/ChristianRiesen/base32/zipball/2e82dab3baa008e24a505649b0d583c31d31e894",
             "reference": "2e82dab3baa008e24a505649b0d583c31d31e894",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": "^7.2 || ^8.0"
@@ -805,7 +781,7 @@
                 "Base32\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -828,24 +804,18 @@
     },
     {
         "name": "codeception/codeception",
-        "version": "4.1.18",
-        "version_normalized": "4.1.18.0",
+        "version": "4.1.20",
+        "version_normalized": "4.1.20.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Codeception/Codeception.git",
-            "reference": "f47547bac347dfb5ea5351ff91148cbcc08e6818"
+            "reference": "d8b16e13e1781dbc3a7ae8292117d520c89a9c5a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Codeception/Codeception/zipball/f47547bac347dfb5ea5351ff91148cbcc08e6818",
-            "reference": "f47547bac347dfb5ea5351ff91148cbcc08e6818",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "url": "https://api.github.com/repos/Codeception/Codeception/zipball/d8b16e13e1781dbc3a7ae8292117d520c89a9c5a",
+            "reference": "d8b16e13e1781dbc3a7ae8292117d520c89a9c5a",
+            "shasum": ""
         },
         "require": {
             "behat/gherkin": "^4.4.0",
@@ -883,7 +853,7 @@
             "stecman/symfony-console-completion": "For BASH autocompletion",
             "symfony/phpunit-bridge": "For phpunit-bridge support"
         },
-        "time": "2021-02-23T17:11:42+00:00",
+        "time": "2021-04-02T16:41:51+00:00",
         "bin": [
             "codecept"
         ],
@@ -898,7 +868,7 @@
                 "Codeception\\Extension\\": "ext"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -1324,24 +1294,27 @@
     },
     {
         "name": "colinmollenhour/php-redis-session-abstract",
-        "version": "v1.4.3",
-        "version_normalized": "1.4.3.0",
+        "version": "v1.4.4",
+        "version_normalized": "1.4.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/colinmollenhour/php-redis-session-abstract.git",
-            "reference": "39ca38da5e0a981bc1a7e39a86693c128784a513"
+            "reference": "8d684bbacac99450f2a9ddf6f56be296997e2959"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/colinmollenhour/php-redis-session-abstract/zipball/39ca38da5e0a981bc1a7e39a86693c128784a513",
-            "reference": "39ca38da5e0a981bc1a7e39a86693c128784a513",
+            "url": "https://api.github.com/repos/colinmollenhour/php-redis-session-abstract/zipball/8d684bbacac99450f2a9ddf6f56be296997e2959",
+            "reference": "8d684bbacac99450f2a9ddf6f56be296997e2959",
             "shasum": ""
         },
         "require": {
             "colinmollenhour/credis": "~1.6",
-            "php": "^5.5 || ^7.0|| ^7.1 || ^7.2"
+            "php": "^5.5 || ^7.0 || ^8.0"
         },
-        "time": "2020-10-07T09:47:22+00:00",
+        "require-dev": {
+            "phpunit/phpunit": "^9"
+        },
+        "time": "2021-04-07T21:51:17+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1436,17 +1409,17 @@
     },
     {
         "name": "composer/composer",
-        "version": "1.10.19",
-        "version_normalized": "1.10.19.0",
+        "version": "1.10.20",
+        "version_normalized": "1.10.20.0",
         "source": {
             "type": "git",
             "url": "https://github.com/composer/composer.git",
-            "reference": "196601d50c08c3fae389a417a7689367fcf37cef"
+            "reference": "e55d297525f0ecc805c813a0f63a40114fd670f6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/composer/composer/zipball/196601d50c08c3fae389a417a7689367fcf37cef",
-            "reference": "196601d50c08c3fae389a417a7689367fcf37cef",
+            "url": "https://api.github.com/repos/composer/composer/zipball/e55d297525f0ecc805c813a0f63a40114fd670f6",
+            "reference": "e55d297525f0ecc805c813a0f63a40114fd670f6",
             "shasum": ""
         },
         "require": {
@@ -1476,7 +1449,7 @@
             "ext-zip": "Enabling the zip extension allows you to unzip archives",
             "ext-zlib": "Allow gzip compression of HTTP requests"
         },
-        "time": "2020-12-04T08:14:16+00:00",
+        "time": "2021-01-27T14:41:06+00:00",
         "bin": [
             "bin/composer"
         ],
@@ -1696,13 +1669,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/composer/xdebug-handler/zipball/f27e06cd9675801df441b3656569b328e04aa37c",
             "reference": "f27e06cd9675801df441b3656569b328e04aa37c",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": "^5.3.2 || ^7.0 || ^8.0",
@@ -1720,7 +1687,7 @@
                 "Composer\\XdebugHandler\\": "src"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -1797,13 +1764,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/CSharpRU/vault-php/zipball/de812a9667a1111c4f4d4080b2c9166692ee9efe",
             "reference": "de812a9667a1111c4f4d4080b2c9166692ee9efe",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "ext-json": "*",
@@ -1832,7 +1793,7 @@
                 "Vault\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -2010,13 +1971,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/doctrine/annotations/zipball/b17c5014ef81d212ac539f07a1001832df1b6d3b",
             "reference": "b17c5014ef81d212ac539f07a1001832df1b6d3b",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "doctrine/lexer": "1.*",
@@ -2037,7 +1992,7 @@
                 "Doctrine\\Common\\Annotations\\": "lib/Doctrine/Common/Annotations"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -2229,13 +2184,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/5992d7836868b408e73d0d490c779dda7a39135e",
             "reference": "5992d7836868b408e73d0d490c779dda7a39135e",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=5.3.0"
@@ -2253,7 +2202,7 @@
                 "src/UserAgentParser.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -2384,17 +2333,17 @@
     },
     {
         "name": "dotmailer/dotmailer-magento2-extension-package",
-        "version": "4.10.0",
-        "version_normalized": "4.10.0.0",
+        "version": "4.10.1",
+        "version_normalized": "4.10.1.0",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/dotmailer/dotmailer-magento2-extension-package/dotmailer-dotmailer-magento2-extension-package-4.10.0.0.zip",
-            "shasum": "429554389e4699ba919aea396fd810eea6751a1b"
+            "url": "https://repo.magento.com/archives/dotmailer/dotmailer-magento2-extension-package/dotmailer-dotmailer-magento2-extension-package-4.10.1.0.zip",
+            "shasum": "959f5a0580ebcd67c41a0b748d02d1acb301b6a5"
         },
         "require": {
             "dotmailer/dotmailer-magento2-extension": "4.10.0",
             "dotmailer/dotmailer-magento2-extension-chat": "1.3.0",
-            "dotmailer/dotmailer-magento2-extension-sms": "1.0.0"
+            "dotmailer/dotmailer-magento2-extension-sms": "1.0.1"
         },
         "type": "metapackage",
         "license": [
@@ -2404,12 +2353,12 @@
     },
     {
         "name": "dotmailer/dotmailer-magento2-extension-sms",
-        "version": "1.0.0",
-        "version_normalized": "1.0.0.0",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/dotmailer/dotmailer-magento2-extension-sms/dotmailer-dotmailer-magento2-extension-sms-1.0.0.0.zip",
-            "shasum": "0aafa7004cd119570c9a78e6ea6983ac5ae16019"
+            "url": "https://repo.magento.com/archives/dotmailer/dotmailer-magento2-extension-sms/dotmailer-dotmailer-magento2-extension-sms-1.0.1.0.zip",
+            "shasum": "0e01a1add9a65b3cb3e934cfa14154a4f063f7c1"
         },
         "require": {
             "dotmailer/dotmailer-magento2-extension": "^4.10.0",
@@ -2916,13 +2865,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/guzzle/promises/zipball/8e7d04f1f6450fef59366c399cfad4b9383aa30d",
             "reference": "8e7d04f1f6450fef59366c399cfad4b9383aa30d",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=5.5"
@@ -2946,7 +2889,7 @@
                 "src/functions_include.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -2975,13 +2918,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/guzzle/psr7/zipball/35ea11d335fd638b5882ff1725228b3d35496ab1",
             "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=5.4.0",
@@ -3014,7 +2951,7 @@
                 "src/functions_include.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -4273,13 +4210,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-captcha/zipball/9a0134e434cd792934ecca42cb66f316be7bba50",
             "reference": "9a0134e434cd792934ecca42cb66f316be7bba50",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-math": "^2.7 || ^3.0",
@@ -4315,7 +4246,7 @@
                 "Laminas\\Captcha\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -4586,13 +4517,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-db/zipball/80cbba4e749f9eb7d8036172acb9ad41e8b6923f",
             "reference": "80cbba4e749f9eb7d8036172acb9ad41e8b6923f",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-stdlib": "^3.3",
@@ -4629,7 +4554,7 @@
                 "Laminas\\Db\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -4659,13 +4584,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-dependency-plugin/zipball/c5b4bf87729d6f38c73ca8ed22a5d62ec641d075",
             "reference": "c5b4bf87729d6f38c73ca8ed22a5d62ec641d075",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "composer-plugin-api": "^1.1 || ^2.0",
@@ -4687,7 +4606,7 @@
                 "Laminas\\DependencyPlugin\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -4899,13 +4818,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-eventmanager/zipball/966c859b67867b179fde1eff0cd38df51472ce4a",
             "reference": "966c859b67867b179fde1eff0cd38df51472ce4a",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-zendframework-bridge": "^1.0",
@@ -4933,7 +4846,7 @@
                 "Laminas\\EventManager\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5040,13 +4953,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-filter/zipball/dd295a15f5c13d0c13d69ca0107190b1f2083d91",
             "reference": "dd295a15f5c13d0c13d69ca0107190b1f2083d91",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-stdlib": "^3.3",
@@ -5092,7 +4999,7 @@
                 "Laminas\\Filter\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5122,13 +5029,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-form/zipball/37c5f5ac9240159f5d93f52367d0e57fa96f9b22",
             "reference": "37c5f5ac9240159f5d93f52367d0e57fa96f9b22",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-hydrator": "^1.1 || ^2.1 || ^3.0",
@@ -5184,7 +5085,7 @@
                 "autoload/formElementManagerPolyfill.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5214,13 +5115,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-http/zipball/bfaab8093e382274efed7fdc3ceb15f09ba352bb",
             "reference": "bfaab8093e382274efed7fdc3ceb15f09ba352bb",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-loader": "^2.5.1",
@@ -5249,7 +5144,7 @@
                 "Laminas\\Http\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5335,17 +5230,17 @@
     },
     {
         "name": "laminas/laminas-i18n",
-        "version": "2.11.0",
-        "version_normalized": "2.11.0.0",
+        "version": "2.11.1",
+        "version_normalized": "2.11.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-i18n.git",
-            "reference": "85678f444b6dcb48e8a04591779e11c24e5bb901"
+            "reference": "5e85a8facc5534e856cc7f5b4326533eede84b8a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/85678f444b6dcb48e8a04591779e11c24e5bb901",
-            "reference": "85678f444b6dcb48e8a04591779e11c24e5bb901",
+            "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/5e85a8facc5534e856cc7f5b4326533eede84b8a",
+            "reference": "5e85a8facc5534e856cc7f5b4326533eede84b8a",
             "shasum": ""
         },
         "require": {
@@ -5381,7 +5276,7 @@
             "laminas/laminas-validator": "You should install this package to use the provided validators",
             "laminas/laminas-view": "You should install this package to use the provided view helpers"
         },
-        "time": "2020-10-24T13:14:32+00:00",
+        "time": "2021-04-07T21:10:50+00:00",
         "type": "library",
         "extra": {
             "laminas": {
@@ -5549,13 +5444,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-loader/zipball/bcf8a566cb9925a2e7cc41a16db09235ec9fb616",
             "reference": "bcf8a566cb9925a2e7cc41a16db09235ec9fb616",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-zendframework-bridge": "^1.0",
@@ -5576,7 +5465,7 @@
                 "Laminas\\Loader\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5682,13 +5571,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-mail/zipball/542686aebf480c6902ad7f08b52498e94818bc0a",
             "reference": "542686aebf480c6902ad7f08b52498e94818bc0a",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "ext-iconv": "*",
@@ -5729,7 +5612,7 @@
                 "Laminas\\Mail\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -5815,13 +5698,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-mime/zipball/9a59704f33106427a384d0ae421f96043174093a",
             "reference": "9a59704f33106427a384d0ae421f96043174093a",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-stdlib": "^2.7 || ^3.0",
@@ -5847,7 +5724,7 @@
                 "Laminas\\Mime\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6103,13 +5980,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-serializer/zipball/1c57f1bdf05da078493b774c9e8d77ee8b46b4bb",
             "reference": "1c57f1bdf05da078493b774c9e8d77ee8b46b4bb",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-json": "^2.5 || ^3.0",
@@ -6144,7 +6015,7 @@
                 "Laminas\\Serializer\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6163,17 +6034,17 @@
     },
     {
         "name": "laminas/laminas-server",
-        "version": "2.9.1",
-        "version_normalized": "2.9.1.0",
+        "version": "2.9.2",
+        "version_normalized": "2.9.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/laminas/laminas-server.git",
-            "reference": "9b82e3e45f8f01ca6ac5d0003dba58f85043d7e4"
+            "reference": "b91fd8aed71a6b45addc55eda4bb4c3adb21b698"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/laminas/laminas-server/zipball/9b82e3e45f8f01ca6ac5d0003dba58f85043d7e4",
-            "reference": "9b82e3e45f8f01ca6ac5d0003dba58f85043d7e4",
+            "url": "https://api.github.com/repos/laminas/laminas-server/zipball/b91fd8aed71a6b45addc55eda4bb4c3adb21b698",
+            "reference": "b91fd8aed71a6b45addc55eda4bb4c3adb21b698",
             "shasum": ""
         },
         "require": {
@@ -6191,7 +6062,7 @@
             "psalm/plugin-phpunit": "^0.13.0",
             "vimeo/psalm": "^4.2"
         },
-        "time": "2020-12-01T21:06:52+00:00",
+        "time": "2021-04-08T13:10:08+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -6363,13 +6234,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-soap/zipball/11672a79e9074fd8e4e7aedd75849902e7b45e23",
             "reference": "11672a79e9074fd8e4e7aedd75849902e7b45e23",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "ext-dom": "*",
@@ -6402,7 +6267,7 @@
                 "Laminas\\Soap\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6537,13 +6402,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-uri/zipball/79bd4c614c8cf9a6ba715a49fca8061e84933d87",
             "reference": "79bd4c614c8cf9a6ba715a49fca8061e84933d87",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "laminas/laminas-escaper": "^2.5",
@@ -6566,7 +6425,7 @@
                 "Laminas\\Uri\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6596,13 +6455,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/e370c4695db1c81e6dfad38d8c4dbdb37b23d776",
             "reference": "e370c4695db1c81e6dfad38d8c4dbdb37b23d776",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "container-interop/container-interop": "^1.1",
@@ -6658,7 +6511,7 @@
                 "Laminas\\Validator\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -6781,13 +6634,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/6cccbddfcfc742eb02158d6137ca5687d92cee32",
             "reference": "6cccbddfcfc742eb02158d6137ca5687d92cee32",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": "^7.3 || ^8.0"
@@ -6814,7 +6661,7 @@
                 "Laminas\\ZendFrameworkBridge\\": "src//"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -7273,16 +7120,16 @@
     },
     {
         "name": "magento/composer-root-update-plugin",
-        "version": "1.1.0",
-        "version_normalized": "1.1.0.0",
+        "version": "1.1.1",
+        "version_normalized": "1.1.1.0",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/composer-root-update-plugin/magento-composer-root-update-plugin-1.1.0.0.zip",
-            "shasum": "9cb8b067cd47ecd11f8bdeb2dfeb9c5d168cb454"
+            "url": "https://repo.magento.com/archives/magento/composer-root-update-plugin/magento-composer-root-update-plugin-1.1.1.0.zip",
+            "shasum": "b8a13e67100cfeb4ba6afc4ba9a62efbff61f4e3"
         },
         "require": {
             "composer-plugin-api": "^1.0 || ^2.0",
-            "composer/composer": "<=1.10.19 || >=2.0.0 <=2.0.8"
+            "composer/composer": "<=1.10.20 || >=2.0.0 <=2.0.11"
         },
         "suggest": {
             "magento/framework": "Enables the Magento Composer Root Update Plugin's functionality for the Web Setup Wizard"
@@ -7308,12 +7155,12 @@
     },
     {
         "name": "magento/framework",
-        "version": "103.0.2",
-        "version_normalized": "103.0.2.0",
+        "version": "103.0.2-p1",
+        "version_normalized": "103.0.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/framework/magento-framework-103.0.2.0.zip",
-            "shasum": "11fec5446927f5760f89ed8b4d58d6af87a35823"
+            "url": "https://repo.magento.com/archives/magento/framework/magento-framework-103.0.2.0-patch1.zip",
+            "shasum": "498c034dc2fe9c402383f6d2c165c3cfc761a355"
         },
         "require": {
             "colinmollenhour/php-redis-session-abstract": "~1.4.0",
@@ -7817,17 +7664,17 @@
     },
     {
         "name": "magento/magento-composer-installer",
-        "version": "0.2.0",
-        "version_normalized": "0.2.0.0",
+        "version": "0.2.1",
+        "version_normalized": "0.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/magento/magento-composer-installer.git",
-            "reference": "4adc8a98ae6ba18e9e3a8d03ce6c40adc33bb273"
+            "reference": "b9f929f718ef93ed61b6410bad85d40c37fd5ed3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/magento/magento-composer-installer/zipball/4adc8a98ae6ba18e9e3a8d03ce6c40adc33bb273",
-            "reference": "4adc8a98ae6ba18e9e3a8d03ce6c40adc33bb273",
+            "url": "https://api.github.com/repos/magento/magento-composer-installer/zipball/b9f929f718ef93ed61b6410bad85d40c37fd5ed3",
+            "reference": "b9f929f718ef93ed61b6410bad85d40c37fd5ed3",
             "shasum": ""
         },
         "require": {
@@ -7845,7 +7692,7 @@
             "squizlabs/php_codesniffer": "1.4.7",
             "symfony/process": "*"
         },
-        "time": "2020-12-17T20:07:29+00:00",
+        "time": "2021-03-04T20:05:10+00:00",
         "type": "composer-plugin",
         "extra": {
             "composer-command-registry": [
@@ -7898,12 +7745,12 @@
     },
     {
         "name": "magento/magento2-base",
-        "version": "2.4.2",
-        "version_normalized": "2.4.2.0",
+        "version": "2.4.2-p1",
+        "version_normalized": "2.4.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/magento2-base/magento-magento2-base-2.4.2.0.zip",
-            "shasum": "00e6bca23f7288a1d73e52cf2888b6a03491dfea"
+            "url": "https://repo.magento.com/archives/magento/magento2-base/magento-magento2-base-2.4.2.0-patch1.zip",
+            "shasum": "0bd7152f30a5276406cd092ca726ea803e32f815"
         },
         "require": {
             "composer/composer": "^1.9 || ^2.0",
@@ -7978,6 +7825,10 @@
                 [
                     ".editorconfig",
                     ".editorconfig"
+                ],
+                [
+                    ".gitignore",
+                    ".gitignore"
                 ],
                 [
                     ".htaccess",
@@ -8442,24 +8293,18 @@
     },
     {
         "name": "magento/magento2-functional-testing-framework",
-        "version": "3.4.0",
-        "version_normalized": "3.4.0.0",
+        "version": "3.5.0",
+        "version_normalized": "3.5.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/magento/magento2-functional-testing-framework.git",
-            "reference": "edd12c0dfef32fb9fc969c18a1d468b655d73bd6"
+            "reference": "4cb2b5bc50c9d1277c647fac0b83f00cb8580be1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/magento/magento2-functional-testing-framework/zipball/edd12c0dfef32fb9fc969c18a1d468b655d73bd6",
-            "reference": "edd12c0dfef32fb9fc969c18a1d468b655d73bd6",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "url": "https://api.github.com/repos/magento/magento2-functional-testing-framework/zipball/4cb2b5bc50c9d1277c647fac0b83f00cb8580be1",
+            "reference": "4cb2b5bc50c9d1277c647fac0b83f00cb8580be1",
+            "shasum": ""
         },
         "require": {
             "allure-framework/allure-codeception": "~1.4.0",
@@ -8508,7 +8353,7 @@
             "squizlabs/php_codesniffer": "~3.5.4",
             "symfony/stopwatch": "~3.4.6"
         },
-        "time": "2021-03-10T21:07:00+00:00",
+        "time": "2021-04-06T17:58:00+00:00",
         "bin": [
             "bin/mftf"
         ],
@@ -8528,7 +8373,7 @@
                 "MFTF\\": "dev/tests/functional/tests/MFTF"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "AGPL-3.0"
         ],
@@ -9514,12 +9359,12 @@
     },
     {
         "name": "magento/module-catalog",
-        "version": "104.0.2",
-        "version_normalized": "104.0.2.0",
+        "version": "104.0.2-p1",
+        "version_normalized": "104.0.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-catalog/magento-module-catalog-104.0.2.0.zip",
-            "shasum": "91a30c6dea91786cb3239f42a5f5a597b2dd37ac"
+            "url": "https://repo.magento.com/archives/magento/module-catalog/magento-module-catalog-104.0.2.0-patch1.zip",
+            "shasum": "52b0f80b778a10a76d0ef80ee7087014f09a1fac"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -10738,12 +10583,12 @@
     },
     {
         "name": "magento/module-customer",
-        "version": "103.0.2",
-        "version_normalized": "103.0.2.0",
+        "version": "103.0.2-p1",
+        "version_normalized": "103.0.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-customer/magento-module-customer-103.0.2.0.zip",
-            "shasum": "8a6ca41af4db7122e58c69b95de25f689e0d88f4"
+            "url": "https://repo.magento.com/archives/magento/module-customer/magento-module-customer-103.0.2.0-patch1.zip",
+            "shasum": "bdbc3032dacc456bb64e06226aeeaa240675dbd9"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -14467,12 +14312,12 @@
     },
     {
         "name": "magento/module-login-as-customer-admin-ui",
-        "version": "100.4.2",
-        "version_normalized": "100.4.2.0",
+        "version": "100.4.2-p1",
+        "version_normalized": "100.4.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-admin-ui/magento-module-login-as-customer-admin-ui-100.4.2.0.zip",
-            "shasum": "fa15ec611dcdf27b093ff21e5405d8e2f3cc97ea"
+            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-admin-ui/magento-module-login-as-customer-admin-ui-100.4.2.0-patch1.zip",
+            "shasum": "bda51ab1d056d93807196a17e91fa0fca49bcc5c"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -14533,15 +14378,16 @@
     },
     {
         "name": "magento/module-login-as-customer-assistance",
-        "version": "100.4.1",
-        "version_normalized": "100.4.1.0",
+        "version": "100.4.1-p1",
+        "version_normalized": "100.4.1.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-assistance/magento-module-login-as-customer-assistance-100.4.1.0.zip",
-            "shasum": "ca2a9774eae61e3bf58a4ca4ef43f7ab9ffb4ec1"
+            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-assistance/magento-module-login-as-customer-assistance-100.4.1.0-patch1.zip",
+            "shasum": "9adf4bbaf777073ad337f81549798a9b5eb950a3"
         },
         "require": {
             "magento/framework": "103.0.*",
+            "magento/module-authorization": "100.4.*",
             "magento/module-backend": "102.0.*",
             "magento/module-customer": "103.0.*",
             "magento/module-login-as-customer": "100.4.*",
@@ -14569,12 +14415,12 @@
     },
     {
         "name": "magento/module-login-as-customer-frontend-ui",
-        "version": "100.4.2",
-        "version_normalized": "100.4.2.0",
+        "version": "100.4.2-p1",
+        "version_normalized": "100.4.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-frontend-ui/magento-module-login-as-customer-frontend-ui-100.4.2.0.zip",
-            "shasum": "185fadff2c234e6373b41ae50610299ccfab5bc8"
+            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-frontend-ui/magento-module-login-as-customer-frontend-ui-100.4.2.0-patch1.zip",
+            "shasum": "17bfa207563a3069a2d566473d9fdcd13db869be"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -14637,12 +14483,12 @@
     },
     {
         "name": "magento/module-login-as-customer-log",
-        "version": "100.4.1",
-        "version_normalized": "100.4.1.0",
+        "version": "100.4.1-p1",
+        "version_normalized": "100.4.1.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-log/magento-module-login-as-customer-log-100.4.1.0.zip",
-            "shasum": "32a4bfa71d0af6cba3671643d4e004e41dc62276"
+            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-log/magento-module-login-as-customer-log-100.4.1.0-patch1.zip",
+            "shasum": "70a17bacfca8769bb1c51add30e6bfb71e9f5f89"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -14673,12 +14519,12 @@
     },
     {
         "name": "magento/module-login-as-customer-page-cache",
-        "version": "100.4.2",
-        "version_normalized": "100.4.2.0",
+        "version": "100.4.2-p1",
+        "version_normalized": "100.4.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-page-cache/magento-module-login-as-customer-page-cache-100.4.2.0.zip",
-            "shasum": "eb809d9d8edc6421347d63ad454e90c66133c45b"
+            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-page-cache/magento-module-login-as-customer-page-cache-100.4.2.0-patch1.zip",
+            "shasum": "bc1d7537a87fef2abc747613e18c5aa19e580552"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -14706,12 +14552,12 @@
     },
     {
         "name": "magento/module-login-as-customer-quote",
-        "version": "100.4.1",
-        "version_normalized": "100.4.1.0",
+        "version": "100.4.1-p1",
+        "version_normalized": "100.4.1.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-quote/magento-module-login-as-customer-quote-100.4.1.0.zip",
-            "shasum": "cfe21dd9f907a2247d7f71e1832495a92ee10105"
+            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-quote/magento-module-login-as-customer-quote-100.4.1.0-patch1.zip",
+            "shasum": "139677f659da331ddcfc8a90e1b2a11338ccb03f"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -14740,12 +14586,12 @@
     },
     {
         "name": "magento/module-login-as-customer-sales",
-        "version": "100.4.2",
-        "version_normalized": "100.4.2.0",
+        "version": "100.4.2-p1",
+        "version_normalized": "100.4.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-sales/magento-module-login-as-customer-sales-100.4.2.0.zip",
-            "shasum": "e42b2b433981189109515b0d502b8bc6ea3f65d7"
+            "url": "https://repo.magento.com/archives/magento/module-login-as-customer-sales/magento-module-login-as-customer-sales-100.4.2.0-patch1.zip",
+            "shasum": "4a4e402bcc7e17c797cdcfff7bf6552ee4882f7c"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -16040,12 +15886,12 @@
     },
     {
         "name": "magento/module-payment",
-        "version": "100.4.2",
-        "version_normalized": "100.4.2.0",
+        "version": "100.4.2-p1",
+        "version_normalized": "100.4.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-payment/magento-module-payment-100.4.2.0.zip",
-            "shasum": "5b01a5b5bccb252c9be9312f627221ac076e49bf"
+            "url": "https://repo.magento.com/archives/magento/module-payment/magento-module-payment-100.4.2.0-patch1.zip",
+            "shasum": "8a71fc6f0e7b73117becc3f3ff52521113e1b1c3"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -16076,12 +15922,12 @@
     },
     {
         "name": "magento/module-paypal",
-        "version": "101.0.2",
-        "version_normalized": "101.0.2.0",
+        "version": "101.0.2-p1",
+        "version_normalized": "101.0.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-paypal/magento-module-paypal-101.0.2.0.zip",
-            "shasum": "da282e465a9cc5503b7a8669e71d10ff557a6252"
+            "url": "https://repo.magento.com/archives/magento/module-paypal/magento-module-paypal-101.0.2.0-patch1.zip",
+            "shasum": "36ef72ea7d7a879a11e841cc811c60ab99074fc3"
         },
         "require": {
             "lib-libxml": "*",
@@ -16274,12 +16120,12 @@
     },
     {
         "name": "magento/module-product-video",
-        "version": "100.4.2",
-        "version_normalized": "100.4.2.0",
+        "version": "100.4.2-p1",
+        "version_normalized": "100.4.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-product-video/magento-module-product-video-100.4.2.0.zip",
-            "shasum": "28d30c8844bfb32fa5192b76f1a44398bdcaccfd"
+            "url": "https://repo.magento.com/archives/magento/module-product-video/magento-module-product-video-100.4.2.0-patch1.zip",
+            "shasum": "8e1d0c9621461c91fb70a9db5554f86cfb476224"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -17743,12 +17589,12 @@
     },
     {
         "name": "magento/module-security",
-        "version": "100.4.2",
-        "version_normalized": "100.4.2.0",
+        "version": "100.4.2-p1",
+        "version_normalized": "100.4.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-security/magento-module-security-100.4.2.0.zip",
-            "shasum": "6234ae8b2150d9e5e0582ed504c8bb6966618cb5"
+            "url": "https://repo.magento.com/archives/magento/module-security/magento-module-security-100.4.2.0-patch1.zip",
+            "shasum": "62a169c0121245f1162f316513a8acdde2d3debd"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -18794,12 +18640,12 @@
     },
     {
         "name": "magento/module-vault",
-        "version": "101.2.2",
-        "version_normalized": "101.2.2.0",
+        "version": "101.2.2-p1",
+        "version_normalized": "101.2.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/module-vault/magento-module-vault-101.2.2.0.zip",
-            "shasum": "bd2c178fa43eec15fc402f796eb67a456de37347"
+            "url": "https://repo.magento.com/archives/magento/module-vault/magento-module-vault-101.2.2.0-patch1.zip",
+            "shasum": "88e031d3720198dcbdbe5d9520d8b0f0c03fbe98"
         },
         "require": {
             "magento/framework": "103.0.*",
@@ -19222,12 +19068,12 @@
     },
     {
         "name": "magento/product-community-edition",
-        "version": "2.4.2",
-        "version_normalized": "2.4.2.0",
+        "version": "2.4.2-p1",
+        "version_normalized": "2.4.2.0-patch1",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/magento/product-community-edition/magento-product-community-edition-2.4.2.0.zip",
-            "shasum": "ed5bfe54452a36d6a44d5dd6b5dca92792d4f31f"
+            "url": "https://repo.magento.com/archives/magento/product-community-edition/magento-product-community-edition-2.4.2.0-patch1.zip",
+            "shasum": "1025d6e9598c272815d8bf508e7bb54cbe85158a"
         },
         "require": {
             "amzn/amazon-pay-and-login-magento-2-module": "4.2.0",
@@ -19236,7 +19082,7 @@
             "colinmollenhour/credis": "1.11.1",
             "colinmollenhour/php-redis-session-abstract": "~1.4.0",
             "composer/composer": "^1.9 || ^2.0",
-            "dotmailer/dotmailer-magento2-extension-package": "4.10.0",
+            "dotmailer/dotmailer-magento2-extension-package": "4.10.1",
             "elasticsearch/elasticsearch": "~7.7.0",
             "ext-bcmath": "*",
             "ext-ctype": "*",
@@ -19290,7 +19136,7 @@
             "lib-libxml": "*",
             "magento/adobe-stock-integration": "2.1.1",
             "magento/composer": "1.6.0",
-            "magento/framework": "103.0.2",
+            "magento/framework": "103.0.2-p1",
             "magento/framework-amqp": "100.4.1",
             "magento/framework-bulk": "101.0.0",
             "magento/framework-message-queue": "100.4.2",
@@ -19304,7 +19150,7 @@
             "magento/language-pt_br": "100.4.0",
             "magento/language-zh_hans_cn": "100.4.0",
             "magento/magento-composer-installer": ">=0.1.11",
-            "magento/magento2-base": "2.4.2",
+            "magento/magento2-base": "2.4.2-p1",
             "magento/module-admin-analytics": "100.4.2",
             "magento/module-admin-notification": "100.4.1",
             "magento/module-advanced-pricing-import-export": "100.4.2",
@@ -19323,7 +19169,7 @@
             "magento/module-cache-invalidate": "100.4.1",
             "magento/module-captcha": "100.4.2",
             "magento/module-cardinal-commerce": "100.4.1",
-            "magento/module-catalog": "104.0.2",
+            "magento/module-catalog": "104.0.2-p1",
             "magento/module-catalog-analytics": "100.4.1",
             "magento/module-catalog-cms-graph-ql": "100.4.0",
             "magento/module-catalog-customer-graph-ql": "100.4.2",
@@ -19356,7 +19202,7 @@
             "magento/module-cron": "100.4.2",
             "magento/module-csp": "100.4.1",
             "magento/module-currency-symbol": "100.4.1",
-            "magento/module-customer": "103.0.2",
+            "magento/module-customer": "103.0.2-p1",
             "magento/module-customer-analytics": "100.4.1",
             "magento/module-customer-downloadable-graph-ql": "100.4.0",
             "magento/module-customer-graph-ql": "100.4.2",
@@ -19394,15 +19240,15 @@
             "magento/module-integration": "100.4.2",
             "magento/module-layered-navigation": "100.4.2",
             "magento/module-login-as-customer": "100.4.2",
-            "magento/module-login-as-customer-admin-ui": "100.4.2",
+            "magento/module-login-as-customer-admin-ui": "100.4.2-p1",
             "magento/module-login-as-customer-api": "100.4.2",
-            "magento/module-login-as-customer-assistance": "100.4.1",
-            "magento/module-login-as-customer-frontend-ui": "100.4.2",
+            "magento/module-login-as-customer-assistance": "100.4.1-p1",
+            "magento/module-login-as-customer-frontend-ui": "100.4.2-p1",
             "magento/module-login-as-customer-graph-ql": "100.4.0",
-            "magento/module-login-as-customer-log": "100.4.1",
-            "magento/module-login-as-customer-page-cache": "100.4.2",
-            "magento/module-login-as-customer-quote": "100.4.1",
-            "magento/module-login-as-customer-sales": "100.4.2",
+            "magento/module-login-as-customer-log": "100.4.1-p1",
+            "magento/module-login-as-customer-page-cache": "100.4.2-p1",
+            "magento/module-login-as-customer-quote": "100.4.1-p1",
+            "magento/module-login-as-customer-sales": "100.4.2-p1",
             "magento/module-marketplace": "100.4.1",
             "magento/module-media-content": "100.4.2",
             "magento/module-media-content-api": "100.4.2",
@@ -19441,13 +19287,13 @@
             "magento/module-offline-payments": "100.4.1",
             "magento/module-offline-shipping": "100.4.1",
             "magento/module-page-cache": "100.4.2",
-            "magento/module-payment": "100.4.2",
-            "magento/module-paypal": "101.0.2",
+            "magento/module-payment": "100.4.2-p1",
+            "magento/module-paypal": "101.0.2-p1",
             "magento/module-paypal-captcha": "100.4.0",
             "magento/module-paypal-graph-ql": "100.4.1",
             "magento/module-persistent": "100.4.2",
             "magento/module-product-alert": "100.4.1",
-            "magento/module-product-video": "100.4.2",
+            "magento/module-product-video": "100.4.2-p1",
             "magento/module-quote": "101.2.2",
             "magento/module-quote-analytics": "100.4.2",
             "magento/module-quote-bundle-options": "100.4.0",
@@ -19473,7 +19319,7 @@
             "magento/module-sales-sequence": "100.4.1",
             "magento/module-sample-data": "100.4.1",
             "magento/module-search": "101.1.2",
-            "magento/module-security": "100.4.2",
+            "magento/module-security": "100.4.2-p1",
             "magento/module-send-friend": "100.4.1",
             "magento/module-send-friend-graph-ql": "100.4.0",
             "magento/module-shipping": "100.4.2",
@@ -19500,7 +19346,7 @@
             "magento/module-user": "101.2.2",
             "magento/module-usps": "100.4.1",
             "magento/module-variable": "100.4.0",
-            "magento/module-vault": "101.2.2",
+            "magento/module-vault": "101.2.2-p1",
             "magento/module-vault-graph-ql": "100.4.0",
             "magento/module-version": "100.4.0",
             "magento/module-webapi": "100.4.1",
@@ -19519,7 +19365,7 @@
             "magento/zendframework1": "~1.14.2",
             "monolog/monolog": "^1.17",
             "paragonie/sodium_compat": "^1.6",
-            "paypal/module-braintree": "4.2.1",
+            "paypal/module-braintree": "4.2.2",
             "pelago/emogrifier": "^3.1.0",
             "php": "~7.3.0||~7.4.0",
             "php-amqplib/php-amqplib": "~2.10.0",
@@ -20014,13 +19860,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/myclabs/php-enum/zipball/46cf3d8498b095bd33727b13fd5707263af99421",
             "reference": "46cf3d8498b095bd33727b13fd5707263af99421",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "ext-json": "*",
@@ -20039,7 +19879,7 @@
                 "MyCLabs\\Enum\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -20078,13 +19918,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/bd43ec7152eaaab3bd8c6d0aa95ceeb1df8ee120",
             "reference": "bd43ec7152eaaab3bd8c6d0aa95ceeb1df8ee120",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "ext-tokenizer": "*",
@@ -20110,7 +19944,7 @@
                 "PhpParser\\": "lib/PhpParser"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -20238,17 +20072,17 @@
     },
     {
         "name": "paragonie/sodium_compat",
-        "version": "v1.14.0",
-        "version_normalized": "1.14.0.0",
+        "version": "v1.15.3",
+        "version_normalized": "1.15.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/paragonie/sodium_compat.git",
-            "reference": "a1cfe0b21faf9c0b61ac0c6188c4af7fd6fd0db3"
+            "reference": "69ac8357b0b5916e997226143a401ce2c09f5585"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/a1cfe0b21faf9c0b61ac0c6188c4af7fd6fd0db3",
-            "reference": "a1cfe0b21faf9c0b61ac0c6188c4af7fd6fd0db3",
+            "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/69ac8357b0b5916e997226143a401ce2c09f5585",
+            "reference": "69ac8357b0b5916e997226143a401ce2c09f5585",
             "shasum": ""
         },
         "require": {
@@ -20262,7 +20096,7 @@
             "ext-libsodium": "PHP < 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security.",
             "ext-sodium": "PHP >= 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security."
         },
-        "time": "2020-12-03T16:26:19+00:00",
+        "time": "2021-04-14T21:40:16+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -20322,15 +20156,15 @@
     },
     {
         "name": "paypal/module-braintree",
-        "version": "4.2.1",
-        "version_normalized": "4.2.1.0",
+        "version": "4.2.2",
+        "version_normalized": "4.2.2.0",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/paypal/module-braintree/paypal-module-braintree-4.2.1.0.zip",
-            "shasum": "e28de9ccbd9c818caf38f90010300bbc55c67d6c"
+            "url": "https://repo.magento.com/archives/paypal/module-braintree/paypal-module-braintree-4.2.2.0.zip",
+            "shasum": "ad17d065c3339d97a689a8f66cdc33b42e019ecf"
         },
         "require": {
-            "paypal/module-braintree-core": "4.2.1",
+            "paypal/module-braintree-core": "4.2.2",
             "paypal/module-braintree-graph-ql": "4.1.2"
         },
         "type": "metapackage",
@@ -20341,12 +20175,12 @@
     },
     {
         "name": "paypal/module-braintree-core",
-        "version": "4.2.1",
-        "version_normalized": "4.2.1.0",
+        "version": "4.2.2",
+        "version_normalized": "4.2.2.0",
         "dist": {
             "type": "zip",
-            "url": "https://repo.magento.com/archives/paypal/module-braintree-core/paypal-module-braintree-core-4.2.1.0.zip",
-            "shasum": "a1281e964c6b7ce26824d53c80c71b778d2e3d8c"
+            "url": "https://repo.magento.com/archives/paypal/module-braintree-core/paypal-module-braintree-core-4.2.2.0.zip",
+            "shasum": "7a8ac3225ac5ae57bfcb115bc9ced106fabf1522"
         },
         "require": {
             "braintree/braintree_php": "5.2.0",
@@ -21310,17 +21144,17 @@
     },
     {
         "name": "phpseclib/phpseclib",
-        "version": "2.0.30",
-        "version_normalized": "2.0.30.0",
+        "version": "2.0.31",
+        "version_normalized": "2.0.31.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phpseclib/phpseclib.git",
-            "reference": "136b9ca7eebef78be14abf90d65c5e57b6bc5d36"
+            "reference": "233a920cb38636a43b18d428f9a8db1f0a1a08f4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/136b9ca7eebef78be14abf90d65c5e57b6bc5d36",
-            "reference": "136b9ca7eebef78be14abf90d65c5e57b6bc5d36",
+            "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/233a920cb38636a43b18d428f9a8db1f0a1a08f4",
+            "reference": "233a920cb38636a43b18d428f9a8db1f0a1a08f4",
             "shasum": ""
         },
         "require": {
@@ -21337,7 +21171,7 @@
             "ext-mcrypt": "Install the Mcrypt extension in order to speed up a few other cryptographic operations.",
             "ext-openssl": "Install the OpenSSL extension in order to speed up a wide variety of cryptographic operations."
         },
-        "time": "2020-12-17T05:42:04+00:00",
+        "time": "2021-04-06T13:56:45+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -21428,13 +21262,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/phpspec/prophecy/zipball/be1996ed8adc35c3fd795488a653f4b518be70ea",
             "reference": "be1996ed8adc35c3fd795488a653f4b518be70ea",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "doctrine/instantiator": "^1.2",
@@ -21460,7 +21288,7 @@
                 "Prophecy\\": "src/Prophecy"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -22068,13 +21896,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/php-fig/container/zipball/8622567409010282b7aeebe4bb841fe98b58dcaf",
             "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.0"
@@ -22087,7 +21909,7 @@
                 "Psr\\Container\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -22120,13 +21942,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/php-fig/http-client/zipball/2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
             "reference": "2dfb5f6c5eff0e91e20e913f8c5452ed95b86621",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": "^7.0 || ^8.0",
@@ -22145,7 +21961,7 @@
                 "Psr\\Http\\Client\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -22177,13 +21993,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/php-fig/http-factory/zipball/12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
             "reference": "12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.0.0",
@@ -22202,7 +22012,7 @@
                 "Psr\\Http\\Message\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -23609,13 +23419,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/config/zipball/212d54675bf203ff8aef7d8cee8eecfb72f4a263",
             "reference": "212d54675bf203ff8aef7d8cee8eecfb72f4a263",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -23648,7 +23452,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -23681,24 +23485,18 @@
     },
     {
         "name": "symfony/console",
-        "version": "v4.4.20",
-        "version_normalized": "4.4.20.0",
+        "version": "v4.4.21",
+        "version_normalized": "4.4.21.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "c98349bda966c70d6c08b4cd8658377c94166492"
+            "reference": "1ba4560dbbb9fcf5ae28b61f71f49c678086cf23"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/c98349bda966c70d6c08b4cd8658377c94166492",
-            "reference": "c98349bda966c70d6c08b4cd8658377c94166492",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "url": "https://api.github.com/repos/symfony/console/zipball/1ba4560dbbb9fcf5ae28b61f71f49c678086cf23",
+            "reference": "1ba4560dbbb9fcf5ae28b61f71f49c678086cf23",
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1.3",
@@ -23731,7 +23529,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2021-02-22T18:44:15+00:00",
+        "time": "2021-03-26T09:23:24+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -23742,7 +23540,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -23786,13 +23584,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/css-selector/zipball/f65f217b3314504a1ec99c2d6ef69016bb13490f",
             "reference": "f65f217b3314504a1ec99c2d6ef69016bb13490f",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5"
@@ -23808,7 +23600,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -23845,24 +23637,18 @@
     },
     {
         "name": "symfony/dependency-injection",
-        "version": "v5.2.5",
-        "version_normalized": "5.2.5.0",
+        "version": "v5.2.6",
+        "version_normalized": "5.2.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/dependency-injection.git",
-            "reference": "be0c7926f5729b15e4e79fd2bf917cac584b1970"
+            "reference": "1e66194bed2a69fa395d26bf1067e5e34483afac"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/be0c7926f5729b15e4e79fd2bf917cac584b1970",
-            "reference": "be0c7926f5729b15e4e79fd2bf917cac584b1970",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/1e66194bed2a69fa395d26bf1067e5e34483afac",
+            "reference": "1e66194bed2a69fa395d26bf1067e5e34483afac",
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -23893,7 +23679,7 @@
             "symfony/proxy-manager-bridge": "Generate service proxies to lazy load them",
             "symfony/yaml": ""
         },
-        "time": "2021-03-05T20:13:41+00:00",
+        "time": "2021-03-22T11:10:24+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -23904,7 +23690,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24014,13 +23800,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/c352647244bd376bf7d31efbd5401f13f50dad0c",
             "reference": "c352647244bd376bf7d31efbd5401f13f50dad0c",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1.3",
@@ -24058,7 +23838,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24169,30 +23949,24 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v5.2.4",
-        "version_normalized": "5.2.4.0",
+        "version": "v5.2.6",
+        "version_normalized": "5.2.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
-            "reference": "710d364200997a5afde34d9fe57bd52f3cc1e108"
+            "reference": "8c86a82f51658188119e62cff0a050a12d09836f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/filesystem/zipball/710d364200997a5afde34d9fe57bd52f3cc1e108",
-            "reference": "710d364200997a5afde34d9fe57bd52f3cc1e108",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "url": "https://api.github.com/repos/symfony/filesystem/zipball/8c86a82f51658188119e62cff0a050a12d09836f",
+            "reference": "8c86a82f51658188119e62cff0a050a12d09836f",
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
             "symfony/polyfill-ctype": "~1.8"
         },
-        "time": "2021-02-12T10:38:38+00:00",
+        "time": "2021-03-28T14:30:26+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -24203,7 +23977,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24247,13 +24021,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/finder/zipball/0d639a0943822626290d169965804f79400e6a04",
             "reference": "0d639a0943822626290d169965804f79400e6a04",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5"
@@ -24269,7 +24037,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24313,13 +24081,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/http-foundation/zipball/54499baea7f7418bce7b5ec92770fd0799e8e9bf",
             "reference": "54499baea7f7418bce7b5ec92770fd0799e8e9bf",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -24347,7 +24109,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24380,24 +24142,18 @@
     },
     {
         "name": "symfony/mime",
-        "version": "v5.2.5",
-        "version_normalized": "5.2.5.0",
+        "version": "v5.2.6",
+        "version_normalized": "5.2.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/mime.git",
-            "reference": "554ba128f1955038b45db5e1fa7e93bfc683b139"
+            "reference": "1b2092244374cbe48ae733673f2ca0818b37197b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/mime/zipball/554ba128f1955038b45db5e1fa7e93bfc683b139",
-            "reference": "554ba128f1955038b45db5e1fa7e93bfc683b139",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "url": "https://api.github.com/repos/symfony/mime/zipball/1b2092244374cbe48ae733673f2ca0818b37197b",
+            "reference": "1b2092244374cbe48ae733673f2ca0818b37197b",
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -24420,7 +24176,7 @@
             "symfony/property-info": "^4.4|^5.1",
             "symfony/serializer": "^5.2"
         },
-        "time": "2021-03-07T16:08:20+00:00",
+        "time": "2021-03-12T13:18:39+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -24431,7 +24187,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24479,13 +24235,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/options-resolver/zipball/5d0f633f9bbfcf7ec642a2b5037268e61b0a62ce",
             "reference": "5d0f633f9bbfcf7ec642a2b5037268e61b0a62ce",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -24504,7 +24254,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24553,13 +24303,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/c6c942b1ac76c82448322025e084cadc56048b4e",
             "reference": "c6c942b1ac76c82448322025e084cadc56048b4e",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1"
@@ -24587,7 +24331,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24637,13 +24381,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/5601e09b69f26c1828b13b6bb87cb07cddba3170",
             "reference": "5601e09b69f26c1828b13b6bb87cb07cddba3170",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1"
@@ -24671,7 +24409,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24723,13 +24461,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/2d63434d922daf7da8dd863e7907e67ee3031483",
             "reference": "2d63434d922daf7da8dd863e7907e67ee3031483",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1",
@@ -24759,7 +24491,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24815,13 +24547,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/43a0283138253ed1d48d352ab6d0bdb3f809f248",
             "reference": "43a0283138253ed1d48d352ab6d0bdb3f809f248",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1"
@@ -24852,7 +24578,7 @@
                 "Resources/stubs"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -24904,13 +24630,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/5232de97ee3b75b0360528dae24e73db49566ab1",
             "reference": "5232de97ee3b75b0360528dae24e73db49566ab1",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1"
@@ -24938,7 +24658,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -25055,13 +24775,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9",
             "reference": "cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1"
@@ -25086,7 +24800,7 @@
                 "bootstrap.php"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -25136,13 +24850,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
             "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1"
@@ -25170,7 +24878,7 @@
                 "Resources/stubs"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -25220,13 +24928,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/dc3063ba22c2a1fd2f45ed856374d79114998f91",
             "reference": "dc3063ba22c2a1fd2f45ed856374d79114998f91",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1"
@@ -25254,7 +24956,7 @@
                 "Resources/stubs"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -25308,13 +25010,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/process/zipball/7e950b6366d4da90292c2e7fa820b3c1842b965a",
             "reference": "7e950b6366d4da90292c2e7fa820b3c1842b965a",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.1.3"
@@ -25330,7 +25026,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -25374,13 +25070,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/property-access/zipball/3af8ed262bd3217512a13b023981fe68f36ad5f3",
             "reference": "3af8ed262bd3217512a13b023981fe68f36ad5f3",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -25405,7 +25095,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -25460,13 +25150,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/property-info/zipball/7185bbc74e6f49c3f1b5936b4d9e4ca133921189",
             "reference": "7185bbc74e6f49c3f1b5936b4d9e4ca133921189",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -25503,7 +25187,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -25633,13 +25317,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/stopwatch/zipball/b12274acfab9d9850c52583d136a24398cdf1a0c",
             "reference": "b12274acfab9d9850c52583d136a24398cdf1a0c",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -25656,7 +25334,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -25689,24 +25367,18 @@
     },
     {
         "name": "symfony/string",
-        "version": "v5.2.4",
-        "version_normalized": "5.2.4.0",
+        "version": "v5.2.6",
+        "version_normalized": "5.2.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/string.git",
-            "reference": "4e78d7d47061fa183639927ec40d607973699609"
+            "reference": "ad0bd91bce2054103f5eaa18ebeba8d3bc2a0572"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/string/zipball/4e78d7d47061fa183639927ec40d607973699609",
-            "reference": "4e78d7d47061fa183639927ec40d607973699609",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "url": "https://api.github.com/repos/symfony/string/zipball/ad0bd91bce2054103f5eaa18ebeba8d3bc2a0572",
+            "reference": "ad0bd91bce2054103f5eaa18ebeba8d3bc2a0572",
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -25722,7 +25394,7 @@
             "symfony/translation-contracts": "^1.1|^2",
             "symfony/var-exporter": "^4.4|^5.0"
         },
-        "time": "2021-02-16T10:20:28+00:00",
+        "time": "2021-03-17T17:12:15+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -25736,7 +25408,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -25788,13 +25460,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/yaml/zipball/298a08ddda623485208506fcee08817807a251dd",
             "reference": "298a08ddda623485208506fcee08817807a251dd",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": ">=7.2.5",
@@ -25824,7 +25490,7 @@
                 "/Tests/"
             ]
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -26448,14 +26114,6 @@
         "license": [
             "proprietary"
         ],
-        "authors": [
-            {
-                "name": "Mediotype",
-                "email": "diveinto@mediotype.com",
-                "homepage": "http://www.mediotype.com/",
-                "role": "Development Company"
-            }
-        ],
         "description": "Vertex Tax Links for Magento 2",
         "homepage": "http://go.vertexsmb.com/magento_cbe",
         "keywords": [
@@ -26511,13 +26169,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/b786088918a884258c9e3e27405c6a4cf2ee246e",
             "reference": "b786088918a884258c9e3e27405c6a4cf2ee246e",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": "^5.3.9 || ^7.0 || ^8.0",
@@ -26545,7 +26197,7 @@
                 "Dotenv\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],
@@ -26648,13 +26300,7 @@
             "type": "zip",
             "url": "https://api.github.com/repos/webmozarts/assert/zipball/6964c76c7804814a842473e0c8fd15bab0f18e25",
             "reference": "6964c76c7804814a842473e0c8fd15bab0f18e25",
-            "shasum": "",
-            "mirrors": [
-                {
-                    "url": "https://repo.repman.io/dists/%package%/%version%/%reference%.%type%",
-                    "preferred": true
-                }
-            ]
+            "shasum": ""
         },
         "require": {
             "php": "^7.2 || ^8.0",
@@ -26680,7 +26326,7 @@
                 "Webmozart\\Assert\\": "src/"
             }
         },
-        "notification-url": "https://repo.repman.io/downloads",
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
