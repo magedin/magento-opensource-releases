@@ -26,6 +26,7 @@ use Composer\DependencyResolver\Operation\MarkAliasInstalledOperation;
 use Composer\DependencyResolver\Operation\MarkAliasUninstalledOperation;
 use Composer\EventDispatcher\EventDispatcher;
 use Composer\Util\Loop;
+use Composer\Util\Platform;
 use React\Promise\PromiseInterface;
 
 /**
@@ -207,7 +208,7 @@ class InstallationManager
         };
 
         $handleInterruptsUnix = function_exists('pcntl_async_signals') && function_exists('pcntl_signal');
-        $handleInterruptsWindows = function_exists('sapi_windows_set_ctrl_handler');
+        $handleInterruptsWindows = function_exists('sapi_windows_set_ctrl_handler') && PHP_SAPI === 'cli';
         $prevHandler = null;
         $windowsHandler = null;
         if ($handleInterruptsUnix) {
@@ -440,6 +441,8 @@ class InstallationManager
             $this->waitOnPromises($promises);
         }
 
+        Platform::workaroundFilesystemIssues();
+
         foreach ($postExecCallbacks as $cb) {
             $cb();
         }
@@ -448,12 +451,22 @@ class InstallationManager
     private function waitOnPromises(array $promises)
     {
         $progress = null;
-        if ($this->outputProgress && $this->io instanceof ConsoleIO && !$this->io->isDebug() && count($promises) > 1) {
+        if (
+            $this->outputProgress
+            && $this->io instanceof ConsoleIO
+            && !getenv('CI')
+            && !$this->io->isDebug()
+            && count($promises) > 1
+        ) {
             $progress = $this->io->getProgressBar();
         }
         $this->loop->wait($promises, $progress);
         if ($progress) {
             $progress->clear();
+            // ProgressBar in non-decorated output does not output a final line-break and clear() does nothing
+            if (!$this->io->isDecorated()) {
+                $this->io->writeError('');
+            }
         }
     }
 
@@ -492,9 +505,15 @@ class InstallationManager
             $promise = $installer->update($repo, $initial, $target);
             $this->markForNotification($target);
         } else {
-            $this->getInstaller($initialType)->uninstall($repo, $initial);
+            $promise = $this->getInstaller($initialType)->uninstall($repo, $initial);
+            if (!$promise instanceof PromiseInterface) {
+                $promise = \React\Promise\resolve();
+            }
+
             $installer = $this->getInstaller($targetType);
-            $promise = $installer->install($repo, $target);
+            $promise->then(function () use ($installer, $repo, $target) {
+                return $installer->install($repo, $target);
+            });
         }
 
         return $promise;

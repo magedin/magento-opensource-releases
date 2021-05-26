@@ -21,7 +21,9 @@ use Composer\Package\RootPackage;
 use Composer\Package\Version\VersionParser;
 use Composer\Repository\RepositoryInterface;
 use Composer\Repository\InstalledRepository;
+use Composer\Repository\RootPackageRepository;
 use Composer\Package\PackageInterface;
+use Composer\Package\RootPackageInterface;
 use Composer\Package\Link;
 use Composer\Semver\Constraint\Constraint;
 use Composer\Plugin\Capability\Capability;
@@ -174,7 +176,9 @@ class PluginManager
         $localRepo = $this->composer->getRepositoryManager()->getLocalRepository();
         $globalRepo = $this->globalComposer ? $this->globalComposer->getRepositoryManager()->getLocalRepository() : null;
 
-        $installedRepo = new InstalledRepository(array($localRepo));
+        $rootPackage = clone $this->composer->getPackage();
+        $rootPackageRepo = new RootPackageRepository($rootPackage);
+        $installedRepo = new InstalledRepository(array($localRepo, $rootPackageRepo));
         if ($globalRepo) {
             $installedRepo->addRepository($globalRepo);
         }
@@ -183,15 +187,19 @@ class PluginManager
         $autoloadPackages = $this->collectDependencies($installedRepo, $autoloadPackages, $package);
 
         $generator = $this->composer->getAutoloadGenerator();
-        $autoloads = array();
+        $autoloads = array(array($rootPackage, ''));
         foreach ($autoloadPackages as $autoloadPackage) {
+            if ($autoloadPackage === $rootPackage) {
+                continue;
+            }
+
             $downloadPath = $this->getInstallPath($autoloadPackage, $globalRepo && $globalRepo->hasPackage($autoloadPackage));
             $autoloads[] = array($autoloadPackage, $downloadPath);
         }
 
-        $map = $generator->parseAutoloads($autoloads, new RootPackage('dummy/root-package', '1.0.0.0', '1.0.0'));
-        $classLoader = $generator->createLoader($map);
-        $classLoader->register();
+        $map = $generator->parseAutoloads($autoloads, $rootPackage);
+        $classLoader = $generator->createLoader($map, $this->composer->getConfig()->get('vendor-dir'));
+        $classLoader->register(false);
 
         foreach ($classes as $class) {
             if (class_exists($class, false)) {
@@ -216,12 +224,13 @@ class PluginManager
             }
 
             if ($oldInstallerPlugin) {
+                $this->io->writeError('<warning>Loading "'.$package->getName() . '" '.($isGlobalPlugin ? '(installed globally) ' : '').'which is a legacy composer-installer built for Composer 1.x, it is likely to cause issues as you are running Composer 2.x.</warning>');
                 $installer = new $class($this->io, $this->composer);
                 $this->composer->getInstallationManager()->addInstaller($installer);
                 $this->registeredPlugins[$package->getName()] = $installer;
             } elseif (class_exists($class)) {
                 $plugin = new $class();
-                $this->addPlugin($plugin, $isGlobalPlugin);
+                $this->addPlugin($plugin, $isGlobalPlugin, $package);
                 $this->registeredPlugins[$package->getName()] = $plugin;
             } elseif ($failOnMissingClasses) {
                 throw new \UnexpectedValueException('Plugin '.$package->getName().' could not be initialized, class not found: '.$class);
@@ -311,11 +320,19 @@ class PluginManager
      * programmatically and want to register a plugin class directly this is a valid way
      * to do it.
      *
-     * @param PluginInterface $plugin plugin instance
+     * @param PluginInterface   $plugin        plugin instance
+     * @param ?PackageInterface $sourcePackage Package from which the plugin comes from
      */
-    public function addPlugin(PluginInterface $plugin, $isGlobalPlugin = false)
+    public function addPlugin(PluginInterface $plugin, $isGlobalPlugin = false, PackageInterface $sourcePackage = null)
     {
-        $this->io->writeError('Loading plugin '.get_class($plugin).($isGlobalPlugin ? ' (installed globally)' : ''), true, IOInterface::DEBUG);
+        $details = array();
+        if ($sourcePackage) {
+            $details[] = 'from '.$sourcePackage->getName();
+        }
+        if ($isGlobalPlugin) {
+            $details[] = 'installed globally';
+        }
+        $this->io->writeError('Loading plugin '.get_class($plugin).($details ? ' ('.implode(', ', $details).')' : ''), true, IOInterface::DEBUG);
         $this->plugins[] = $plugin;
         $plugin->activate($this->composer, $this->io);
 
@@ -403,12 +420,7 @@ class PluginManager
      */
     private function collectDependencies(InstalledRepository $installedRepo, array $collected, PackageInterface $package)
     {
-        $requires = array_merge(
-            $package->getRequires(),
-            $package->getDevRequires()
-        );
-
-        foreach ($requires as $requireLink) {
+        foreach ($package->getRequires() as $requireLink) {
             foreach ($installedRepo->findPackagesWithReplacersAndProviders($requireLink->getTarget()) as $requiredPackage) {
                 if (!isset($collected[$requiredPackage->getName()])) {
                     $collected[$requiredPackage->getName()] = $requiredPackage;
