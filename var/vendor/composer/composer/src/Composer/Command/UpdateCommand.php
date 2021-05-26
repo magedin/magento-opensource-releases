@@ -16,9 +16,12 @@ use Composer\Composer;
 use Composer\DependencyResolver\Request;
 use Composer\Installer;
 use Composer\IO\IOInterface;
+use Composer\Package\Loader\RootPackageLoader;
+use Composer\Package\RootPackage;
 use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
 use Composer\Package\Version\VersionParser;
+use Composer\Util\HttpDownloader;
 use Composer\Semver\Constraint\MultiConstraint;
 use Composer\Package\Link;
 use Symfony\Component\Console\Helper\Table;
@@ -114,6 +117,10 @@ EOT
 
         $composer = $this->getComposer(true, $input->getOption('no-plugins'));
 
+        if (!HttpDownloader::isCurlEnabled()) {
+            $io->writeError('<warning>Composer is operating significantly slower than normal because you do not have the PHP curl extension enabled.</warning>');
+        }
+
         $packages = $input->getArgument('packages');
         $reqs = $this->formatRequirements($input->getOption('with'));
 
@@ -134,8 +141,9 @@ EOT
             }
         }
 
-        $rootRequires = $composer->getPackage()->getRequires();
-        $rootDevRequires = $composer->getPackage()->getDevRequires();
+        $rootPackage = $composer->getPackage();
+        $rootRequires = $rootPackage->getRequires();
+        $rootDevRequires = $rootPackage->getDevRequires();
         foreach ($reqs as $package => $constraint) {
             if (isset($rootRequires[$package])) {
                 $rootRequires[$package] = $this->appendConstraintToLink($rootRequires[$package], $constraint);
@@ -145,8 +153,12 @@ EOT
                 throw new \UnexpectedValueException('Only root package requirements can receive temporary constraints and '.$package.' is not one');
             }
         }
-        $composer->getPackage()->setRequires($rootRequires);
-        $composer->getPackage()->setDevRequires($rootDevRequires);
+        $rootPackage->setRequires($rootRequires);
+        $rootPackage->setDevRequires($rootDevRequires);
+        if ($rootPackage instanceof RootPackage) {
+            $rootPackage->setReferences(RootPackageLoader::extractReferences($reqs, $rootPackage->getReferences()));
+        }
+        $rootPackage->setStabilityFlags(RootPackageLoader::extractStabilityFlags($reqs, $rootPackage->getMinimumStability(), $rootPackage->getStabilityFlags()));
 
         if ($input->getOption('interactive')) {
             $packages = $this->getPackagesInteractively($io, $input, $output, $composer, $packages);

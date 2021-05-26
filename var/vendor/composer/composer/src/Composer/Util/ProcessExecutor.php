@@ -88,7 +88,8 @@ class ProcessExecutor
     {
         if ($this->io && $this->io->isDebug()) {
             $safeCommand = preg_replace_callback('{://(?P<user>[^:/\s]+):(?P<password>[^@\s/]+)@}i', function ($m) {
-                if (preg_match('{^[a-f0-9]{12,}$}', $m['user'])) {
+                // if the username looks like a long (12char+) hex string, or a modern github token (e.g. ghp_xxx) we obfuscate that
+                if (preg_match('{^([a-f0-9]{12,}|gh[a-z]_[a-zA-Z0-9_]+)$}', $m['user'])) {
                     return '://***:***@';
                 }
 
@@ -98,10 +99,14 @@ class ProcessExecutor
             $this->io->writeError('Executing command ('.($cwd ?: 'CWD').'): '.$safeCommand);
         }
 
+        // TODO in 2.2, these two checks can be dropped as Symfony 4+ supports them out of the box
         // make sure that null translate to the proper directory in case the dir is a symlink
         // and we call a git command, because msysgit does not handle symlinks properly
         if (null === $cwd && Platform::isWindows() && false !== strpos($command, 'git') && getcwd()) {
             $cwd = realpath(getcwd());
+        }
+        if (null !== $cwd && !is_dir($cwd)) {
+            throw new \RuntimeException('The given CWD for the process does not exist: '.$cwd);
         }
 
         $this->captureOutput = func_num_args() > 3;
@@ -177,6 +182,8 @@ class ProcessExecutor
                 // signal can throw in various conditions, but we don't care if it fails
             }
             $job['process']->stop(1);
+
+            throw new \RuntimeException('Aborted process');
         };
 
         $promise = new Promise($resolver, $canceler);
@@ -233,22 +240,42 @@ class ProcessExecutor
             $this->io->writeError('Executing async command ('.($cwd ?: 'CWD').'): '.$safeCommand);
         }
 
+        // TODO in 2.2, these two checks can be dropped as Symfony 4+ supports them out of the box
         // make sure that null translate to the proper directory in case the dir is a symlink
         // and we call a git command, because msysgit does not handle symlinks properly
         if (null === $cwd && Platform::isWindows() && false !== strpos($command, 'git') && getcwd()) {
             $cwd = realpath(getcwd());
         }
+        if (null !== $cwd && !is_dir($cwd)) {
+            throw new \RuntimeException('The given CWD for the process does not exist: '.$cwd);
+        }
 
-        // TODO in v3, commands should be passed in as arrays of cmd + args
-        if (method_exists('Symfony\Component\Process\Process', 'fromShellCommandline')) {
-            $process = Process::fromShellCommandline($command, $cwd, null, null, static::getTimeout());
-        } else {
-            $process = new Process($command, $cwd, null, null, static::getTimeout());
+        try {
+            // TODO in v3, commands should be passed in as arrays of cmd + args
+            if (method_exists('Symfony\Component\Process\Process', 'fromShellCommandline')) {
+                $process = Process::fromShellCommandline($command, $cwd, null, null, static::getTimeout());
+            } else {
+                $process = new Process($command, $cwd, null, null, static::getTimeout());
+            }
+        } catch (\Exception $e) {
+            call_user_func($job['reject'], $e);
+            return;
+        } catch (\Throwable $e) {
+            call_user_func($job['reject'], $e);
+            return;
         }
 
         $job['process'] = $process;
 
-        $process->start();
+        try {
+            $process->start();
+        } catch (\Exception $e) {
+            call_user_func($job['reject'], $e);
+            return;
+        } catch (\Throwable $e) {
+            call_user_func($job['reject'], $e);
+            return;
+        }
     }
 
     public function wait($index = null)

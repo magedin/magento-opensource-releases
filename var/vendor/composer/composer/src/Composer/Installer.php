@@ -43,12 +43,14 @@ use Composer\Package\Version\VersionParser;
 use Composer\Package\Package;
 use Composer\Repository\ArrayRepository;
 use Composer\Repository\RepositorySet;
+use Composer\Repository\CompositeRepository;
 use Composer\Semver\Constraint\Constraint;
 use Composer\Package\Locker;
 use Composer\Package\RootPackageInterface;
 use Composer\Repository\InstalledArrayRepository;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Repository\InstalledRepository;
+use Composer\Repository\FilterRepository;
 use Composer\Repository\RootPackageRepository;
 use Composer\Repository\PlatformRepository;
 use Composer\Repository\RepositoryInterface;
@@ -204,7 +206,7 @@ class Installer
 
         // Force update if there is no lock file present
         if (!$this->update && !$this->locker->isLocked()) {
-            $this->io->writeError('<warning>No lock file found. Updating dependencies instead of installing from lock file. Use composer update over composer install if you do not have a lock file.</warning>');
+            $this->io->writeError('<warning>No composer.lock file present. Updating dependencies to latest instead of installing from lock file. See https://getcomposer.org/install for more information.</warning>');
             $this->update = true;
         }
 
@@ -444,6 +446,15 @@ class Installer
                     $installsUpdates[] = $operation;
                     $installNames[] = $operation->getPackage()->getPrettyName().':'.$operation->getPackage()->getFullPrettyVersion();
                 } elseif ($operation instanceof UpdateOperation) {
+                    // when mirrors/metadata from a package gets updated we do not want to list it as an
+                    // update in the output as it is only an internal lock file metadata update
+                    if ($this->updateMirrors
+                        && $operation->getInitialPackage()->getName() == $operation->getTargetPackage()->getName()
+                        && $operation->getInitialPackage()->getVersion() == $operation->getTargetPackage()->getVersion()
+                    ) {
+                        continue;
+                    }
+
                     $installsUpdates[] = $operation;
                     $updateNames[] = $operation->getTargetPackage()->getPrettyName().':'.$operation->getTargetPackage()->getFullPrettyVersion();
                 } elseif ($operation instanceof UninstallOperation) {
@@ -706,7 +717,7 @@ class Installer
         return 0;
     }
 
-    private function createPlatformRepo($forUpdate)
+    protected function createPlatformRepo($forUpdate)
     {
         if ($forUpdate) {
             $platformOverrides = $this->config->get('platform') ?: array();
@@ -766,6 +777,21 @@ class Installer
         $repositorySet->addRepository(new RootPackageRepository($this->fixedRootPackage));
         $repositorySet->addRepository($platformRepo);
         if ($this->additionalFixedRepository) {
+            // allow using installed repos if needed to avoid warnings about installed repositories being used in the RepositorySet
+            // see https://github.com/composer/composer/pull/9574
+            $additionalFixedRepositories = $this->additionalFixedRepository;
+            if ($additionalFixedRepositories instanceof CompositeRepository) {
+                $additionalFixedRepositories = $additionalFixedRepositories->getRepositories();
+            } else {
+                $additionalFixedRepositories = array($additionalFixedRepositories);
+            }
+            foreach ($additionalFixedRepositories as $additionalFixedRepository) {
+                if ($additionalFixedRepository instanceof InstalledRepository || $additionalFixedRepository instanceof InstalledRepositoryInterface) {
+                    $repositorySet->allowInstalledRepositories();
+                    break;
+                }
+            }
+
             $repositorySet->addRepository($this->additionalFixedRepository);
         }
 
