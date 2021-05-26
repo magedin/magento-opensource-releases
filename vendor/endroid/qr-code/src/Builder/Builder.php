@@ -121,14 +121,14 @@ class Builder implements BuilderInterface
         return $this;
     }
 
-    public function logoResizeToWidth(string $logoResizeToWidth): BuilderInterface
+    public function logoResizeToWidth(int $logoResizeToWidth): BuilderInterface
     {
         $this->options['logoResizeToWidth'] = $logoResizeToWidth;
 
         return $this;
     }
 
-    public function logoResizeToHeight(string $logoResizeToHeight): BuilderInterface
+    public function logoResizeToHeight(int $logoResizeToHeight): BuilderInterface
     {
         $this->options['logoResizeToHeight'] = $logoResizeToHeight;
 
@@ -166,13 +166,6 @@ class Builder implements BuilderInterface
     public function labelTextColor(ColorInterface $labelTextColor): BuilderInterface
     {
         $this->options['labelTextColor'] = $labelTextColor;
-
-        return $this;
-    }
-
-    public function labelBackgroundColor(ColorInterface $labelBackgroundColor): BuilderInterface
-    {
-        $this->options['labelBackgroundColor'] = $labelBackgroundColor;
 
         return $this;
     }
