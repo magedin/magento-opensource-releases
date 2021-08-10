@@ -1,19 +1,24 @@
 define([
     'jquery',
-    'intlTelInput'
+    'intlTelInput',
+    'jquery/validate'
 ], function ($, intlTelInput) {
     'use strict';
 
-    return function () {
-
-        const errorMap = ['Invalid telephone number', 'Invalid country code', 'Telephone number is too short', 'Telephone number is too long', 'Invalid telephone number'];
-
-        let validatorObj = {
-            /**
-             * @param {String} value
-             */
+    var errorMap = [
+            'Invalid telephone number',
+            'Invalid country code',
+            'Telephone number is too short',
+            'Telephone number is too long',
+            'Invalid telephone number'
+        ],
+        validatorObj = {
             validate: function (value) {
-                let countryCodeClass = $('.iti__selected-flag .iti__flag').attr('class');
+                var countryCodeClass = $('.iti__selected-flag .iti__flag').attr('class'),
+                    countryCode,
+                    isValid,
+                    errorCode;
+
                 countryCodeClass = countryCodeClass.split(' ')[1];
 
                 if (countryCodeClass === undefined) {
@@ -22,23 +27,28 @@ define([
                     return false;
                 }
 
-                let countryCode = countryCodeClass.split('__')[1];
-                let isValid = intlTelInputUtils.isValidNumber(value, countryCode);
+                countryCode = countryCodeClass.split('__')[1];
+                isValid = intlTelInputUtils.isValidNumber(value, countryCode);
 
                 if (!isValid) {
-                    $.validator.messages['validate-phone-number'] = errorMap[
-                        intlTelInputUtils.getValidationError(value, countryCode)
-                        ];
+                    errorCode = window.intlTelInputUtils.getValidationError(value, countryCode);
+
+                    $.validator.messages['validate-phone-number'] = typeof errorMap[errorCode] === 'undefined' ?
+                        errorMap[0] :
+                        errorMap[errorCode];
                 }
 
                 return isValid;
             }
-        }
+        };
 
-        $.validator.addMethod(
-            'validate-phone-number',
-            validatorObj.validate,
-            $.validator.messages['validate-phone-number']
-        );
+    $.validator.addMethod(
+        'validate-phone-number',
+        validatorObj.validate,
+        $.validator.messages['validate-phone-number']
+    );
+
+    return function (widget) {
+        return widget;
     };
 });
