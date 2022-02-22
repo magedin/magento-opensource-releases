@@ -29,12 +29,12 @@
             'dev_requirement' => true,
         ),
         'allure-framework/allure-php-api' => array(
-            'pretty_version' => '1.3.1',
-            'version' => '1.3.1.0',
+            'pretty_version' => '1.4.0',
+            'version' => '1.4.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../allure-framework/allure-php-api',
             'aliases' => array(),
-            'reference' => 'f64b69afeff472c564a4e2379efb2b69c430ec5a',
+            'reference' => '50507f482d490f114054f2281cca487db47fa2bd',
             'dev_requirement' => true,
         ),
         'allure-framework/allure-phpunit' => array(
@@ -52,7 +52,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'amzn/amazon-pay-and-login-with-amazon-core-module' => array(
@@ -61,7 +61,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../amzn/amazon-pay-and-login-with-amazon-core-module',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'amzn/amazon-pay-module' => array(
@@ -70,7 +70,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../amzn/amazon-pay-module',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'amzn/amazon-pay-sdk-php' => array(
@@ -88,7 +88,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../amzn/login-with-amazon-module',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'astock/stock-api-libphp' => array(
@@ -110,39 +110,39 @@
             'dev_requirement' => false,
         ),
         'aws/aws-sdk-php' => array(
-            'pretty_version' => '3.194.0',
-            'version' => '3.194.0.0',
+            'pretty_version' => '3.209.29',
+            'version' => '3.209.29.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../aws/aws-sdk-php',
             'aliases' => array(),
-            'reference' => '3b4787381bd747753059a223b801ea5eb7d11780',
+            'reference' => 'd2a7902ea12fbcfc26a0ae6a07d0e5f8c6e5e9a1',
             'dev_requirement' => false,
         ),
         'bacon/bacon-qr-code' => array(
-            'pretty_version' => '2.0.4',
-            'version' => '2.0.4.0',
+            'pretty_version' => '2.0.6',
+            'version' => '2.0.6.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../bacon/bacon-qr-code',
             'aliases' => array(),
-            'reference' => 'f73543ac4e1def05f1a70bcd1525c8a157a1ad09',
+            'reference' => '0069435e2a01a57193b25790f105a5d3168653c1',
             'dev_requirement' => false,
         ),
         'beberlei/assert' => array(
-            'pretty_version' => 'v3.3.1',
-            'version' => '3.3.1.0',
+            'pretty_version' => 'v3.3.2',
+            'version' => '3.3.2.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../beberlei/assert',
             'aliases' => array(),
-            'reference' => '5e721d7e937ca3ba2cdec1e1adf195f9e5188372',
+            'reference' => 'cb70015c04be1baee6f5f5c953703347c0ac1655',
             'dev_requirement' => false,
         ),
         'behat/gherkin' => array(
-            'pretty_version' => 'v4.8.0',
-            'version' => '4.8.0.0',
+            'pretty_version' => 'v4.9.0',
+            'version' => '4.9.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../behat/gherkin',
             'aliases' => array(),
-            'reference' => '2391482cd003dfdc36b679b27e9f5326bd656acd',
+            'reference' => '0bc8d1e30e96183e4f36db9dc79caead300beff4',
             'dev_requirement' => true,
         ),
         'blueimp/jquery-file-upload' => array(
@@ -157,7 +157,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../braintree/braintree_php',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => '6cf3447ecd0303caa6f2d4f22b653dc5c71b4589',
             'dev_requirement' => false,
         ),
         'brick/math' => array(
@@ -188,12 +188,12 @@
             'dev_requirement' => false,
         ),
         'codeception/codeception' => array(
-            'pretty_version' => '4.1.22',
-            'version' => '4.1.22.0',
+            'pretty_version' => '4.1.29',
+            'version' => '4.1.29.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../codeception/codeception',
             'aliases' => array(),
-            'reference' => '9777ec3690ceedc4bce2ed13af7af4ca4ee3088f',
+            'reference' => 'f8dec8f2bf5347cc596aaf141753f4fb2504c17c',
             'dev_requirement' => true,
         ),
         'codeception/lib-asserts' => array(
@@ -233,21 +233,21 @@
             'dev_requirement' => true,
         ),
         'codeception/phpunit-wrapper' => array(
-            'pretty_version' => '9.0.6',
-            'version' => '9.0.6.0',
+            'pretty_version' => '9.0.7',
+            'version' => '9.0.7.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../codeception/phpunit-wrapper',
             'aliases' => array(),
-            'reference' => 'b0c06abb3181eedca690170f7ed0fd26a70bfacc',
+            'reference' => '7d6b1a5ea4ed28d010e5d36b993db813eb49710b',
             'dev_requirement' => true,
         ),
         'codeception/stub' => array(
-            'pretty_version' => '3.7.0',
-            'version' => '3.7.0.0',
+            'pretty_version' => '4.0.2',
+            'version' => '4.0.2.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../codeception/stub',
             'aliases' => array(),
-            'reference' => '468dd5fe659f131fc997f5196aad87512f9b1304',
+            'reference' => '18a148dacd293fc7b044042f5aa63a82b08bff5d',
             'dev_requirement' => true,
         ),
         'colinmollenhour/cache-backend-file' => array(
@@ -265,7 +265,7 @@
             'type' => 'magento-module',
             'install_path' => __DIR__ . '/../colinmollenhour/cache-backend-redis',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => '389fb68de15660e39b055d149d31f3708b5d6cbc',
             'dev_requirement' => false,
         ),
         'colinmollenhour/credis' => array(
@@ -274,16 +274,16 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../colinmollenhour/credis',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => 'bd1da4698ab1918477f9e71e5ff0062b9a345008',
             'dev_requirement' => false,
         ),
         'colinmollenhour/php-redis-session-abstract' => array(
-            'pretty_version' => 'v1.4.4',
-            'version' => '1.4.4.0',
+            'pretty_version' => 'v1.4.5',
+            'version' => '1.4.5.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../colinmollenhour/php-redis-session-abstract',
             'aliases' => array(),
-            'reference' => '8d684bbacac99450f2a9ddf6f56be296997e2959',
+            'reference' => '77ad0c1637ae6ea059f1f8e9fbdac6469242a16d',
             'dev_requirement' => false,
         ),
         'components/jquery' => array(
@@ -299,21 +299,21 @@
             ),
         ),
         'composer/ca-bundle' => array(
-            'pretty_version' => '1.2.10',
-            'version' => '1.2.10.0',
+            'pretty_version' => '1.3.1',
+            'version' => '1.3.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/./ca-bundle',
             'aliases' => array(),
-            'reference' => '9fdb22c2e97a614657716178093cd1da90a64aa8',
+            'reference' => '4c679186f2aca4ab6a0f1b0b9cf9252decb44d0b',
             'dev_requirement' => false,
         ),
         'composer/composer' => array(
-            'pretty_version' => '1.10.22',
-            'version' => '1.10.22.0',
+            'pretty_version' => '1.10.25',
+            'version' => '1.10.25.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/./composer',
             'aliases' => array(),
-            'reference' => '28c9dfbe2351635961f670773e8d7b17bc5eda25',
+            'reference' => '892838f84440b4851ec7e57221d52cb65a8991a5',
             'dev_requirement' => false,
         ),
         'composer/semver' => array(
@@ -326,12 +326,12 @@
             'dev_requirement' => false,
         ),
         'composer/spdx-licenses' => array(
-            'pretty_version' => '1.5.5',
-            'version' => '1.5.5.0',
+            'pretty_version' => '1.5.6',
+            'version' => '1.5.6.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/./spdx-licenses',
             'aliases' => array(),
-            'reference' => 'de30328a7af8680efdc03e396aad24befd513200',
+            'reference' => 'a30d487169d799745ca7280bc90fdfa693536901',
             'dev_requirement' => false,
         ),
         'composer/xdebug-handler' => array(
@@ -359,12 +359,12 @@
             ),
         ),
         'csharpru/vault-php' => array(
-            'pretty_version' => '4.2.1',
-            'version' => '4.2.1.0',
+            'pretty_version' => '4.3.0',
+            'version' => '4.3.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../csharpru/vault-php',
             'aliases' => array(),
-            'reference' => '89b393ecf65f61a44d3a1872547f65085982b481',
+            'reference' => '4e473ef5e112aab9341637106a2f5628e3b80efd',
             'dev_requirement' => true,
         ),
         'csharpru/vault-php-guzzle6-transport' => array(
@@ -386,12 +386,12 @@
             'dev_requirement' => false,
         ),
         'dealerdirect/phpcodesniffer-composer-installer' => array(
-            'pretty_version' => 'v0.7.1',
-            'version' => '0.7.1.0',
+            'pretty_version' => 'v0.7.2',
+            'version' => '0.7.2.0',
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/../dealerdirect/phpcodesniffer-composer-installer',
             'aliases' => array(),
-            'reference' => 'fe390591e0241955f22eb9ba327d137e501c771c',
+            'reference' => '1c968e542d8843d7cd71de3c5c9c3ff3ad71a1db',
             'dev_requirement' => true,
         ),
         'doctrine/annotations' => array(
@@ -413,12 +413,12 @@
             'dev_requirement' => true,
         ),
         'doctrine/lexer' => array(
-            'pretty_version' => '1.2.1',
-            'version' => '1.2.1.0',
+            'pretty_version' => '1.2.2',
+            'version' => '1.2.2.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../doctrine/lexer',
             'aliases' => array(),
-            'reference' => 'e864bbf5904cb8f5bb334f99209b48018522f042',
+            'reference' => '9c50f840f257bbb941e6f4a0e94ccf5db5c3f76c',
             'dev_requirement' => true,
         ),
         'donatj/phpuseragentparser' => array(
@@ -436,7 +436,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../dotmailer/dotmailer-magento2-extension',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'dotmailer/dotmailer-magento2-extension-chat' => array(
@@ -445,7 +445,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../dotmailer/dotmailer-magento2-extension-chat',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'dotmailer/dotmailer-magento2-extension-chat-graph-ql' => array(
@@ -454,7 +454,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../dotmailer/dotmailer-magento2-extension-chat-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'dotmailer/dotmailer-magento2-extension-graph-ql' => array(
@@ -463,7 +463,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../dotmailer/dotmailer-magento2-extension-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'dotmailer/dotmailer-magento2-extension-package' => array(
@@ -472,7 +472,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'dotmailer/dotmailer-magento2-extension-sms' => array(
@@ -481,7 +481,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../dotmailer/dotmailer-magento2-extension-sms',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'elasticsearch/elasticsearch' => array(
@@ -512,12 +512,12 @@
             'dev_requirement' => false,
         ),
         'ezimuel/ringphp' => array(
-            'pretty_version' => '1.1.2',
-            'version' => '1.1.2.0',
+            'pretty_version' => '1.2.0',
+            'version' => '1.2.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../ezimuel/ringphp',
             'aliases' => array(),
-            'reference' => '0b78f89d8e0bb9e380046c31adfa40347e9f663b',
+            'reference' => '92b8161404ab1ad84059ebed41d9f757e897ce74',
             'dev_requirement' => false,
         ),
         'facebook/webdriver' => array(
@@ -527,12 +527,12 @@
             ),
         ),
         'fgrosse/phpasn1' => array(
-            'pretty_version' => 'v2.3.0',
-            'version' => '2.3.0.0',
+            'pretty_version' => 'v2.4.0',
+            'version' => '2.4.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../fgrosse/phpasn1',
             'aliases' => array(),
-            'reference' => '20299033c35f4300eb656e7e8e88cf52d1d6694e',
+            'reference' => 'eef488991d53e58e60c9554b09b1201ca5ba9296',
             'dev_requirement' => false,
         ),
         'friendsofphp/php-cs-fixer' => array(
@@ -563,22 +563,28 @@
             'dev_requirement' => false,
         ),
         'guzzlehttp/promises' => array(
-            'pretty_version' => '1.4.1',
-            'version' => '1.4.1.0',
+            'pretty_version' => '1.5.1',
+            'version' => '1.5.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../guzzlehttp/promises',
             'aliases' => array(),
-            'reference' => '8e7d04f1f6450fef59366c399cfad4b9383aa30d',
+            'reference' => 'fe752aedc9fd8fcca3fe7ad05d419d32998a06da',
             'dev_requirement' => false,
         ),
         'guzzlehttp/psr7' => array(
-            'pretty_version' => '1.8.2',
-            'version' => '1.8.2.0',
+            'pretty_version' => '1.8.3',
+            'version' => '1.8.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../guzzlehttp/psr7',
             'aliases' => array(),
-            'reference' => 'dc960a912984efb74d0a90222870c72c87f10c91',
+            'reference' => '1afdd860a2566ed3c2b0b4a3de6e23434a79ec85',
             'dev_requirement' => false,
+        ),
+        'guzzlehttp/ringphp' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '1.2.0',
+            ),
         ),
         'hoa/consistency' => array(
             'pretty_version' => '1.17.05.02',
@@ -662,21 +668,21 @@
             'dev_requirement' => true,
         ),
         'jms/metadata' => array(
-            'pretty_version' => '2.5.1',
-            'version' => '2.5.1.0',
+            'pretty_version' => '2.6.1',
+            'version' => '2.6.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../jms/metadata',
             'aliases' => array(),
-            'reference' => 'a995e6cef6d6f56a6226e1616a519630e2ef0aeb',
+            'reference' => 'c3a3214354b5a765a19875f7b7c5ebcd94e462e5',
             'dev_requirement' => true,
         ),
         'jms/serializer' => array(
-            'pretty_version' => '3.14.0',
-            'version' => '3.14.0.0',
+            'pretty_version' => '3.17.1',
+            'version' => '3.17.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../jms/serializer',
             'aliases' => array(),
-            'reference' => 'bf371f55d8137fec4ff096bd45ff19e2db02ac4c',
+            'reference' => '190f64b051795d447ec755acbfdb1bff330a6707',
             'dev_requirement' => true,
         ),
         'justinrainbow/json-schema' => array(
@@ -703,7 +709,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'klarna/module-core' => array(
@@ -712,7 +718,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../klarna/module-core',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'klarna/module-kp' => array(
@@ -721,7 +727,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../klarna/module-kp',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'klarna/module-kp-graph-ql' => array(
@@ -730,7 +736,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../klarna/module-kp-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'klarna/module-onsitemessaging' => array(
@@ -739,7 +745,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../klarna/module-onsitemessaging',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'klarna/module-ordermanagement' => array(
@@ -748,16 +754,16 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../klarna/module-ordermanagement',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'laminas/laminas-captcha' => array(
-            'pretty_version' => '2.10.0',
-            'version' => '2.10.0.0',
+            'pretty_version' => '2.11.0',
+            'version' => '2.11.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-captcha',
             'aliases' => array(),
-            'reference' => '9a0134e434cd792934ecca42cb66f316be7bba50',
+            'reference' => '6b0b98d388b713119cbb5788ea0b90cd6e63513a',
             'dev_requirement' => false,
         ),
         'laminas/laminas-code' => array(
@@ -770,30 +776,30 @@
             'dev_requirement' => false,
         ),
         'laminas/laminas-config' => array(
-            'pretty_version' => '3.6.0',
-            'version' => '3.6.0.0',
+            'pretty_version' => '3.7.0',
+            'version' => '3.7.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-config',
             'aliases' => array(),
-            'reference' => '2f2273a6bdf966a9adf6042f8950b6c33199a3b7',
+            'reference' => 'e43d13dcfc273d4392812eb395ce636f73f34dfd',
             'dev_requirement' => false,
         ),
         'laminas/laminas-crypt' => array(
-            'pretty_version' => '3.4.0',
-            'version' => '3.4.0.0',
+            'pretty_version' => '3.6.0',
+            'version' => '3.6.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-crypt',
             'aliases' => array(),
-            'reference' => 'a058eeb2fe57824b958ac56753faff790a649e18',
+            'reference' => 'ad2c29c289a4bc837b37a7650f5178edda0fc548',
             'dev_requirement' => false,
         ),
         'laminas/laminas-db' => array(
-            'pretty_version' => '2.13.1',
-            'version' => '2.13.1.0',
+            'pretty_version' => '2.13.4',
+            'version' => '2.13.4.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-db',
             'aliases' => array(),
-            'reference' => '7710d3cf2ba8d1b325cc6408e17c8e500c1d131a',
+            'reference' => 'cdabb4bfa669c2c0edb0cb4e014c15b41afd3fb1',
             'dev_requirement' => false,
         ),
         'laminas/laminas-dependency-plugin' => array(
@@ -806,12 +812,12 @@
             'dev_requirement' => false,
         ),
         'laminas/laminas-di' => array(
-            'pretty_version' => '3.2.2',
-            'version' => '3.2.2.0',
+            'pretty_version' => '3.3.0',
+            'version' => '3.3.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-di',
             'aliases' => array(),
-            'reference' => 'ed38ab3b066c0a1f1b087e0a664caadf1d4f8f04',
+            'reference' => '83330af17fc2511231e805a3586d51883a452094',
             'dev_requirement' => false,
         ),
         'laminas/laminas-escaper' => array(
@@ -820,7 +826,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-escaper',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => '5e04bc5ae5990b17159d79d331055e2c645e5cc5',
             'dev_requirement' => false,
         ),
         'laminas/laminas-eventmanager' => array(
@@ -842,12 +848,12 @@
             'dev_requirement' => false,
         ),
         'laminas/laminas-filter' => array(
-            'pretty_version' => '2.11.1',
-            'version' => '2.11.1.0',
+            'pretty_version' => '2.13.2',
+            'version' => '2.13.2.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-filter',
             'aliases' => array(),
-            'reference' => '671724e163aa75c210e94d12b77a0f3f8240d4b2',
+            'reference' => '3da1df596b023fb0387a1dbb0e77e536afd9d1af',
             'dev_requirement' => false,
         ),
         'laminas/laminas-http' => array(
@@ -860,12 +866,12 @@
             'dev_requirement' => false,
         ),
         'laminas/laminas-i18n' => array(
-            'pretty_version' => '2.11.2',
-            'version' => '2.11.2.0',
+            'pretty_version' => '2.14.0',
+            'version' => '2.14.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-i18n',
             'aliases' => array(),
-            'reference' => '78adb53ebf6c0bc63f92273fd7809dabc554f786',
+            'reference' => '1fa15c41b683bedb2a846af54491868ddc73db38',
             'dev_requirement' => false,
         ),
         'laminas/laminas-json' => array(
@@ -887,39 +893,39 @@
             'dev_requirement' => false,
         ),
         'laminas/laminas-mail' => array(
-            'pretty_version' => '2.14.1',
-            'version' => '2.14.1.0',
+            'pretty_version' => '2.15.1',
+            'version' => '2.15.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-mail',
             'aliases' => array(),
-            'reference' => '180c6c7baa37cba16fe9fd34af0f346e796cf1a1',
+            'reference' => '70c3476913c74e9befd782ab665ad1b9ebac556e',
             'dev_requirement' => false,
         ),
         'laminas/laminas-math' => array(
-            'pretty_version' => '3.3.2',
-            'version' => '3.3.2.0',
+            'pretty_version' => '3.5.0',
+            'version' => '3.5.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-math',
             'aliases' => array(),
-            'reference' => '188456530923a449470963837c25560f1fdd8a60',
+            'reference' => '146d8187ab247ae152e811a6704a953d43537381',
             'dev_requirement' => false,
         ),
         'laminas/laminas-mime' => array(
-            'pretty_version' => '2.9.0',
-            'version' => '2.9.0.0',
+            'pretty_version' => '2.9.1',
+            'version' => '2.9.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-mime',
             'aliases' => array(),
-            'reference' => '02cc861f704d468726866457dcf8338d1fe74e76',
+            'reference' => '72d21a1b4bb7086d4a4d7058c0abca180b209184',
             'dev_requirement' => false,
         ),
         'laminas/laminas-modulemanager' => array(
-            'pretty_version' => '2.10.2',
-            'version' => '2.10.2.0',
+            'pretty_version' => '2.11.0',
+            'version' => '2.11.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-modulemanager',
             'aliases' => array(),
-            'reference' => '2068e0b300e87e139112016a6025be341ceaaf33',
+            'reference' => '6acf5991d10b0b38a2edb08729ed48981b2a5dad',
             'dev_requirement' => false,
         ),
         'laminas/laminas-mvc' => array(
@@ -941,30 +947,30 @@
             'dev_requirement' => false,
         ),
         'laminas/laminas-server' => array(
-            'pretty_version' => '2.10.0',
-            'version' => '2.10.0.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../laminas/laminas-server',
-            'aliases' => array(),
-            'reference' => 'e1fd6853223feed7a00555144d661e0a914124cd',
-            'dev_requirement' => false,
-        ),
-        'laminas/laminas-servicemanager' => array(
-            'pretty_version' => '3.7.0',
-            'version' => '3.7.0.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../laminas/laminas-servicemanager',
-            'aliases' => array(),
-            'reference' => '2b0aee477fdbd3191af7c302b93dbc5fda0626f4',
-            'dev_requirement' => false,
-        ),
-        'laminas/laminas-session' => array(
             'pretty_version' => '2.11.0',
             'version' => '2.11.0.0',
             'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-server',
+            'aliases' => array(),
+            'reference' => '7582832d56c5488dee4d4753bf3bf2d5f3dc5906',
+            'dev_requirement' => false,
+        ),
+        'laminas/laminas-servicemanager' => array(
+            'pretty_version' => '3.10.0',
+            'version' => '3.10.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-servicemanager',
+            'aliases' => array(),
+            'reference' => 'e52b985909e0940bf22d34f322eb3f48bbef6bd1',
+            'dev_requirement' => false,
+        ),
+        'laminas/laminas-session' => array(
+            'pretty_version' => '2.12.1',
+            'version' => '2.12.1.0',
+            'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-session',
             'aliases' => array(),
-            'reference' => 'c4e19f1a3bc6f7ecf6f25f79b32717a544236922',
+            'reference' => '888c6a344e9a4c9f34ab6e09346640eac9be3fcf',
             'dev_requirement' => false,
         ),
         'laminas/laminas-soap' => array(
@@ -977,12 +983,12 @@
             'dev_requirement' => false,
         ),
         'laminas/laminas-stdlib' => array(
-            'pretty_version' => '3.6.0',
-            'version' => '3.6.0.0',
+            'pretty_version' => '3.7.1',
+            'version' => '3.7.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-stdlib',
             'aliases' => array(),
-            'reference' => 'c53d8537f108fac3fae652677a19735db730ba46',
+            'reference' => 'bcd869e2fe88d567800057c1434f2380354fe325',
             'dev_requirement' => false,
         ),
         'laminas/laminas-text' => array(
@@ -1004,48 +1010,48 @@
             'dev_requirement' => false,
         ),
         'laminas/laminas-validator' => array(
-            'pretty_version' => '2.15.0',
-            'version' => '2.15.0.0',
+            'pretty_version' => '2.16.0',
+            'version' => '2.16.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-validator',
             'aliases' => array(),
-            'reference' => '270380e87904f5a1a1fba3059989d4ca157e16a9',
+            'reference' => '329900ab7674c198e91e85b2e09080cdf493ce07',
             'dev_requirement' => false,
         ),
         'laminas/laminas-view' => array(
-            'pretty_version' => '2.12.0',
-            'version' => '2.12.0.0',
+            'pretty_version' => '2.12.1',
+            'version' => '2.12.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-view',
             'aliases' => array(),
-            'reference' => '3ef103da6887809f08ecf52f42c31a76c9bf08b1',
+            'reference' => '23fc886670e05d3fae34d3ba2c5089e2d29beb03',
             'dev_requirement' => false,
         ),
         'laminas/laminas-zendframework-bridge' => array(
-            'pretty_version' => '1.4.0',
-            'version' => '1.4.0.0',
+            'pretty_version' => '1.4.1',
+            'version' => '1.4.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laminas/laminas-zendframework-bridge',
             'aliases' => array(),
-            'reference' => 'bf180a382393e7db5c1e8d0f2ec0c4af9c724baf',
+            'reference' => '88bf037259869891afce6504cacc4f8a07b24d0f',
             'dev_requirement' => false,
         ),
         'league/flysystem' => array(
-            'pretty_version' => '2.2.3',
-            'version' => '2.2.3.0',
+            'pretty_version' => '2.4.3',
+            'version' => '2.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../league/flysystem',
             'aliases' => array(),
-            'reference' => '811bdc2d52a07eafbb6cb68a7b368b0668b362c8',
+            'reference' => '4c56e451e10e3d9478f42f44c3d744bc17cdcede',
             'dev_requirement' => false,
         ),
         'league/flysystem-aws-s3-v3' => array(
-            'pretty_version' => '2.1.0',
-            'version' => '2.1.0.0',
+            'pretty_version' => '2.4.3',
+            'version' => '2.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../league/flysystem-aws-s3-v3',
             'aliases' => array(),
-            'reference' => '8d8edfe2541d94e6607808e3dd8484734c86eb2a',
+            'reference' => 'bf8c03f9c1c8a69f7fd2854d57127840e1b6ccd2',
             'dev_requirement' => false,
         ),
         'league/iso3166' => array(
@@ -1058,12 +1064,12 @@
             'dev_requirement' => false,
         ),
         'league/mime-type-detection' => array(
-            'pretty_version' => '1.7.0',
-            'version' => '1.7.0.0',
+            'pretty_version' => '1.9.0',
+            'version' => '1.9.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../league/mime-type-detection',
             'aliases' => array(),
-            'reference' => '3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3',
+            'reference' => 'aa70e813a6ad3d1558fc927863d47309b4c23e69',
             'dev_requirement' => false,
         ),
         'lusitanian/oauth' => array(
@@ -1087,7 +1093,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/adobe-stock-integration' => array(
@@ -1096,7 +1102,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/composer' => array(
@@ -1105,7 +1111,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../magento/composer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/composer-dependency-version-audit-plugin' => array(
@@ -1114,7 +1120,7 @@
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/../magento/composer-dependency-version-audit-plugin',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/composer-root-update-plugin' => array(
@@ -1123,7 +1129,7 @@
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/../magento/composer-root-update-plugin',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/framework' => array(
@@ -1132,7 +1138,7 @@
             'type' => 'magento2-library',
             'install_path' => __DIR__ . '/../magento/framework',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/framework-amqp' => array(
@@ -1141,7 +1147,7 @@
             'type' => 'magento2-library',
             'install_path' => __DIR__ . '/../magento/framework-amqp',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/framework-bulk' => array(
@@ -1150,7 +1156,7 @@
             'type' => 'magento2-library',
             'install_path' => __DIR__ . '/../magento/framework-bulk',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/framework-message-queue' => array(
@@ -1159,7 +1165,7 @@
             'type' => 'magento2-library',
             'install_path' => __DIR__ . '/../magento/framework-message-queue',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/google-shopping-ads' => array(
@@ -1168,7 +1174,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/google-shopping-ads',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/inventory-composer-installer' => array(
@@ -1177,7 +1183,7 @@
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/../magento/inventory-composer-installer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/inventory-metapackage' => array(
@@ -1186,7 +1192,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/language-de_de' => array(
@@ -1195,7 +1201,7 @@
             'type' => 'magento2-language',
             'install_path' => __DIR__ . '/../magento/language-de_de',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/language-en_us' => array(
@@ -1204,7 +1210,7 @@
             'type' => 'magento2-language',
             'install_path' => __DIR__ . '/../magento/language-en_us',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/language-es_es' => array(
@@ -1213,7 +1219,7 @@
             'type' => 'magento2-language',
             'install_path' => __DIR__ . '/../magento/language-es_es',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/language-fr_fr' => array(
@@ -1222,7 +1228,7 @@
             'type' => 'magento2-language',
             'install_path' => __DIR__ . '/../magento/language-fr_fr',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/language-nl_nl' => array(
@@ -1231,7 +1237,7 @@
             'type' => 'magento2-language',
             'install_path' => __DIR__ . '/../magento/language-nl_nl',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/language-pt_br' => array(
@@ -1240,7 +1246,7 @@
             'type' => 'magento2-language',
             'install_path' => __DIR__ . '/../magento/language-pt_br',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/language-zh_hans_cn' => array(
@@ -1249,7 +1255,7 @@
             'type' => 'magento2-language',
             'install_path' => __DIR__ . '/../magento/language-zh_hans_cn',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/magento-coding-standard' => array(
@@ -1262,12 +1268,12 @@
             'dev_requirement' => true,
         ),
         'magento/magento-composer-installer' => array(
-            'pretty_version' => '0.2.1',
-            'version' => '0.2.1.0',
+            'pretty_version' => '0.3.0',
+            'version' => '0.3.0.0',
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/../magento/magento-composer-installer',
             'aliases' => array(),
-            'reference' => 'b9f929f718ef93ed61b6410bad85d40c37fd5ed3',
+            'reference' => '0c1987b1ba4c8bacde15cad86f4dace1e3957104',
             'dev_requirement' => false,
         ),
         'magento/magento2-base' => array(
@@ -1276,7 +1282,7 @@
             'type' => 'magento2-component',
             'install_path' => __DIR__ . '/../magento/magento2-base',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/magento2-functional-testing-framework' => array(
@@ -1294,7 +1300,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-admin-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-admin-notification' => array(
@@ -1303,7 +1309,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-admin-notification',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-ims' => array(
@@ -1312,7 +1318,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-ims',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-ims-api' => array(
@@ -1321,7 +1327,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-ims-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-stock-admin-ui' => array(
@@ -1330,7 +1336,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-stock-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-stock-asset' => array(
@@ -1339,7 +1345,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-stock-asset',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-stock-asset-api' => array(
@@ -1348,7 +1354,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-stock-asset-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-stock-client' => array(
@@ -1357,7 +1363,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-stock-client',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-stock-client-api' => array(
@@ -1366,7 +1372,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-stock-client-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-stock-image' => array(
@@ -1375,7 +1381,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-stock-image',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-stock-image-admin-ui' => array(
@@ -1384,7 +1390,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-stock-image-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-adobe-stock-image-api' => array(
@@ -1393,7 +1399,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-adobe-stock-image-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-advanced-pricing-import-export' => array(
@@ -1402,7 +1408,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-advanced-pricing-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-advanced-search' => array(
@@ -1411,7 +1417,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-advanced-search',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-amqp' => array(
@@ -1420,7 +1426,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-amqp',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-amqp-store' => array(
@@ -1429,7 +1435,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-amqp-store',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-analytics' => array(
@@ -1438,7 +1444,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-asynchronous-operations' => array(
@@ -1447,7 +1453,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-asynchronous-operations',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-authorization' => array(
@@ -1456,7 +1462,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-authorization',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-aws-s3' => array(
@@ -1465,7 +1471,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-aws-s3',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-aws-s3-page-builder' => array(
@@ -1474,7 +1480,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-aws-s3-page-builder',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-backend' => array(
@@ -1483,7 +1489,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-backend',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-backup' => array(
@@ -1492,7 +1498,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-backup',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-bundle' => array(
@@ -1501,7 +1507,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-bundle',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-bundle-graph-ql' => array(
@@ -1510,7 +1516,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-bundle-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-bundle-import-export' => array(
@@ -1519,7 +1525,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-bundle-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-bundle-sample-data' => array(
@@ -1537,7 +1543,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-cache-invalidate',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-captcha' => array(
@@ -1546,7 +1552,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-captcha',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-cardinal-commerce' => array(
@@ -1555,7 +1561,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-cardinal-commerce',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog' => array(
@@ -1564,7 +1570,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-analytics' => array(
@@ -1573,7 +1579,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-cms-graph-ql' => array(
@@ -1582,7 +1588,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-cms-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-customer-graph-ql' => array(
@@ -1591,7 +1597,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-customer-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-graph-ql' => array(
@@ -1600,7 +1606,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-import-export' => array(
@@ -1609,7 +1615,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-inventory' => array(
@@ -1618,7 +1624,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-inventory',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-inventory-graph-ql' => array(
@@ -1627,7 +1633,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-inventory-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-page-builder-analytics' => array(
@@ -1636,7 +1642,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-page-builder-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-rule' => array(
@@ -1645,7 +1651,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-rule',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-rule-configurable' => array(
@@ -1654,7 +1660,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-rule-configurable',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-rule-graph-ql' => array(
@@ -1663,7 +1669,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-rule-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-rule-sample-data' => array(
@@ -1690,7 +1696,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-search',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-url-rewrite' => array(
@@ -1699,7 +1705,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-url-rewrite',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-url-rewrite-graph-ql' => array(
@@ -1708,7 +1714,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-url-rewrite-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-catalog-widget' => array(
@@ -1717,7 +1723,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-catalog-widget',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-checkout' => array(
@@ -1726,7 +1732,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-checkout',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-checkout-agreements' => array(
@@ -1735,7 +1741,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-checkout-agreements',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-checkout-agreements-graph-ql' => array(
@@ -1744,7 +1750,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-checkout-agreements-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-cms' => array(
@@ -1753,7 +1759,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-cms',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-cms-graph-ql' => array(
@@ -1762,7 +1768,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-cms-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-cms-page-builder-analytics' => array(
@@ -1771,7 +1777,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-cms-page-builder-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-cms-sample-data' => array(
@@ -1789,7 +1795,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-cms-url-rewrite',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-cms-url-rewrite-graph-ql' => array(
@@ -1798,7 +1804,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-cms-url-rewrite-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-compare-list-graph-ql' => array(
@@ -1807,7 +1813,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-compare-list-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-config' => array(
@@ -1816,7 +1822,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-config',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-configurable-import-export' => array(
@@ -1825,7 +1831,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-configurable-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-configurable-product' => array(
@@ -1834,7 +1840,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-configurable-product',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-configurable-product-graph-ql' => array(
@@ -1843,7 +1849,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-configurable-product-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-configurable-product-sales' => array(
@@ -1852,7 +1858,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-configurable-product-sales',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-configurable-sample-data' => array(
@@ -1870,7 +1876,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-contact',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-cookie' => array(
@@ -1879,7 +1885,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-cookie',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-cron' => array(
@@ -1888,7 +1894,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-cron',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-csp' => array(
@@ -1897,7 +1903,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-csp',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-currency-symbol' => array(
@@ -1906,7 +1912,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-currency-symbol',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-customer' => array(
@@ -1915,7 +1921,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-customer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-customer-analytics' => array(
@@ -1924,7 +1930,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-customer-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-customer-downloadable-graph-ql' => array(
@@ -1933,7 +1939,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-customer-downloadable-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-customer-graph-ql' => array(
@@ -1942,7 +1948,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-customer-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-customer-import-export' => array(
@@ -1951,7 +1957,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-customer-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-customer-sample-data' => array(
@@ -1969,7 +1975,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-deploy',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-developer' => array(
@@ -1978,7 +1984,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-developer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-dhl' => array(
@@ -1987,7 +1993,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-dhl',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-directory' => array(
@@ -1996,7 +2002,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-directory',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-directory-graph-ql' => array(
@@ -2005,7 +2011,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-directory-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-downloadable' => array(
@@ -2014,7 +2020,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-downloadable',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-downloadable-graph-ql' => array(
@@ -2023,7 +2029,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-downloadable-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-downloadable-import-export' => array(
@@ -2032,7 +2038,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-downloadable-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-downloadable-sample-data' => array(
@@ -2050,7 +2056,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-eav',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-eav-graph-ql' => array(
@@ -2059,7 +2065,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-eav-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-elasticsearch' => array(
@@ -2068,7 +2074,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-elasticsearch',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-elasticsearch-6' => array(
@@ -2077,7 +2083,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-elasticsearch-6',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-elasticsearch-7' => array(
@@ -2086,7 +2092,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-elasticsearch-7',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-email' => array(
@@ -2095,7 +2101,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-email',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-encryption-key' => array(
@@ -2104,7 +2110,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-encryption-key',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-fedex' => array(
@@ -2113,7 +2119,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-fedex',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-gift-message' => array(
@@ -2122,7 +2128,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-gift-message',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-gift-message-graph-ql' => array(
@@ -2131,7 +2137,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-gift-message-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-google-adwords' => array(
@@ -2140,7 +2146,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-google-adwords',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-google-analytics' => array(
@@ -2149,7 +2155,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-google-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-google-optimizer' => array(
@@ -2158,7 +2164,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-google-optimizer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-graph-ql' => array(
@@ -2167,7 +2173,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-graph-ql-cache' => array(
@@ -2176,7 +2182,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-graph-ql-cache',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-grouped-catalog-inventory' => array(
@@ -2185,7 +2191,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-grouped-catalog-inventory',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-grouped-import-export' => array(
@@ -2194,7 +2200,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-grouped-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-grouped-product' => array(
@@ -2203,7 +2209,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-grouped-product',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-grouped-product-graph-ql' => array(
@@ -2212,7 +2218,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-grouped-product-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-grouped-product-sample-data' => array(
@@ -2230,7 +2236,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-indexer' => array(
@@ -2239,7 +2245,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-indexer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-instant-purchase' => array(
@@ -2248,7 +2254,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-instant-purchase',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-integration' => array(
@@ -2257,7 +2263,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-integration',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory' => array(
@@ -2266,7 +2272,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-admin-ui' => array(
@@ -2275,7 +2281,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-advanced-checkout' => array(
@@ -2284,7 +2290,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-advanced-checkout',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-api' => array(
@@ -2293,7 +2299,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-bundle-import-export' => array(
@@ -2302,7 +2308,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-bundle-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-bundle-product' => array(
@@ -2311,7 +2317,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-bundle-product',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-bundle-product-admin-ui' => array(
@@ -2320,7 +2326,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-bundle-product-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-bundle-product-indexer' => array(
@@ -2329,7 +2335,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-bundle-product-indexer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-cache' => array(
@@ -2338,7 +2344,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-cache',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-catalog' => array(
@@ -2347,7 +2353,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-catalog',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-catalog-admin-ui' => array(
@@ -2356,7 +2362,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-catalog-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-catalog-api' => array(
@@ -2365,7 +2371,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-catalog-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-catalog-frontend-ui' => array(
@@ -2374,7 +2380,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-catalog-frontend-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-catalog-search' => array(
@@ -2383,7 +2389,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-catalog-search',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-catalog-search-bundle-product' => array(
@@ -2392,7 +2398,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-catalog-search-bundle-product',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-catalog-search-configurable-product' => array(
@@ -2401,7 +2407,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-catalog-search-configurable-product',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-configurable-product' => array(
@@ -2410,7 +2416,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-configurable-product',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-configurable-product-admin-ui' => array(
@@ -2419,7 +2425,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-configurable-product-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-configurable-product-frontend-ui' => array(
@@ -2428,7 +2434,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-configurable-product-frontend-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-configurable-product-indexer' => array(
@@ -2437,7 +2443,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-configurable-product-indexer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-configuration' => array(
@@ -2446,7 +2452,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-configuration',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-configuration-api' => array(
@@ -2455,7 +2461,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-configuration-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-distance-based-source-selection' => array(
@@ -2464,7 +2470,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-distance-based-source-selection',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-distance-based-source-selection-admin-ui' => array(
@@ -2473,7 +2479,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-distance-based-source-selection-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-distance-based-source-selection-api' => array(
@@ -2482,7 +2488,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-distance-based-source-selection-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-elasticsearch' => array(
@@ -2491,7 +2497,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-elasticsearch',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-export-stock' => array(
@@ -2500,7 +2506,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-export-stock',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-export-stock-api' => array(
@@ -2509,7 +2515,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-export-stock-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-graph-ql' => array(
@@ -2518,7 +2524,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-grouped-product' => array(
@@ -2527,7 +2533,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-grouped-product',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-grouped-product-admin-ui' => array(
@@ -2536,7 +2542,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-grouped-product-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-grouped-product-indexer' => array(
@@ -2545,7 +2551,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-grouped-product-indexer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-import-export' => array(
@@ -2554,7 +2560,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup' => array(
@@ -2563,7 +2569,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-admin-ui' => array(
@@ -2572,7 +2578,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-api' => array(
@@ -2581,7 +2587,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-frontend' => array(
@@ -2590,7 +2596,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-frontend',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-graph-ql' => array(
@@ -2599,7 +2605,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-multishipping' => array(
@@ -2608,7 +2614,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-multishipping',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-quote' => array(
@@ -2617,7 +2623,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-quote',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-quote-graph-ql' => array(
@@ -2626,7 +2632,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-quote-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-sales' => array(
@@ -2635,7 +2641,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-sales',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-sales-admin-ui' => array(
@@ -2644,7 +2650,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-sales-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-sales-api' => array(
@@ -2653,7 +2659,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-sales-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-shipping' => array(
@@ -2662,7 +2668,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-shipping',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-shipping-admin-ui' => array(
@@ -2671,7 +2677,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-shipping-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-shipping-api' => array(
@@ -2680,7 +2686,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-shipping-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-in-store-pickup-webapi-extension' => array(
@@ -2689,7 +2695,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-in-store-pickup-webapi-extension',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-indexer' => array(
@@ -2698,7 +2704,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-indexer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-low-quantity-notification' => array(
@@ -2707,7 +2713,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-low-quantity-notification',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-low-quantity-notification-admin-ui' => array(
@@ -2716,7 +2722,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-low-quantity-notification-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-low-quantity-notification-api' => array(
@@ -2725,7 +2731,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-low-quantity-notification-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-multi-dimensional-indexer-api' => array(
@@ -2734,7 +2740,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-multi-dimensional-indexer-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-product-alert' => array(
@@ -2743,7 +2749,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-product-alert',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-quote-graph-ql' => array(
@@ -2752,7 +2758,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-quote-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-requisition-list' => array(
@@ -2761,7 +2767,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-requisition-list',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-reservation-cli' => array(
@@ -2770,7 +2776,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-reservation-cli',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-reservations' => array(
@@ -2779,7 +2785,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-reservations',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-reservations-api' => array(
@@ -2788,7 +2794,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-reservations-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-sales' => array(
@@ -2797,7 +2803,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-sales',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-sales-admin-ui' => array(
@@ -2806,7 +2812,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-sales-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-sales-api' => array(
@@ -2815,7 +2821,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-sales-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-sales-frontend-ui' => array(
@@ -2824,7 +2830,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-sales-frontend-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-setup-fixture-generator' => array(
@@ -2833,7 +2839,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-setup-fixture-generator',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-shipping' => array(
@@ -2842,7 +2848,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-shipping',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-shipping-admin-ui' => array(
@@ -2851,7 +2857,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-shipping-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-source-deduction-api' => array(
@@ -2860,7 +2866,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-source-deduction-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-source-selection' => array(
@@ -2869,7 +2875,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-source-selection',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-source-selection-api' => array(
@@ -2878,7 +2884,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-source-selection-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-swatches-frontend-ui' => array(
@@ -2887,7 +2893,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-swatches-frontend-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-visual-merchandiser' => array(
@@ -2896,7 +2902,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-visual-merchandiser',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-inventory-wishlist' => array(
@@ -2905,7 +2911,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-inventory-wishlist',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-jwt-framework-adapter' => array(
@@ -2914,7 +2920,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-jwt-framework-adapter',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-layered-navigation' => array(
@@ -2923,7 +2929,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-layered-navigation',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer' => array(
@@ -2932,7 +2938,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer-admin-ui' => array(
@@ -2941,7 +2947,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer-api' => array(
@@ -2950,7 +2956,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer-assistance' => array(
@@ -2959,7 +2965,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer-assistance',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer-frontend-ui' => array(
@@ -2968,7 +2974,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer-frontend-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer-graph-ql' => array(
@@ -2977,7 +2983,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer-log' => array(
@@ -2986,7 +2992,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer-log',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer-page-cache' => array(
@@ -2995,7 +3001,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer-page-cache',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer-quote' => array(
@@ -3004,7 +3010,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer-quote',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-login-as-customer-sales' => array(
@@ -3013,7 +3019,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-login-as-customer-sales',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-marketplace' => array(
@@ -3022,7 +3028,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-marketplace',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-content' => array(
@@ -3031,7 +3037,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-content',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-content-api' => array(
@@ -3040,7 +3046,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-content-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-content-catalog' => array(
@@ -3049,7 +3055,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-content-catalog',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-content-cms' => array(
@@ -3058,7 +3064,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-content-cms',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-content-synchronization' => array(
@@ -3067,7 +3073,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-content-synchronization',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-content-synchronization-api' => array(
@@ -3076,7 +3082,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-content-synchronization-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-content-synchronization-catalog' => array(
@@ -3085,7 +3091,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-content-synchronization-catalog',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-content-synchronization-cms' => array(
@@ -3094,7 +3100,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-content-synchronization-cms',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery' => array(
@@ -3103,7 +3109,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-api' => array(
@@ -3112,7 +3118,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-catalog' => array(
@@ -3121,7 +3127,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-catalog',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-catalog-integration' => array(
@@ -3130,7 +3136,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-catalog-integration',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-catalog-ui' => array(
@@ -3139,7 +3145,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-catalog-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-cms-ui' => array(
@@ -3148,7 +3154,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-cms-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-integration' => array(
@@ -3157,7 +3163,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-integration',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-metadata' => array(
@@ -3166,7 +3172,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-metadata',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-metadata-api' => array(
@@ -3175,7 +3181,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-metadata-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-renditions' => array(
@@ -3184,7 +3190,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-renditions',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-renditions-api' => array(
@@ -3193,7 +3199,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-renditions-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-synchronization' => array(
@@ -3202,7 +3208,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-synchronization',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-synchronization-api' => array(
@@ -3211,7 +3217,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-synchronization-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-synchronization-metadata' => array(
@@ -3220,7 +3226,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-synchronization-metadata',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-ui' => array(
@@ -3229,7 +3235,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-gallery-ui-api' => array(
@@ -3238,7 +3244,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-gallery-ui-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-media-storage' => array(
@@ -3247,7 +3253,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-media-storage',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-message-queue' => array(
@@ -3256,7 +3262,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-message-queue',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-msrp' => array(
@@ -3265,7 +3271,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-msrp',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-msrp-configurable-product' => array(
@@ -3274,7 +3280,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-msrp-configurable-product',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-msrp-grouped-product' => array(
@@ -3283,7 +3289,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-msrp-grouped-product',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-msrp-sample-data' => array(
@@ -3301,7 +3307,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-multishipping',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-mysql-mq' => array(
@@ -3310,7 +3316,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-mysql-mq',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-new-relic-reporting' => array(
@@ -3319,7 +3325,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-new-relic-reporting',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-newsletter' => array(
@@ -3328,7 +3334,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-newsletter',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-newsletter-graph-ql' => array(
@@ -3337,7 +3343,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-newsletter-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-offline-payments' => array(
@@ -3346,7 +3352,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-offline-payments',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-offline-shipping' => array(
@@ -3355,7 +3361,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-offline-shipping',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-offline-shipping-sample-data' => array(
@@ -3373,7 +3379,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-page-builder',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-page-builder-admin-analytics' => array(
@@ -3382,7 +3388,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-page-builder-admin-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-page-builder-analytics' => array(
@@ -3391,7 +3397,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-page-builder-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-page-cache' => array(
@@ -3400,7 +3406,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-page-cache',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-payment' => array(
@@ -3409,7 +3415,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-payment',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-paypal' => array(
@@ -3418,7 +3424,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-paypal',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-paypal-captcha' => array(
@@ -3427,7 +3433,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-paypal-captcha',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-paypal-graph-ql' => array(
@@ -3436,7 +3442,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-paypal-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-persistent' => array(
@@ -3445,7 +3451,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-persistent',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-product-alert' => array(
@@ -3454,7 +3460,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-product-alert',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-product-links-sample-data' => array(
@@ -3472,7 +3478,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-product-video',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-quote' => array(
@@ -3481,7 +3487,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-quote',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-quote-analytics' => array(
@@ -3490,7 +3496,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-quote-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-quote-bundle-options' => array(
@@ -3499,7 +3505,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-quote-bundle-options',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-quote-configurable-options' => array(
@@ -3508,7 +3514,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-quote-configurable-options',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-quote-downloadable-links' => array(
@@ -3517,7 +3523,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-quote-downloadable-links',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-quote-graph-ql' => array(
@@ -3526,7 +3532,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-quote-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-admin-ui' => array(
@@ -3535,7 +3541,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-admin-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-checkout' => array(
@@ -3544,7 +3550,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-checkout',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-contact' => array(
@@ -3553,7 +3559,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-contact',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-customer' => array(
@@ -3562,7 +3568,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-customer',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-frontend-ui' => array(
@@ -3571,7 +3577,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-frontend-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-migration' => array(
@@ -3580,7 +3586,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-migration',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-newsletter' => array(
@@ -3589,7 +3595,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-newsletter',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-paypal' => array(
@@ -3598,7 +3604,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-paypal',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-review' => array(
@@ -3607,7 +3613,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-review',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-send-friend' => array(
@@ -3616,7 +3622,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-send-friend',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-store-pickup' => array(
@@ -3625,7 +3631,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-store-pickup',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-ui' => array(
@@ -3634,7 +3640,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-user' => array(
@@ -3643,7 +3649,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-user',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-validation' => array(
@@ -3652,7 +3658,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-validation',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-validation-api' => array(
@@ -3661,7 +3667,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-validation-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-version-2-checkbox' => array(
@@ -3670,7 +3676,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-version-2-checkbox',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-version-2-invisible' => array(
@@ -3679,7 +3685,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-version-2-invisible',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-version-3-invisible' => array(
@@ -3688,7 +3694,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-version-3-invisible',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-webapi-api' => array(
@@ -3697,7 +3703,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-webapi-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-webapi-graph-ql' => array(
@@ -3706,7 +3712,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-webapi-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-webapi-rest' => array(
@@ -3715,7 +3721,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-webapi-rest',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-re-captcha-webapi-ui' => array(
@@ -3724,7 +3730,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-re-captcha-webapi-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-related-product-graph-ql' => array(
@@ -3733,7 +3739,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-related-product-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-release-notification' => array(
@@ -3742,7 +3748,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-release-notification',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-remote-storage' => array(
@@ -3751,7 +3757,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-remote-storage',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-reports' => array(
@@ -3760,7 +3766,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-reports',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-require-js' => array(
@@ -3769,7 +3775,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-require-js',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-review' => array(
@@ -3778,7 +3784,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-review',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-review-analytics' => array(
@@ -3787,7 +3793,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-review-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-review-graph-ql' => array(
@@ -3796,7 +3802,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-review-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-review-sample-data' => array(
@@ -3814,7 +3820,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-robots',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-rss' => array(
@@ -3823,7 +3829,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-rss',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-rule' => array(
@@ -3832,7 +3838,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-rule',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-sales' => array(
@@ -3841,7 +3847,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-sales',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-sales-analytics' => array(
@@ -3850,7 +3856,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-sales-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-sales-graph-ql' => array(
@@ -3859,7 +3865,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-sales-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-sales-inventory' => array(
@@ -3868,7 +3874,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-sales-inventory',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-sales-rule' => array(
@@ -3877,7 +3883,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-sales-rule',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-sales-rule-sample-data' => array(
@@ -3904,7 +3910,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-sales-sequence',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-sample-data' => array(
@@ -3913,7 +3919,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-sample-data',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-search' => array(
@@ -3922,7 +3928,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-search',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-security' => array(
@@ -3931,7 +3937,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-security',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-securitytxt' => array(
@@ -3940,7 +3946,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-securitytxt',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-send-friend' => array(
@@ -3949,7 +3955,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-send-friend',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-send-friend-graph-ql' => array(
@@ -3958,7 +3964,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-send-friend-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-shipping' => array(
@@ -3967,7 +3973,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-shipping',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-sitemap' => array(
@@ -3976,7 +3982,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-sitemap',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-store' => array(
@@ -3985,7 +3991,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-store',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-store-graph-ql' => array(
@@ -3994,7 +4000,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-store-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-swagger' => array(
@@ -4003,7 +4009,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-swagger',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-swagger-webapi' => array(
@@ -4012,7 +4018,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-swagger-webapi',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-swagger-webapi-async' => array(
@@ -4021,7 +4027,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-swagger-webapi-async',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-swatches' => array(
@@ -4030,7 +4036,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-swatches',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-swatches-graph-ql' => array(
@@ -4039,7 +4045,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-swatches-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-swatches-layered-navigation' => array(
@@ -4048,7 +4054,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-swatches-layered-navigation',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-swatches-sample-data' => array(
@@ -4066,7 +4072,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-tax',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-tax-graph-ql' => array(
@@ -4075,7 +4081,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-tax-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-tax-import-export' => array(
@@ -4084,7 +4090,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-tax-import-export',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-tax-sample-data' => array(
@@ -4102,7 +4108,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-theme',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-theme-graph-ql' => array(
@@ -4111,7 +4117,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-theme-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-theme-sample-data' => array(
@@ -4129,7 +4135,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-translation',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-two-factor-auth' => array(
@@ -4138,7 +4144,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-two-factor-auth',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-ui' => array(
@@ -4147,7 +4153,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-ui',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-ups' => array(
@@ -4156,7 +4162,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-ups',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-url-rewrite' => array(
@@ -4165,7 +4171,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-url-rewrite',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-url-rewrite-graph-ql' => array(
@@ -4174,7 +4180,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-url-rewrite-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-user' => array(
@@ -4183,7 +4189,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-user',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-usps' => array(
@@ -4192,7 +4198,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-usps',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-variable' => array(
@@ -4201,7 +4207,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-variable',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-vault' => array(
@@ -4210,7 +4216,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-vault',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-vault-graph-ql' => array(
@@ -4219,7 +4225,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-vault-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-version' => array(
@@ -4228,7 +4234,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-version',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-webapi' => array(
@@ -4237,7 +4243,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-webapi',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-webapi-async' => array(
@@ -4246,7 +4252,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-webapi-async',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-webapi-security' => array(
@@ -4255,7 +4261,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-webapi-security',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-weee' => array(
@@ -4264,7 +4270,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-weee',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-weee-graph-ql' => array(
@@ -4273,7 +4279,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-weee-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-widget' => array(
@@ -4282,7 +4288,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-widget',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-widget-sample-data' => array(
@@ -4300,7 +4306,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-wishlist',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-wishlist-analytics' => array(
@@ -4309,7 +4315,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-wishlist-analytics',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-wishlist-graph-ql' => array(
@@ -4318,7 +4324,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../magento/module-wishlist-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/module-wishlist-sample-data' => array(
@@ -4336,7 +4342,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/product-community-edition' => array(
@@ -4345,7 +4351,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/project-community-edition' => array(
@@ -4363,7 +4369,7 @@
             'type' => 'magento2-component',
             'install_path' => __DIR__ . '/../magento/sample-data-media',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/security-package' => array(
@@ -4372,7 +4378,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/theme-adminhtml-backend' => array(
@@ -4381,7 +4387,7 @@
             'type' => 'magento2-theme',
             'install_path' => __DIR__ . '/../magento/theme-adminhtml-backend',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/theme-frontend-blank' => array(
@@ -4390,7 +4396,7 @@
             'type' => 'magento2-theme',
             'install_path' => __DIR__ . '/../magento/theme-frontend-blank',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/theme-frontend-luma' => array(
@@ -4399,7 +4405,7 @@
             'type' => 'magento2-theme',
             'install_path' => __DIR__ . '/../magento/theme-frontend-luma',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'magento/zendframework1' => array(
@@ -4430,12 +4436,12 @@
             'dev_requirement' => false,
         ),
         'mustache/mustache' => array(
-            'pretty_version' => 'v2.13.0',
-            'version' => '2.13.0.0',
+            'pretty_version' => 'v2.14.1',
+            'version' => '2.14.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../mustache/mustache',
             'aliases' => array(),
-            'reference' => 'e95c5a008c23d3151d59ea72484d4f72049ab7f4',
+            'reference' => '579ffa5c96e1d292c060b3dd62811ff01ad8c24e',
             'dev_requirement' => true,
         ),
         'myclabs/deep-copy' => array(
@@ -4469,12 +4475,12 @@
             'dev_requirement' => false,
         ),
         'paragonie/constant_time_encoding' => array(
-            'pretty_version' => 'v2.4.0',
-            'version' => '2.4.0.0',
+            'pretty_version' => 'v2.5.0',
+            'version' => '2.5.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../paragonie/constant_time_encoding',
             'aliases' => array(),
-            'reference' => 'f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c',
+            'reference' => '9229e15f2e6ba772f0c55dd6986c563b937170a8',
             'dev_requirement' => false,
         ),
         'paragonie/random_compat' => array(
@@ -4501,7 +4507,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'paypal/module-braintree-core' => array(
@@ -4510,7 +4516,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../paypal/module-braintree-core',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'paypal/module-braintree-graph-ql' => array(
@@ -4519,7 +4525,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../paypal/module-braintree-graph-ql',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'pdepend/pdepend' => array(
@@ -4604,30 +4610,30 @@
             'dev_requirement' => true,
         ),
         'phpdocumentor/reflection-docblock' => array(
-            'pretty_version' => '5.2.2',
-            'version' => '5.2.2.0',
+            'pretty_version' => '5.3.0',
+            'version' => '5.3.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpdocumentor/reflection-docblock',
             'aliases' => array(),
-            'reference' => '069a785b2141f5bcf49f3e353548dc1cce6df556',
+            'reference' => '622548b623e81ca6d78b721c5e029f4ce664f170',
             'dev_requirement' => true,
         ),
         'phpdocumentor/type-resolver' => array(
-            'pretty_version' => '1.4.0',
-            'version' => '1.4.0.0',
+            'pretty_version' => '1.6.0',
+            'version' => '1.6.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpdocumentor/type-resolver',
             'aliases' => array(),
-            'reference' => '6a467b8989322d92aa1c8bf2bebcc6e5c2ba55c0',
+            'reference' => '93ebd0014cab80c4ea9f5e297ea48672f1b87706',
             'dev_requirement' => true,
         ),
         'phpgt/cssxpath' => array(
-            'pretty_version' => 'v1.1.2',
-            'version' => '1.1.2.0',
+            'pretty_version' => 'v1.1.4',
+            'version' => '1.1.4.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpgt/cssxpath',
             'aliases' => array(),
-            'reference' => 'cca4df1a33e18aff1bb775372ece5fddb032ba67',
+            'reference' => '7f073ba346c49a339a7b2cda9ccfdb1994c5d271',
             'dev_requirement' => false,
         ),
         'phpgt/dom' => array(
@@ -4636,7 +4642,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpgt/dom',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => 'fceb86cdb32e846178f75b7f9806d2b77635a879',
             'dev_requirement' => false,
         ),
         'phpmd/phpmd' => array(
@@ -4654,34 +4660,34 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpseclib/mcrypt_compat',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => 'f74c7b1897b62f08f268184b8bb98d9d9ab723b0',
             'dev_requirement' => false,
         ),
         'phpseclib/phpseclib' => array(
-            'pretty_version' => '2.0.33',
-            'version' => '2.0.33.0',
+            'pretty_version' => '2.0.36',
+            'version' => '2.0.36.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpseclib/phpseclib',
             'aliases' => array(),
-            'reference' => 'fb53b7889497ec7c1362c94e61d8127ac67ea094',
+            'reference' => 'a97547126396548c224703a267a30af1592be146',
             'dev_requirement' => false,
         ),
         'phpspec/prophecy' => array(
-            'pretty_version' => '1.14.0',
-            'version' => '1.14.0.0',
+            'pretty_version' => 'v1.15.0',
+            'version' => '1.15.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpspec/prophecy',
             'aliases' => array(),
-            'reference' => 'd86dfc2e2a3cd366cee475e52c6bb3bbc371aa0e',
+            'reference' => 'bbcd7380b0ebf3961ee21409db7b38bc31d69a13',
             'dev_requirement' => true,
         ),
         'phpstan/phpdoc-parser' => array(
-            'pretty_version' => '0.5.7',
-            'version' => '0.5.7.0',
+            'pretty_version' => '1.2.0',
+            'version' => '1.2.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpstan/phpdoc-parser',
             'aliases' => array(),
-            'reference' => '816e826ce0b7fb32098d8cb6de62511ce6021cea',
+            'reference' => 'dbc093d7af60eff5cd575d2ed761b15ed40bd08e',
             'dev_requirement' => true,
         ),
         'phpstan/phpstan' => array(
@@ -4703,12 +4709,12 @@
             'dev_requirement' => true,
         ),
         'phpunit/php-file-iterator' => array(
-            'pretty_version' => '3.0.5',
-            'version' => '3.0.5.0',
+            'pretty_version' => '3.0.6',
+            'version' => '3.0.6.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpunit/php-file-iterator',
             'aliases' => array(),
-            'reference' => 'aa4be8575f26070b100fccb67faabb28f21f66f8',
+            'reference' => 'cf1c2e7c203ac650e352f4cc675a7021e7d1b3cf',
             'dev_requirement' => true,
         ),
         'phpunit/php-invoker' => array(
@@ -4766,19 +4772,19 @@
             'dev_requirement' => true,
         ),
         'psr/container' => array(
-            'pretty_version' => '1.1.1',
-            'version' => '1.1.1.0',
+            'pretty_version' => '1.1.2',
+            'version' => '1.1.2.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../psr/container',
             'aliases' => array(),
-            'reference' => '8622567409010282b7aeebe4bb841fe98b58dcaf',
+            'reference' => '513e0666f7216c7459170d56df27dfcefe1689ea',
             'dev_requirement' => false,
         ),
         'psr/container-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '^1.0',
-                1 => '1.0',
+                0 => '1.0',
+                1 => '^1.0',
             ),
         ),
         'psr/event-dispatcher' => array(
@@ -4855,36 +4861,36 @@
             'dev_requirement' => false,
         ),
         'ramsey/collection' => array(
-            'pretty_version' => '1.2.1',
-            'version' => '1.2.1.0',
+            'pretty_version' => '1.2.2',
+            'version' => '1.2.2.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../ramsey/collection',
             'aliases' => array(),
-            'reference' => 'eaca1dc1054ddd10cbd83c1461907bee6fb528fa',
+            'reference' => 'cccc74ee5e328031b15640b51056ee8d3bb66c0a',
             'dev_requirement' => false,
         ),
         'ramsey/uuid' => array(
-            'pretty_version' => '4.1.1',
-            'version' => '4.1.1.0',
+            'pretty_version' => '4.1.3',
+            'version' => '4.1.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../ramsey/uuid',
             'aliases' => array(),
-            'reference' => 'cd4032040a750077205918c86049aa0f43d22947',
+            'reference' => '2df6bbdf0133247bfa0063ccbcf59185a243f52d',
             'dev_requirement' => false,
         ),
         'react/promise' => array(
-            'pretty_version' => 'v2.8.0',
-            'version' => '2.8.0.0',
+            'pretty_version' => 'v2.9.0',
+            'version' => '2.9.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../react/promise',
             'aliases' => array(),
-            'reference' => 'f3cff96a19736714524ca0dd1d4130de73dbbbc4',
+            'reference' => '234f8fd1023c9158e2314fa9d7d0e6a83db42910',
             'dev_requirement' => false,
         ),
         'rhumsaa/uuid' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => '4.1.1',
+                0 => '4.1.3',
             ),
         ),
         'sebastian/cli-parser' => array(
@@ -4942,12 +4948,12 @@
             'dev_requirement' => true,
         ),
         'sebastian/exporter' => array(
-            'pretty_version' => '4.0.3',
-            'version' => '4.0.3.0',
+            'pretty_version' => '4.0.4',
+            'version' => '4.0.4.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../sebastian/exporter',
             'aliases' => array(),
-            'reference' => 'd89cc98761b8cb5a1a235a6b703ae50d34080e65',
+            'reference' => '65e8b7db476c5dd267e65eea9cab77584d3cfff9',
             'dev_requirement' => true,
         ),
         'sebastian/global-state' => array(
@@ -5032,12 +5038,12 @@
             'dev_requirement' => false,
         ),
         'seld/phar-utils' => array(
-            'pretty_version' => '1.1.2',
-            'version' => '1.1.2.0',
+            'pretty_version' => '1.2.0',
+            'version' => '1.2.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../seld/phar-utils',
             'aliases' => array(),
-            'reference' => '749042a2315705d2dfbbc59234dd9ceb22bf3ff0',
+            'reference' => '9f3452c93ff423469c0d56450431562ca423dcee',
             'dev_requirement' => false,
         ),
         'spomky-labs/aes-key-wrap' => array(
@@ -5059,12 +5065,12 @@
             'dev_requirement' => false,
         ),
         'spomky-labs/otphp' => array(
-            'pretty_version' => 'v10.0.1',
-            'version' => '10.0.1.0',
+            'pretty_version' => 'v10.0.2',
+            'version' => '10.0.2.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../spomky-labs/otphp',
             'aliases' => array(),
-            'reference' => 'f44cce5a9db4b8da410215d992110482c931232f',
+            'reference' => 'cd6b57baf37e2551cfb6d8706201c153e5ac1a4d',
             'dev_requirement' => false,
         ),
         'squizlabs/php_codesniffer' => array(
@@ -5077,84 +5083,84 @@
             'dev_requirement' => true,
         ),
         'symfony/config' => array(
-            'pretty_version' => 'v5.3.4',
-            'version' => '5.3.4.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/config',
             'aliases' => array(),
-            'reference' => '4268f3059c904c61636275182707f81645517a37',
+            'reference' => 'd65e1bd990c740e31feb07d2b0927b8d4df9956f',
             'dev_requirement' => false,
         ),
         'symfony/console' => array(
-            'pretty_version' => 'v4.4.30',
-            'version' => '4.4.30.0',
+            'pretty_version' => 'v4.4.37',
+            'version' => '4.4.37.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/console',
             'aliases' => array(),
-            'reference' => 'a3f7189a0665ee33b50e9e228c46f50f5acbed22',
+            'reference' => '0259f01dbf9d77badddbbf4c2abb681f24c9cac6',
             'dev_requirement' => false,
         ),
         'symfony/css-selector' => array(
-            'pretty_version' => 'v5.3.4',
-            'version' => '5.3.4.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/css-selector',
             'aliases' => array(),
-            'reference' => '7fb120adc7f600a59027775b224c13a33530dd90',
+            'reference' => 'b0a190285cd95cb019237851205b8140ef6e368e',
             'dev_requirement' => false,
         ),
         'symfony/debug' => array(
-            'pretty_version' => 'v4.4.27',
-            'version' => '4.4.27.0',
+            'pretty_version' => 'v4.4.37',
+            'version' => '4.4.37.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/debug',
             'aliases' => array(),
-            'reference' => '2f9160e92eb64c95da7368c867b663a8e34e980c',
+            'reference' => '5de6c6e7f52b364840e53851c126be4d71e60470',
             'dev_requirement' => false,
         ),
         'symfony/dependency-injection' => array(
-            'pretty_version' => 'v5.3.7',
-            'version' => '5.3.7.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/dependency-injection',
             'aliases' => array(),
-            'reference' => 'a665946279f566d94ed5eb98999cfa65c6fa5a78',
+            'reference' => '974580fd67f14d65b045c11b09eb149cd4b13df5',
             'dev_requirement' => false,
         ),
         'symfony/deprecation-contracts' => array(
-            'pretty_version' => 'v2.4.0',
-            'version' => '2.4.0.0',
+            'pretty_version' => 'v2.5.0',
+            'version' => '2.5.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/deprecation-contracts',
             'aliases' => array(),
-            'reference' => '5f38c8804a9e97d23e0c8d63341088cd8a22d627',
+            'reference' => '6f981ee24cf69ee7ce9736146d1c57c2780598a8',
             'dev_requirement' => false,
         ),
         'symfony/error-handler' => array(
-            'pretty_version' => 'v4.4.30',
-            'version' => '4.4.30.0',
+            'pretty_version' => 'v4.4.37',
+            'version' => '4.4.37.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/error-handler',
             'aliases' => array(),
-            'reference' => '51f98f7aa99f00f3b1da6bafe934e67ae6ba6dc5',
+            'reference' => '8d80ad881e1ce17979547873d093e3c987a6a629',
             'dev_requirement' => false,
         ),
         'symfony/event-dispatcher' => array(
-            'pretty_version' => 'v4.4.30',
-            'version' => '4.4.30.0',
+            'pretty_version' => 'v4.4.37',
+            'version' => '4.4.37.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/event-dispatcher',
             'aliases' => array(),
-            'reference' => '2fe81680070043c4c80e7cedceb797e34f377bac',
+            'reference' => '3ccfcfb96ecce1217d7b0875a0736976bc6e63dc',
             'dev_requirement' => false,
         ),
         'symfony/event-dispatcher-contracts' => array(
-            'pretty_version' => 'v1.1.9',
-            'version' => '1.1.9.0',
+            'pretty_version' => 'v1.1.11',
+            'version' => '1.1.11.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/event-dispatcher-contracts',
             'aliases' => array(),
-            'reference' => '84e23fdcd2517bf37aecbd16967e83f0caee25a7',
+            'reference' => '01e9a4efac0ee33a05dfdf93b346f62e7d0e998c',
             'dev_requirement' => false,
         ),
         'symfony/event-dispatcher-implementation' => array(
@@ -5164,98 +5170,98 @@
             ),
         ),
         'symfony/filesystem' => array(
-            'pretty_version' => 'v5.3.4',
-            'version' => '5.3.4.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/filesystem',
             'aliases' => array(),
-            'reference' => '343f4fe324383ca46792cae728a3b6e2f708fb32',
+            'reference' => '0f0c4bf1840420f4aef3f32044a9dbb24682731b',
             'dev_requirement' => false,
         ),
         'symfony/finder' => array(
-            'pretty_version' => 'v5.3.7',
-            'version' => '5.3.7.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/finder',
             'aliases' => array(),
-            'reference' => 'a10000ada1e600d109a6c7632e9ac42e8bf2fb93',
+            'reference' => '231313534dded84c7ecaa79d14bc5da4ccb69b7d',
             'dev_requirement' => false,
         ),
         'symfony/http-client-contracts' => array(
-            'pretty_version' => 'v2.4.0',
-            'version' => '2.4.0.0',
+            'pretty_version' => 'v2.5.0',
+            'version' => '2.5.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/http-client-contracts',
             'aliases' => array(),
-            'reference' => '7e82f6084d7cae521a75ef2cb5c9457bbda785f4',
+            'reference' => 'ec82e57b5b714dbb69300d348bd840b345e24166',
             'dev_requirement' => false,
         ),
         'symfony/http-foundation' => array(
-            'pretty_version' => 'v5.3.7',
-            'version' => '5.3.7.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/http-foundation',
             'aliases' => array(),
-            'reference' => 'e36c8e5502b4f3f0190c675f1c1f1248a64f04e5',
+            'reference' => 'ef409ff341a565a3663157d4324536746d49a0c7',
             'dev_requirement' => false,
         ),
         'symfony/http-kernel' => array(
-            'pretty_version' => 'v4.4.30',
-            'version' => '4.4.30.0',
+            'pretty_version' => 'v4.4.37',
+            'version' => '4.4.37.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/http-kernel',
             'aliases' => array(),
-            'reference' => '87f7ea4a8a7a30c967e26001de99f12943bf57ae',
+            'reference' => 'ef830fb76eea90dc778fd68c8a7816fbc6109ed6',
             'dev_requirement' => false,
         ),
         'symfony/mime' => array(
-            'pretty_version' => 'v5.3.7',
-            'version' => '5.3.7.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/mime',
             'aliases' => array(),
-            'reference' => 'ae887cb3b044658676129f5e97aeb7e9eb69c2d8',
+            'reference' => 'e1503cfb5c9a225350f549d3bb99296f4abfb80f',
             'dev_requirement' => true,
         ),
         'symfony/options-resolver' => array(
-            'pretty_version' => 'v5.3.7',
-            'version' => '5.3.7.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/options-resolver',
             'aliases' => array(),
-            'reference' => '4b78e55b179003a42523a362cc0e8327f7a69b5e',
+            'reference' => 'cc1147cb11af1b43f503ac18f31aa3bec213aba8',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-ctype' => array(
-            'pretty_version' => 'v1.23.0',
-            'version' => '1.23.0.0',
+            'pretty_version' => 'v1.24.0',
+            'version' => '1.24.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-ctype',
             'aliases' => array(),
-            'reference' => '46cd95797e9df938fdd2b03693b5fca5e64b01ce',
+            'reference' => '30885182c981ab175d4d034db0f6f469898070ab',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-intl-grapheme' => array(
-            'pretty_version' => 'v1.23.1',
-            'version' => '1.23.1.0',
+            'pretty_version' => 'v1.24.0',
+            'version' => '1.24.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-intl-grapheme',
             'aliases' => array(),
-            'reference' => '16880ba9c5ebe3642d1995ab866db29270b36535',
+            'reference' => '81b86b50cf841a64252b439e738e97f4a34e2783',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-intl-idn' => array(
-            'pretty_version' => 'v1.23.0',
-            'version' => '1.23.0.0',
+            'pretty_version' => 'v1.24.0',
+            'version' => '1.24.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-intl-idn',
             'aliases' => array(),
-            'reference' => '65bd267525e82759e7d8c4e8ceea44f398838e65',
+            'reference' => '749045c69efb97c70d25d7463abba812e91f3a44',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-intl-normalizer' => array(
-            'pretty_version' => 'v1.23.0',
-            'version' => '1.23.0.0',
+            'pretty_version' => 'v1.24.0',
+            'version' => '1.24.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-intl-normalizer',
             'aliases' => array(),
@@ -5263,12 +5269,12 @@
             'dev_requirement' => false,
         ),
         'symfony/polyfill-mbstring' => array(
-            'pretty_version' => 'v1.23.1',
-            'version' => '1.23.1.0',
+            'pretty_version' => 'v1.24.0',
+            'version' => '1.24.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-mbstring',
             'aliases' => array(),
-            'reference' => '9174a3d80210dca8daa7f31fec659150bbeabfc6',
+            'reference' => '0abb51d2f102e00a4eefcf46ba7fec406d245825',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-php70' => array(
@@ -5281,8 +5287,8 @@
             'dev_requirement' => true,
         ),
         'symfony/polyfill-php72' => array(
-            'pretty_version' => 'v1.23.0',
-            'version' => '1.23.0.0',
+            'pretty_version' => 'v1.24.0',
+            'version' => '1.24.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-php72',
             'aliases' => array(),
@@ -5290,66 +5296,66 @@
             'dev_requirement' => false,
         ),
         'symfony/polyfill-php73' => array(
-            'pretty_version' => 'v1.23.0',
-            'version' => '1.23.0.0',
+            'pretty_version' => 'v1.24.0',
+            'version' => '1.24.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-php73',
             'aliases' => array(),
-            'reference' => 'fba8933c384d6476ab14fb7b8526e5287ca7e010',
+            'reference' => 'cc5db0e22b3cb4111010e48785a97f670b350ca5',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-php80' => array(
-            'pretty_version' => 'v1.23.1',
-            'version' => '1.23.1.0',
+            'pretty_version' => 'v1.24.0',
+            'version' => '1.24.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-php80',
             'aliases' => array(),
-            'reference' => '1100343ed1a92e3a38f9ae122fc0eb21602547be',
+            'reference' => '57b712b08eddb97c762a8caa32c84e037892d2e9',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-php81' => array(
-            'pretty_version' => 'v1.23.0',
-            'version' => '1.23.0.0',
+            'pretty_version' => 'v1.24.0',
+            'version' => '1.24.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-php81',
             'aliases' => array(),
-            'reference' => 'e66119f3de95efc359483f810c4c3e6436279436',
+            'reference' => '5de4ba2d41b15f9bd0e19b2ab9674135813ec98f',
             'dev_requirement' => false,
         ),
         'symfony/process' => array(
-            'pretty_version' => 'v4.4.30',
-            'version' => '4.4.30.0',
+            'pretty_version' => 'v4.4.37',
+            'version' => '4.4.37.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/process',
             'aliases' => array(),
-            'reference' => '13d3161ef63a8ec21eeccaaf9a4d7f784a87a97d',
+            'reference' => 'b2d924e5a4cb284f293d5092b1dbf0d364cb8b67',
             'dev_requirement' => false,
         ),
         'symfony/property-access' => array(
-            'pretty_version' => 'v5.3.7',
-            'version' => '5.3.7.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/property-access',
             'aliases' => array(),
-            'reference' => 'a4bbf09b8f3e2d2c89cc2c8b3d6682bf4c3d5589',
+            'reference' => '4bb27fab0c8b0cabdff8cc24ed4019bfbb380e96',
             'dev_requirement' => false,
         ),
         'symfony/property-info' => array(
-            'pretty_version' => 'v5.3.7',
-            'version' => '5.3.7.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/property-info',
             'aliases' => array(),
-            'reference' => '7202b6c93a07df5df83eb58e3757dffb77fc5d90',
+            'reference' => 'bcc2b6904cbcf16b2e5d618da16117cd8e132f9a',
             'dev_requirement' => false,
         ),
         'symfony/service-contracts' => array(
-            'pretty_version' => 'v2.4.0',
-            'version' => '2.4.0.0',
+            'pretty_version' => 'v2.5.0',
+            'version' => '2.5.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/service-contracts',
             'aliases' => array(),
-            'reference' => 'f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb',
+            'reference' => '1ab11b933cd6bc5464b08e81e2c5b07dec58b0fc',
             'dev_requirement' => false,
         ),
         'symfony/service-implementation' => array(
@@ -5359,39 +5365,39 @@
             ),
         ),
         'symfony/stopwatch' => array(
-            'pretty_version' => 'v5.3.4',
-            'version' => '5.3.4.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/stopwatch',
             'aliases' => array(),
-            'reference' => 'b24c6a92c6db316fee69e38c80591e080e41536c',
+            'reference' => '395220730edceb6bd745236ccb5c9125c748f779',
             'dev_requirement' => true,
         ),
         'symfony/string' => array(
-            'pretty_version' => 'v5.3.7',
-            'version' => '5.3.7.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/string',
             'aliases' => array(),
-            'reference' => '8d224396e28d30f81969f083a58763b8b9ceb0a5',
+            'reference' => '92043b7d8383e48104e411bc9434b260dbeb5a10',
             'dev_requirement' => false,
         ),
         'symfony/var-dumper' => array(
-            'pretty_version' => 'v5.3.7',
-            'version' => '5.3.7.0',
+            'pretty_version' => 'v5.4.3',
+            'version' => '5.4.3.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/var-dumper',
             'aliases' => array(),
-            'reference' => '3ad5af4aed07d0a0201bbcfc42658fe6c5b2fb8f',
+            'reference' => '970a01f208bf895c5f327ba40b72288da43adec4',
             'dev_requirement' => false,
         ),
         'symfony/yaml' => array(
-            'pretty_version' => 'v5.3.6',
-            'version' => '5.3.6.0',
+            'pretty_version' => 'v5.3.14',
+            'version' => '5.3.14.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/yaml',
             'aliases' => array(),
-            'reference' => '4500fe63dc9c6ffc32d3b1cb0448c329f9c814b7',
+            'reference' => 'c441e9d2e340642ac8b951b753dea962d55b669d',
             'dev_requirement' => true,
         ),
         'tedivm/jshrink' => array(
@@ -5409,7 +5415,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'temando/module-shipping-m2' => array(
@@ -5424,7 +5430,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../temando/module-shipping-remover',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'thecodingmachine/safe' => array(
@@ -5472,7 +5478,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../tubalmartin/cssmin',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => '3cbf557f4079d83a06f9c3ff9b957c022d7805cf',
             'dev_requirement' => false,
         ),
         'twbs/bootstrap' => array(
@@ -5517,7 +5523,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../vertexinc/module-address-validation',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'vertexinc/module-address-validation-api' => array(
@@ -5526,7 +5532,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../vertexinc/module-address-validation-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'vertexinc/module-request-logging' => array(
@@ -5535,7 +5541,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../vertexinc/module-request-logging',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'vertexinc/module-request-logging-api' => array(
@@ -5544,7 +5550,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../vertexinc/module-request-logging-api',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'vertexinc/module-request-logging-api-implementation' => array(
@@ -5559,7 +5565,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../vertexinc/module-tax',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'vertexinc/product-magento-module' => array(
@@ -5568,7 +5574,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'vertexinc/sdk' => array(
@@ -5577,7 +5583,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../vertexinc/sdk',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'videlalvaro/php-amqplib' => array(
@@ -5587,12 +5593,12 @@
             ),
         ),
         'vlucas/phpdotenv' => array(
-            'pretty_version' => 'v2.6.7',
-            'version' => '2.6.7.0',
+            'pretty_version' => 'v2.6.9',
+            'version' => '2.6.9.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../vlucas/phpdotenv',
             'aliases' => array(),
-            'reference' => 'b786088918a884258c9e3e27405c6a4cf2ee246e',
+            'reference' => '2e93cc98e2e8e869f8d9cfa61bb3a99ba4fc4141',
             'dev_requirement' => true,
         ),
         'web-token/encryption-pack' => array(
@@ -5782,7 +5788,7 @@
             'install_path' => __DIR__ . '/../webmozart/assert',
             'aliases' => array(),
             'reference' => '6964c76c7804814a842473e0c8fd15bab0f18e25',
-            'dev_requirement' => true,
+            'dev_requirement' => false,
         ),
         'webonyx/graphql-php' => array(
             'pretty_version' => 'v0.13.9',
@@ -5817,7 +5823,7 @@
             'type' => 'magento2-module',
             'install_path' => __DIR__ . '/../yotpo/magento2-module-yotpo-reviews',
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'yotpo/magento2-module-yotpo-reviews-bundle' => array(
@@ -5826,7 +5832,7 @@
             'type' => 'metapackage',
             'install_path' => NULL,
             'aliases' => array(),
-            'reference' => '42aedccb861d01fc0554782348cc08f8ebf22332',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'yotpo/module-review' => array(
@@ -5841,28 +5847,10 @@
                 0 => '*',
             ),
         ),
-        'zendframework/zend-captcha' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^2.9.0',
-            ),
-        ),
         'zendframework/zend-code' => array(
             'dev_requirement' => false,
             'replaced' => array(
                 0 => '^3.4.1',
-            ),
-        ),
-        'zendframework/zend-crypt' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^3.3.1',
-            ),
-        ),
-        'zendframework/zend-di' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^3.1.2',
             ),
         ),
         'zendframework/zend-escaper' => array(
@@ -5877,40 +5865,10 @@
                 0 => '^2.12.0',
             ),
         ),
-        'zendframework/zend-filter' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^2.9.2',
-            ),
-        ),
         'zendframework/zend-http' => array(
             'dev_requirement' => false,
             'replaced' => array(
                 0 => '^2.11.2',
-            ),
-        ),
-        'zendframework/zend-i18n' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^2.10.1',
-            ),
-        ),
-        'zendframework/zend-mail' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^2.10.0',
-            ),
-        ),
-        'zendframework/zend-math' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^3.2.0',
-            ),
-        ),
-        'zendframework/zend-modulemanager' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^2.8.4',
             ),
         ),
         'zendframework/zend-mvc' => array(
@@ -5929,18 +5887,6 @@
             'dev_requirement' => false,
             'replaced' => array(
                 0 => '^2.8.1',
-            ),
-        ),
-        'zendframework/zend-servicemanager' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^3.4.0',
-            ),
-        ),
-        'zendframework/zend-session' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '^2.9.1',
             ),
         ),
         'zendframework/zend-soap' => array(

@@ -1,17 +1,15 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-i18n for the canonical source repository
- * @copyright https://github.com/laminas/laminas-i18n/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-i18n/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\I18n\View\Helper;
 
-use Laminas\I18n\Exception;
 use Laminas\View\Helper\AbstractHelper;
 use Locale;
 use NumberFormatter;
+
+use function md5;
+use function preg_quote;
+use function preg_replace;
+use function sprintf;
 
 /**
  * View helper for formatting currency.
@@ -60,19 +58,6 @@ class CurrencyFormat extends AbstractHelper
      * @var bool
      */
     protected $correctionNeeded = false;
-
-    /**
-     * @throws Exception\ExtensionNotLoadedException if ext/intl is not present
-     */
-    public function __construct()
-    {
-        if (! extension_loaded('intl')) {
-            throw new Exception\ExtensionNotLoadedException(sprintf(
-                '%s component requires the intl PHP extension',
-                __NAMESPACE__
-            ));
-        }
-    }
 
     /**
      * Format a number
@@ -142,7 +127,7 @@ class CurrencyFormat extends AbstractHelper
             $this->correctionNeeded = false;
         } else {
             $this->formatters[$formatterId]->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
-            $defaultCurrencyCode = $this->formatters[$formatterId]->getTextAttribute(NumberFormatter::CURRENCY_CODE);
+            $defaultCurrencyCode    = $this->formatters[$formatterId]->getTextAttribute(NumberFormatter::CURRENCY_CODE);
             $this->correctionNeeded = $defaultCurrencyCode !== $currencyCode;
         }
 
@@ -254,7 +239,6 @@ class CurrencyFormat extends AbstractHelper
 
     /**
      * @param string          $formattedNumber
-     * @param NumberFormatter $formatter
      * @param string          $locale
      * @param string          $currencyCode
      * @return string
